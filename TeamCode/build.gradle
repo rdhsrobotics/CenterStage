@@ -23,7 +23,24 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+
+    maven { url = 'https://maven.brott.dev/' }
+
+    maven {
+        url = "https://artifactory.scala.gg/artifactory/opensource"
+    }
+}
+
 dependencies {
+    implementation 'org.ftclib.ftclib:core:2.1.1'
+    implementation "io.liftgate.ftc.scripting:api:0.1.5-SNAPSHOT"
+
+    implementation 'org.apache.commons:commons-math3:3.6.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
+    implementation 'com.acmerobotics.roadrunner:core:0.5.6'
+
     implementation project(':FtcRobotController')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 }
