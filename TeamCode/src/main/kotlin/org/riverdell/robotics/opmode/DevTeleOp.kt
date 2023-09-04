@@ -5,11 +5,11 @@ import io.liftgate.ftc.scripting.KotlinScript.ImpliedVariable
 import io.liftgate.ftc.scripting.opmode.DevLinearOpMode
 
 @TeleOp(
-    name = "DevTest-Scripted",
-    group = "Scripted"
+    name = "kts - Dev Test",
+    group = "scripted"
 )
-class DevOpModeTest : DevLinearOpMode()
+class DevTeleOp : DevLinearOpMode()
 {
-    override fun getImpliedVariables() = mutableListOf<ImpliedVariable>()
+    override fun getImpliedVariables() = emptyList<ImpliedVariable>()
     override fun getScriptName() = "Dev.kts"
 }
