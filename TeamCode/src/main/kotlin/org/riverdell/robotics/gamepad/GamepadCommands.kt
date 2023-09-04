@@ -103,11 +103,25 @@ class GamepadCommands(private val gamepad: Gamepad)
         fun runs(executor: () -> Unit) = InternalButtonMappingBuilderWithExecutor(executor)
 
         inner class InternalButtonMappingBuilderWithExecutor(
-            private val executor: () -> Unit
+            private val executor: () -> Unit,
+            private var built: Boolean = false
         )
         {
-            fun whenPressedOnce() = build(ButtonBehavior.Single)
-            fun whileItIsBeingPressed() = build(ButtonBehavior.Continuous)
+            fun whenPressedOnce()
+            {
+                check(!built) {
+                    "Button already mapped"
+                }
+                build(ButtonBehavior.Single)
+            }
+
+            fun whileItIsBeingPressed()
+            {
+                check(!built) {
+                    "Button already mapped"
+                }
+                build(ButtonBehavior.Continuous)
+            }
 
             private fun build(behavior: ButtonBehavior) = also {
                 // return unit to prevent chaining of commands which is HIDEOUS
@@ -115,6 +129,7 @@ class GamepadCommands(private val gamepad: Gamepad)
                     handler = executor,
                     behavior = behavior
                 )
+                built = true
             }
         }
     }
