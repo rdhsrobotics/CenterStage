@@ -11,8 +11,8 @@
 
 // Custom definitions may go here
 plugins {
-    id "org.jetbrains.kotlin.kapt" version "1.9.0"
-    id "org.jetbrains.kotlin.android" version "1.9.0"
+    id "org.jetbrains.kotlin.kapt" version "1.9.10"
+    id "org.jetbrains.kotlin.android" version "1.9.10"
 }
 
 // Include common definitions from above.
@@ -38,7 +38,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.0'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.10'
 
     implementation 'org.ftclib.ftclib:core:2.1.1'
     implementation "io.liftgate.ftc.scripting:api:0.1.5-SNAPSHOT"
