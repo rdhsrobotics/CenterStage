@@ -45,13 +45,19 @@ class DevTeleOp : DevLinearOpMode()
             .repeatedlyWhilePressed()
 
         fun resetLiftMotorPosition() = Unit
+        fun inEndGame(): Boolean = false
 
         // Similar example to the one right above this, however, this time we are able to
         // reset the lift motor back to position 0 when the user stops pressing
         gp1Commands
             .where(ButtonType.ButtonY)
-            .and(ButtonType.ButtonB)
-            .triggers(::bringUpLiftMotor, 500L) // continue to call this ever 50ms while the user is holding both B and Y
+            .and(ButtonType.ButtonB) // can either use B + Y
+            .or {
+                and(ButtonType.DPadUp)
+                    .and(ButtonType.DPadLeft)
+            } // or they can use DPUp + DPLeft
+            .onlyWhen(::inEndGame) // only allow this command when in end game
+            .triggers(::bringUpLiftMotor, 500L) // continue to call this ever 50ms while the user is holding both B and Y every 500ms
             .repeatedlyWhilePressedUntilReleasedWhere(::resetLiftMotorPosition)
     }
 

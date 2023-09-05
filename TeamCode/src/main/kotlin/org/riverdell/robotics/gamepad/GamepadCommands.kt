@@ -19,10 +19,13 @@ class GamepadCommands(private val gamepad: Gamepad)
     data class ButtonMapping(
         val handler: () -> Unit,
         val behavior: ButtonBehavior,
+        // TODO: B + Y will trigger a B listener (possibly?)
+        //  associate by ButtonType and break if a larger expression passes
+        // val totalExpressionAdditions: Int,
         val releaseTrigger: (() -> Unit)? = null,
         var delay: Long?,
         var lastTrigger: Long = 0L,
-        var lock: Boolean = false
+        var lock: Boolean = false,
     )
 
     private val listeners = mutableMapOf<() -> Boolean, ButtonMapping>()
@@ -105,7 +108,7 @@ class GamepadCommands(private val gamepad: Gamepad)
             expression = { prevExp() && isActive(b) }
         }
 
-        fun combinedWithNot(b: ButtonType) = apply {
+        fun andNot(b: ButtonType) = apply {
             val prevExp = expression
             expression = { prevExp() && !(isActive(b)) }
         }
