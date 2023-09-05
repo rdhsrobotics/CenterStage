@@ -20,6 +20,8 @@ class GamepadCommands(private val gamepad: Gamepad)
         val handler: () -> Unit,
         val behavior: ButtonBehavior,
         val releaseTrigger: (() -> Unit)? = null,
+        var delay: Long?,
+        var lastTrigger: Long = 0L,
         var lock: Boolean = false
     )
 
@@ -52,6 +54,17 @@ class GamepadCommands(private val gamepad: Gamepad)
                         // we lock just in-case for release triggers to work properly
                         mapping.lock = true
 
+                        if (mapping.delay != null)
+                        {
+                            // Ensure we don't exceed the delay
+                            if (mapping.lastTrigger + mapping.delay!! > System.currentTimeMillis())
+                            {
+                                continue
+                            }
+
+                            mapping.lastTrigger = System.currentTimeMillis()
+                        }
+
                         runCatching {
                             mapping.handler()
                         }.onFailure {
@@ -63,13 +76,14 @@ class GamepadCommands(private val gamepad: Gamepad)
                     // If previously locked, and a release trigger is set, release the lock.
                     if (mapping.releaseTrigger != null && mapping.lock)
                     {
-                        mapping.releaseTrigger()
+                        mapping.releaseTrigger!!()
                     }
 
                     mapping.lock = false
+                    mapping.lastTrigger = 0L
                 }
 
-                sleep(50L)
+                sleep(10L)
             }
         }
     }
@@ -113,15 +127,28 @@ class GamepadCommands(private val gamepad: Gamepad)
             expression = { prevExp() && !lambda() }
         }
 
-        fun triggers(executor: () -> Unit) = InternalButtonMappingBuilderWithExecutor(executor)
+        @JvmOverloads
+        fun triggers(executor: () -> Unit, delay: Long? = null): InternalButtonMappingBuilderWithExecutor
+        {
+            check(delay == null || delay >= 50L) {
+                "Delay cannot be less than 50ms as that is the tick speed"
+            }
+
+            return InternalButtonMappingBuilderWithExecutor(executor, delay)
+        }
 
         inner class InternalButtonMappingBuilderWithExecutor(
             private val executor: () -> Unit,
+            private val delay: Long?,
             private var built: Boolean = false
         )
         {
             fun whenPressedOnce()
             {
+                check(delay == null) {
+                    "Delay is not applicable to single-press buttons"
+                }
+
                 check(!built) {
                     "Button already mapped"
                 }
@@ -133,7 +160,7 @@ class GamepadCommands(private val gamepad: Gamepad)
                 check(!built) {
                     "Button already mapped"
                 }
-                build(ButtonBehavior.Continuous)
+                build(ButtonBehavior.Continuous, delay = delay ?: 50L)
             }
 
             fun repeatedlyWhilePressedUntilReleasedWhere(lockRelease: () -> Unit)
@@ -141,11 +168,14 @@ class GamepadCommands(private val gamepad: Gamepad)
                 check(!built) {
                     "Button already mapped"
                 }
-                build(ButtonBehavior.Continuous, lockRelease)
+                build(ButtonBehavior.Continuous, lockRelease, delay ?: 50L)
             }
 
             fun andIsHeldUntilReleasedWhere(lockRelease: () -> Unit)
             {
+                check(delay == null) {
+                    "Delay is not applicable to held buttons"
+                }
                 check(!built) {
                     "Button already mapped"
                 }
@@ -156,13 +186,15 @@ class GamepadCommands(private val gamepad: Gamepad)
 
             private fun build(
                 behavior: ButtonBehavior,
-                onRelease: (() -> Unit)? = null
+                onRelease: (() -> Unit)? = null,
+                delay: Long? = null
             ) = also {
                 // return unit to prevent chaining of commands which is HIDEOUS
                 listeners[expression] = ButtonMapping(
                     handler = executor,
                     behavior = behavior,
-                    releaseTrigger = onRelease
+                    releaseTrigger = onRelease,
+                    delay = delay
                 )
                 built = true
             }

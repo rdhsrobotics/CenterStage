@@ -41,7 +41,7 @@ class DevTeleOp : DevLinearOpMode()
         gp1Commands
             .where(ButtonType.ButtonY)
             .and(ButtonType.ButtonB)
-            .triggers(::bringUpLiftMotor) // continue to increment lift motor position while the user is holding both B and Y
+            .triggers(::bringUpLiftMotor, 250L) // continue to increment lift motor position while the user is holding both B and Y every 250ms
             .repeatedlyWhilePressed()
 
         fun resetLiftMotorPosition() = Unit
@@ -51,7 +51,7 @@ class DevTeleOp : DevLinearOpMode()
         gp1Commands
             .where(ButtonType.ButtonY)
             .and(ButtonType.ButtonB)
-            .triggers(::bringUpLiftMotor) // continue to call this ever 50ms while the user is holding both B and Y
+            .triggers(::bringUpLiftMotor, 500L) // continue to call this ever 50ms while the user is holding both B and Y
             .repeatedlyWhilePressedUntilReleasedWhere(::resetLiftMotorPosition)
     }
 
