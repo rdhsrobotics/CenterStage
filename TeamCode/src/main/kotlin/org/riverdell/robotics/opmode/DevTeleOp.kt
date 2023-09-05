@@ -34,7 +34,7 @@ class DevTeleOp : DevLinearOpMode()
             .where(ButtonType.ButtonX)
             .triggers(::toggleHoldingOfLiftMotor) // toggle lift motor hold when user starts holding X
             // maintain lift motor hold
-            .andIsMaintainedUntilReleasedWhere(::toggleHoldingOfLiftMotor) // when user stops holding X, disable lift hold
+            .andIsHeldUntilReleasedWhere(::toggleHoldingOfLiftMotor) // when user stops holding X, disable lift hold
 
         fun bringUpLiftMotor() = Unit
 
@@ -42,7 +42,7 @@ class DevTeleOp : DevLinearOpMode()
             .where(ButtonType.ButtonY)
             .and(ButtonType.ButtonB)
             .triggers(::bringUpLiftMotor) // continue to increment lift motor position while the user is holding both B and Y
-            .whileItIsBeingPressed()
+            .repeatedlyWhilePressed()
 
         fun resetLiftMotorPosition() = Unit
 
@@ -52,7 +52,7 @@ class DevTeleOp : DevLinearOpMode()
             .where(ButtonType.ButtonY)
             .and(ButtonType.ButtonB)
             .triggers(::bringUpLiftMotor) // continue to call this ever 50ms while the user is holding both B and Y
-            .whileItIsBeingPressedUntilReleasedWhere(::resetLiftMotorPosition)
+            .repeatedlyWhilePressedUntilReleasedWhere(::resetLiftMotorPosition)
     }
 
     override fun runOpMode()

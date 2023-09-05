@@ -128,7 +128,7 @@ class GamepadCommands(private val gamepad: Gamepad)
                 build(ButtonBehavior.Single)
             }
 
-            fun whileItIsBeingPressed()
+            fun repeatedlyWhilePressed()
             {
                 check(!built) {
                     "Button already mapped"
@@ -136,7 +136,7 @@ class GamepadCommands(private val gamepad: Gamepad)
                 build(ButtonBehavior.Continuous)
             }
 
-            fun whileItIsBeingPressedUntilReleasedWhere(lockRelease: () -> Unit)
+            fun repeatedlyWhilePressedUntilReleasedWhere(lockRelease: () -> Unit)
             {
                 check(!built) {
                     "Button already mapped"
@@ -144,7 +144,7 @@ class GamepadCommands(private val gamepad: Gamepad)
                 build(ButtonBehavior.Continuous, lockRelease)
             }
 
-            fun andIsMaintainedUntilReleasedWhere(lockRelease: () -> Unit)
+            fun andIsHeldUntilReleasedWhere(lockRelease: () -> Unit)
             {
                 check(!built) {
                     "Button already mapped"
