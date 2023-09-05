@@ -13,15 +13,13 @@ class GamepadCommands(private val gamepad: Gamepad)
     enum class ButtonBehavior(val requiresLock: Boolean = false)
     {
         Continuous,
-        Single(requiresLock = true),
-        Maintain(requiresLock = true)
+        Single(requiresLock = true)
     }
 
     data class ButtonMapping(
         val handler: () -> Unit,
         val behavior: ButtonBehavior,
-        @Suppress("PropertyName")
-        val _internal_maintainReleaseTrigger: () -> Unit = {},
+        val releaseTrigger: (() -> Unit)? = null,
         var lock: Boolean = false
     )
 
@@ -42,16 +40,17 @@ class GamepadCommands(private val gamepad: Gamepad)
                     // if the expression is true, trigger the handler.
                     if (expr())
                     {
-                        // if this requires a lock (single-use), lock and don't continue until it's released
+                        // if this requires a lock (single-use), don't continue until it's released
                         if (mapping.behavior.requiresLock)
                         {
                             if (mapping.lock)
                             {
                                 continue
                             }
-
-                            mapping.lock = true
                         }
+
+                        // we lock just in-case for release triggers to work properly
+                        mapping.lock = true
 
                         runCatching {
                             mapping.handler()
@@ -61,10 +60,10 @@ class GamepadCommands(private val gamepad: Gamepad)
                         continue
                     }
 
-                    // If previously locked, and the behavior is to maintain, release the lock.
-                    if (mapping.behavior == ButtonBehavior.Maintain && mapping.lock)
+                    // If previously locked, and a release trigger is set, release the lock.
+                    if (mapping.releaseTrigger != null && mapping.lock)
                     {
-                        mapping._internal_maintainReleaseTrigger()
+                        mapping.releaseTrigger()
                     }
 
                     mapping.lock = false
@@ -137,25 +136,33 @@ class GamepadCommands(private val gamepad: Gamepad)
                 build(ButtonBehavior.Continuous)
             }
 
+            fun whileItIsBeingPressedUntilReleasedWhere(lockRelease: () -> Unit)
+            {
+                check(!built) {
+                    "Button already mapped"
+                }
+                build(ButtonBehavior.Continuous, lockRelease)
+            }
+
             fun andIsMaintainedUntilReleasedWhere(lockRelease: () -> Unit)
             {
                 check(!built) {
                     "Button already mapped"
                 }
 
-                listeners[expression] = ButtonMapping(
-                    handler = executor,
-                    behavior = ButtonBehavior.Maintain,
-                    _internal_maintainReleaseTrigger = lockRelease
-                )
-                built = true
+                // behavior is technically single
+                build(ButtonBehavior.Single, lockRelease)
             }
 
-            private fun build(behavior: ButtonBehavior) = also {
+            private fun build(
+                behavior: ButtonBehavior,
+                onRelease: (() -> Unit)? = null
+            ) = also {
                 // return unit to prevent chaining of commands which is HIDEOUS
                 listeners[expression] = ButtonMapping(
                     handler = executor,
-                    behavior = behavior
+                    behavior = behavior,
+                    releaseTrigger = onRelease
                 )
                 built = true
             }

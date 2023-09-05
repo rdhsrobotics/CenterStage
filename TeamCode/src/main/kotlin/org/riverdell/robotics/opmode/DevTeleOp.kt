@@ -15,7 +15,7 @@ class DevTeleOp : DevLinearOpMode()
     private val gp1Commands by lazy { GamepadCommands(gamepad1) }
     private val gp2Commands by lazy { GamepadCommands(gamepad2) }
 
-    override fun runOpMode()
+    fun configureCommands()
     {
         // TODO: add hooks to ProdOpMode for prestart conf stuff, etc
         listOf(gp1Commands, gp2Commands)
@@ -36,14 +36,28 @@ class DevTeleOp : DevLinearOpMode()
             // maintain lift motor hold
             .andIsMaintainedUntilReleasedWhere(::toggleHoldingOfLiftMotor) // when user stops holding X, disable lift hold
 
-        fun incrementSomething() = Unit
+        fun bringUpLiftMotor() = Unit
 
         gp1Commands
             .where(ButtonType.ButtonY)
             .and(ButtonType.ButtonB)
-            .triggers(::incrementSomething) // continue to call this ever 50ms while the user is holding both B and Y
+            .triggers(::bringUpLiftMotor) // continue to increment lift motor position while the user is holding both B and Y
             .whileItIsBeingPressed()
 
+        fun resetLiftMotorPosition() = Unit
+
+        // Similar example to the one right above this, however, this time we are able to
+        // reset the lift motor back to position 0 when the user stops pressing
+        gp1Commands
+            .where(ButtonType.ButtonY)
+            .and(ButtonType.ButtonB)
+            .triggers(::bringUpLiftMotor) // continue to call this ever 50ms while the user is holding both B and Y
+            .whileItIsBeingPressedUntilReleasedWhere(::resetLiftMotorPosition)
+    }
+
+    override fun runOpMode()
+    {
+        configureCommands()
         super.runOpMode()
     }
 
