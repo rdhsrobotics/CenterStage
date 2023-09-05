@@ -43,6 +43,8 @@ class GamepadCommands(private val gamepad: Gamepad)
                             {
                                 continue
                             }
+
+                            mapping.lock = true
                         }
 
                         runCatching {

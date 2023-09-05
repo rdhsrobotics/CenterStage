@@ -37,12 +37,6 @@ repositories {
     }
 }
 
-android {
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-    }
-}
-
 dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.10'
 
