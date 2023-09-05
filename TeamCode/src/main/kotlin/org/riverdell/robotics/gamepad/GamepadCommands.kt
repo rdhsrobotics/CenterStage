@@ -10,14 +10,18 @@ import kotlin.concurrent.thread
  */
 class GamepadCommands(private val gamepad: Gamepad)
 {
-    enum class ButtonBehavior
+    enum class ButtonBehavior(val requiresLock: Boolean = false)
     {
-        Continuous, Single
+        Continuous,
+        Single(requiresLock = true),
+        Maintain(requiresLock = true)
     }
 
     data class ButtonMapping(
         val handler: () -> Unit,
         val behavior: ButtonBehavior,
+        @Suppress("PropertyName")
+        val _internal_maintainReleaseTrigger: () -> Unit = {},
         var lock: Boolean = false
     )
 
@@ -35,9 +39,11 @@ class GamepadCommands(private val gamepad: Gamepad)
             {
                 for ((expr, mapping) in listeners)
                 {
+                    // if the expression is true, trigger the handler.
                     if (expr())
                     {
-                        if (mapping.behavior == ButtonBehavior.Single)
+                        // if this requires a lock (single-use), lock and don't continue until it's released
+                        if (mapping.behavior.requiresLock)
                         {
                             if (mapping.lock)
                             {
@@ -52,10 +58,16 @@ class GamepadCommands(private val gamepad: Gamepad)
                         }.onFailure {
                             it.printStackTrace()
                         }
-                    } else
-                    {
-                        mapping.lock = false
+                        continue
                     }
+
+                    // If previously locked, and the behavior is to maintain, release the lock.
+                    if (mapping.behavior == ButtonBehavior.Maintain && mapping.lock)
+                    {
+                        mapping._internal_maintainReleaseTrigger()
+                    }
+
+                    mapping.lock = false
                 }
 
                 sleep(50L)
@@ -102,7 +114,7 @@ class GamepadCommands(private val gamepad: Gamepad)
             expression = { prevExp() && !lambda() }
         }
 
-        fun runs(executor: () -> Unit) = InternalButtonMappingBuilderWithExecutor(executor)
+        fun triggers(executor: () -> Unit) = InternalButtonMappingBuilderWithExecutor(executor)
 
         inner class InternalButtonMappingBuilderWithExecutor(
             private val executor: () -> Unit,
@@ -123,6 +135,20 @@ class GamepadCommands(private val gamepad: Gamepad)
                     "Button already mapped"
                 }
                 build(ButtonBehavior.Continuous)
+            }
+
+            fun andIsMaintainedUntilReleasedWhere(lockRelease: () -> Unit)
+            {
+                check(!built) {
+                    "Button already mapped"
+                }
+
+                listeners[expression] = ButtonMapping(
+                    handler = executor,
+                    behavior = ButtonBehavior.Maintain,
+                    _internal_maintainReleaseTrigger = lockRelease
+                )
+                built = true
             }
 
             private fun build(behavior: ButtonBehavior) = also {
