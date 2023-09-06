@@ -11,8 +11,7 @@
 
 // Custom definitions may go here
 plugins {
-    id "org.jetbrains.kotlin.kapt" version "1.9.10"
-    id "org.jetbrains.kotlin.android" version "1.9.10"
+    id "io.freefair.lombok" version "8.3"
 }
 
 // Include common definitions from above.
@@ -38,20 +37,17 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.10'
+    compileOnly 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
 
     implementation 'org.ftclib.ftclib:core:2.1.1'
     implementation "io.liftgate.ftc.scripting:api:0.1.5-SNAPSHOT"
+    implementation "io.liftgate.robotics.mono:mono:1.0-SNAPSHOT"
 
     implementation 'org.apache.commons:commons-math3:3.6.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
     implementation 'com.acmerobotics.roadrunner:core:0.5.6'
 
     implementation project(':FtcRobotController')
-    kapt files('lib/OpModeAnnotationProcessor.jar')
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
-}
-
-kapt {
-    keepJavacAnnotationProcessors = true
 }
