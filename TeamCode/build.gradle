@@ -40,6 +40,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
 
+     implementation 'androidx.multidex:multidex:2.0.1'  //with androidx libraries   
     implementation 'org.ftclib.ftclib:core:2.1.1'
     implementation "io.liftgate.ftc.scripting:api:0.1.5-SNAPSHOT"
     implementation "io.liftgate.robotics.mono:mono:1.0-SNAPSHOT"
