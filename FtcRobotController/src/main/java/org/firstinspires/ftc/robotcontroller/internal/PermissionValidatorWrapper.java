@@ -30,7 +30,10 @@
 package org.firstinspires.ftc.robotcontroller.internal;
 
 import android.Manifest;
+import android.content.Context;
 import android.os.Bundle;
+
+import androidx.multidex.MultiDex;
 
 import com.qualcomm.ftcrobotcontroller.R;
 
@@ -81,6 +84,12 @@ public class PermissionValidatorWrapper extends PermissionValidatorActivity {
         super.onCreate(savedInstanceState);
 
         permissions = robotControllerPermissions;
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     protected Class onStartApplication()

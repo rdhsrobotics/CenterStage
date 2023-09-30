@@ -49,6 +49,8 @@ import android.preference.PreferenceManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.multidex.MultiDex;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;

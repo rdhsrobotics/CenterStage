@@ -39,16 +39,20 @@ repositories {
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
+    implementation("org.openftc:easyopencv:1.7.0")
+    implementation("org.openftc:apriltag:2.0.0")
 
-     implementation 'androidx.multidex:multidex:2.0.1'  //with androidx libraries   
-    implementation 'org.ftclib.ftclib:core:2.1.1'
-    implementation "io.liftgate.ftc.scripting:api:0.1.5-SNAPSHOT"
+    // https://mvnrepository.com/artifact/org.jetbrains/annotations
+    compileOnly 'org.jetbrains:annotations:24.0.1'
+
+//    implementation "io.liftgate.ftc.scripting:api:0.1.5.10-SNAPSHOT"
     implementation "io.liftgate.robotics.mono:mono:1.0-SNAPSHOT"
 
-    implementation 'org.apache.commons:commons-math3:3.6.1'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
-    implementation 'com.acmerobotics.roadrunner:core:0.5.6'
+//    implementation 'org.apache.commons:commons-math3:3.6.1'
+//    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.0'
+//    implementation 'com.acmerobotics.roadrunner:core:0.5.6'
 
     implementation project(':FtcRobotController')
+    implementation files("lib/on-bot-kotlin-api.jar")
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
 }
