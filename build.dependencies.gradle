@@ -1,6 +1,9 @@
 repositories {
     mavenCentral()
     google() // Needed for androidx
+
+    maven { url = 'https://maven.brott.dev/' }
+    maven { url = "https://artifactory.scala.gg/artifactory/opensource" }
 }
 
 dependencies {
@@ -19,4 +22,3 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'  //with androidx libraries
     implementation 'org.firstinspires.ftc:gameAssets-CenterStage:1.0.0'
 }
-
