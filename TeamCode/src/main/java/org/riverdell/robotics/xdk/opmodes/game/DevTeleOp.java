@@ -40,7 +40,7 @@ public class DevTeleOp extends DevLinearOpMode {
 
     @Override
     public @NotNull String getScriptName() {
-        return "Dev.kts";
+        return "Dev.ts";
     }
 
     @Override
