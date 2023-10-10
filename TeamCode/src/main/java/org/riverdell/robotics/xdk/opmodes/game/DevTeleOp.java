@@ -1,15 +1,17 @@
 package org.riverdell.robotics.xdk.opmodes.game;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Collections;
+import java.util.List;
+
 import io.liftgate.ftc.scripting.opmode.DevLinearOpMode;
 import io.liftgate.robotics.mono.Mono;
 import io.liftgate.robotics.mono.gamepad.ButtonType;
 import io.liftgate.robotics.mono.gamepad.GamepadCommands;
 import kotlin.Unit;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * @author GrowlyX

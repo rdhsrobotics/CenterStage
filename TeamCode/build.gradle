@@ -35,7 +35,7 @@ dependencies {
     compileOnly "org.projectlombok:lombok:1.18.28"
     annotationProcessor "org.projectlombok:lombok:1.18.28"
 
-    implementation "io.liftgate.robotics.obt:api:0.2.4-SNAPSHOT"
+    implementation "io.liftgate.robotics.obt:api:0.4.2-SNAPSHOT"
     implementation "io.liftgate.robotics.mono:mono:1.0-SNAPSHOT"
 
     implementation project(":FtcRobotController")
