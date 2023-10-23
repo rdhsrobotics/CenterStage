@@ -9,8 +9,11 @@ import org.riverdell.robotics.xdk.opmodes.game.pipeline.detection.TapeSide
 
 @Autonomous(name = "RedA", preselectTeleOp = "prod")
 class AutoPipelineRedA : LinearOpMode() {
-    override fun runOpMode() {
 
+
+
+
+    override fun runOpMode() {
         val group = Mono.buildExecutionGroup {
             single("detect team element") {
                 // TODO
