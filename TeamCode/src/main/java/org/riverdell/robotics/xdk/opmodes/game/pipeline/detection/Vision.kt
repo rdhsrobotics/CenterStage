@@ -28,6 +28,7 @@ class Vision(webcam: WebcamName) {
     @SuppressLint("SdCardPath")
     private val tfodProcessor = TfodProcessor.Builder()
             .setModelFileName("/sdcard/FIRST/tflitemodels/CenterStage.tflite")
+            .setModelLabels(arrayOf("pixel"))
             .build()
 
     private var builder: VisionPortal.Builder = VisionPortal.Builder()
