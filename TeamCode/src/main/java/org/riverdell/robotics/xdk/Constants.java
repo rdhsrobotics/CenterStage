@@ -1,13 +1,11 @@
 package org.riverdell.robotics.xdk;
 
-import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author GrowlyX
  * @since 9/5/2023
  */
-@UtilityClass
 public class Constants {
     @NotNull
     public static String vuforiaKey() {

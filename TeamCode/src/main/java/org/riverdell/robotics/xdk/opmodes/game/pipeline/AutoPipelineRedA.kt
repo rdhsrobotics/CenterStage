@@ -5,7 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.parallel
 import io.liftgate.robotics.mono.pipeline.single
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.riverdell.robotics.xdk.opmodes.game.pipeline.detection.TapeSide
+import org.riverdell.robotics.xdk.opmodes.game.pipeline.detection.Vision
 
 @Autonomous(name = "RedA", preselectTeleOp = "prod")
 class AutoPipelineRedA : LinearOpMode() {
@@ -14,6 +16,18 @@ class AutoPipelineRedA : LinearOpMode() {
 
 
     override fun runOpMode() {
+        val vision = Vision(
+            hardwareMap.get(WebcamName::class.java, "webcam1")!!
+        )
+        vision.start()
+
+        waitForStart()
+
+        Mono.logSink = {
+            telemetry.isAutoClear = false
+            telemetry.addLine(it)
+        }
+
         val group = Mono.buildExecutionGroup {
             single("detect team element") {
                 // TODO
@@ -97,5 +111,7 @@ class AutoPipelineRedA : LinearOpMode() {
         }
 
         group.executeBlocking()
+
+        vision.close()
     }
 }

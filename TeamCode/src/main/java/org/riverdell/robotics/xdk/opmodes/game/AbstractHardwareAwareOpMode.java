@@ -1,9 +1,11 @@
 package org.riverdell.robotics.xdk.opmodes.game;
 
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-import io.liftgate.ftc.scripting.opmode.DevLinearOpMode;
+//import io.liftgate.ftc.scripting.opmode.DevLinearOpMode;
 import io.liftgate.robotics.mono.Mono;
 import io.liftgate.robotics.mono.gamepad.ButtonType;
 import io.liftgate.robotics.mono.gamepad.GamepadCommands;
@@ -36,10 +38,10 @@ public abstract class AbstractHardwareAwareOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        final Motor frontLeft = new Motor(hardwareMap, "frontLeft");
-        final Motor frontRight = new Motor(hardwareMap, "frontRight");
-        final Motor backLeft = new Motor(hardwareMap, "backLeft");
-        final Motor backRight = new Motor(hardwareMap, "backRight");
+        final Motor backLeft = new Motor(hardwareMap, "frontLeft");
+        final Motor backRight = new Motor(hardwareMap, "frontRight");
+        final Motor frontLeft = new Motor(hardwareMap, "backLeft");
+        final Motor frontRight = new Motor(hardwareMap, "backRight");
 
         driveBase = new MecanumDrive(frontLeft, frontRight,
                 backLeft, backRight);
@@ -47,16 +49,20 @@ public abstract class AbstractHardwareAwareOpMode extends LinearOpMode {
         gp1Commands = Mono.INSTANCE.commands(gamepad1);
         gp2Commands = Mono.INSTANCE.commands(gamepad2);
 
+        final GamepadEx driverOp = new GamepadEx(gamepad1);
+
         if (!isAutonomous()) {
             buildCommands();
+            waitForStart();
 
             while (opModeIsActive()) {
-                final double multiplier = 0.3 + (gamepad1.right_trigger * 0.7);
+                final double multiplier = 0.6 + (gamepad1.right_trigger * 0.4);
 
                 driveBase.driveRobotCentric(
-                        gamepad1.left_stick_x * multiplier,
-                        gamepad1.left_stick_y * multiplier,
-                        gamepad1.right_stick_y * multiplier
+                        driverOp.getLeftX() * multiplier,
+                        driverOp.getLeftY() * multiplier,
+                        driverOp.getRightX() * multiplier,
+                        true
                 );
             }
         }
@@ -65,13 +71,28 @@ public abstract class AbstractHardwareAwareOpMode extends LinearOpMode {
             gp1Commands.stopListening();
             gp2Commands.stopListening();
         }
+
+        driveBase.stop();
     }
 
     private void buildCommands() {
         gp1Commands
                 .where(ButtonType.ButtonX)
                 .triggers(() -> {
-                    System.out.println("hey :)");
+                    telemetry.addLine("HII");
+                    telemetry.addLine("HII");
+                    telemetry.addLine("HII");
+                    telemetry.addLine("HII");
+                    telemetry.addLine("HII");
+                    telemetry.addLine("HII");
+                    telemetry.addLine("HII");
+                    telemetry.addLine("HII");
+                    telemetry.addLine("HII");
+                    telemetry.addLine("HII");
+                    telemetry.addLine("HII");
+                    telemetry.addLine("HII");
+                    telemetry.addLine("HII");
+                    telemetry.update();
                     return Unit.INSTANCE;
                 })
                 .whenPressedOnce();

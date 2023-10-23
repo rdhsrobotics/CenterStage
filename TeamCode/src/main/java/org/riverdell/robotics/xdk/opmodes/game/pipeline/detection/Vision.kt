@@ -37,17 +37,21 @@ class Vision(webcam: WebcamName) {
             .enableLiveView(true)
             .setStreamFormat(VisionPortal.StreamFormat.YUY2)
             .setAutoStopLiveView(true)
-            .addProcessor(processor)
+            .addProcessors(processor, tfodProcessor)
 
     private var portal: VisionPortal? = null
 
     fun start()
     {
         portal = builder.build()
-        portal!!.
     }
 
-    private fun getAprilTagPose(): AprilTagPoseFtc? {
+    fun close()
+    {
+        portal!!.close()
+    }
+
+    /*private fun getAprilTagPose(): AprilTagPoseFtc? {
         var attempts = 0
         val DETECTION_ID = if (DETECTION.equals("left")) 1 else if (DETECTION.equals("middle")) 2 else 3
         while (true) {
@@ -65,6 +69,6 @@ class Vision(webcam: WebcamName) {
             telemetry.update()
             sleep(20)
         }
-    }
+    }*/
 
 }
