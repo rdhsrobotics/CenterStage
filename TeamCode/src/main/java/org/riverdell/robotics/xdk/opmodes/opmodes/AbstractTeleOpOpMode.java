@@ -13,7 +13,9 @@ import io.liftgate.robotics.mono.gamepad.GamepadCommands;
 import kotlin.Unit;
 
 /**
- * @author GrowlyX
+ * Configures Mono gamepad commands and FTCLib drive systems for TeleOp.
+ *
+ * @author Subham
  * @since 9/5/2023
  */
 public abstract class AbstractTeleOpOpMode extends LinearOpMode {

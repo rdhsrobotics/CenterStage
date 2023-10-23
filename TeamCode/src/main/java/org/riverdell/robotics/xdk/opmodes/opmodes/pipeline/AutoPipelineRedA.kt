@@ -5,11 +5,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.parallel
 import io.liftgate.robotics.mono.pipeline.single
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
-import org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection.TeamColor
 import org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection.VisionPipeline
 
+/**
+ * @author Subham
+ * @since 10/23/2023
+ */
 @Autonomous(name = "RedA", preselectTeleOp = "prod")
 class AutoPipelineRedA : LinearOpMode()
 {

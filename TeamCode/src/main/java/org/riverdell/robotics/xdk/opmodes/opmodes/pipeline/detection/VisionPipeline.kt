@@ -15,6 +15,13 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 
+/**
+ * Some animal pipeline shit. Creates an [AprilTagProcessor] and
+ * multiple [TfodProcessor]s under a single [VisionPortal] instance.
+ *
+ * @author Subham
+ * @since 10/23/2023
+ */
 class VisionPipeline(
     private val webcam: WebcamName,
     private val telemetry: Telemetry
