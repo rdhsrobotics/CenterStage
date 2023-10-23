@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import io.liftgate.robotics.mono.Mono;
 import io.liftgate.robotics.mono.gamepad.ButtonType;
 import io.liftgate.robotics.mono.gamepad.GamepadCommands;
@@ -64,9 +66,39 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
     }
 
     private void buildCommands() {
+        final AtomicInteger atomicInteger = new AtomicInteger(0);
+
+        gp1Commands
+                .where(ButtonType.ButtonA)
+                .triggers(() -> {
+                    telemetry.addLine("WOAH UR SPAMMING ME " + atomicInteger.getAndAdd(1));
+                    telemetry.update();
+                    return Unit.INSTANCE;
+                })
+                .repeatedlyWhilePressedUntilReleasedWhere(() -> {
+                    telemetry.addLine("damn you let go?? ");
+                    telemetry.update();
+                    return Unit.INSTANCE;
+                });
+
+        gp1Commands
+                .where(ButtonType.ButtonY)
+                .triggers(() -> {
+                    telemetry.addLine("Hey this is HELD? " + atomicInteger.getAndAdd(1));
+                    telemetry.update();
+                    return Unit.INSTANCE;
+                })
+                .repeatedlyWhilePressedUntilReleasedWhere(() -> {
+                    telemetry.addLine("damn you let go?? ");
+                    telemetry.update();
+                    return Unit.INSTANCE;
+                });
+
         gp1Commands
                 .where(ButtonType.ButtonX)
                 .triggers(() -> {
+                    telemetry.addLine("Hey you clicked it " + atomicInteger.getAndAdd(1));
+                    telemetry.update();
                     return Unit.INSTANCE;
                 })
                 .whenPressedOnce();
