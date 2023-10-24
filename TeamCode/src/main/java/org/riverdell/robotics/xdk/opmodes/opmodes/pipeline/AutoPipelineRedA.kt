@@ -13,7 +13,7 @@ import org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection.VisionPipel
  * @since 10/23/2023
  */
 @Autonomous(name = "RedA", preselectTeleOp = "prod")
-class AutoPipelineRedA : LinearOpMode()
+class AutoPipelineRedA : AbstractAutoPipeline()
 {
     companion object
     {
@@ -22,6 +22,7 @@ class AutoPipelineRedA : LinearOpMode()
 
     override fun runOpMode()
     {
+        super.runOpMode()
         val vision = VisionPipeline(
             webcam = hardware("webcam1"),
             telemetry = this.telemetry
