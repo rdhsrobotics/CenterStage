@@ -4,6 +4,7 @@ import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
@@ -28,12 +29,18 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
     @MonotonicNonNull
     private GamepadCommands gp2Commands;
 
+    @MonotonicNonNull
+    private Servo paperPlaneLauncher;
+
     @Override
     public void runOpMode() {
         final Motor backLeft = new Motor(hardwareMap, "backLeft");
         final Motor backRight = new Motor(hardwareMap, "backRight");
         final Motor frontLeft = new Motor(hardwareMap, "frontLeft");
         final Motor frontRight = new Motor(hardwareMap, "frontRight");
+
+        this.paperPlaneLauncher = hardwareMap.get(Servo.class, "launcher");
+        this.paperPlaneLauncher.setPosition(1.0);
 
         MecanumDrive driveBase = new MecanumDrive(frontLeft, frontRight,
                 backLeft, backRight);
@@ -54,7 +61,7 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
 
             driveBase.driveRobotCentric(
                     driverOp.getLeftX() * multiplier,
-                    driverOp.getLeftY() * multiplier,
+                    -driverOp.getLeftY() * multiplier,
                     driverOp.getRightX() * multiplier,
                     true
             );
@@ -66,42 +73,16 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
     }
 
     private void buildCommands() {
-        final AtomicInteger atomicInteger = new AtomicInteger(0);
-
-        gp1Commands
-                .where(ButtonType.ButtonA)
-                .triggers(() -> {
-                    telemetry.addLine("WOAH UR SPAMMING ME " + atomicInteger.getAndAdd(1));
-                    telemetry.update();
-                    return Unit.INSTANCE;
-                })
-                .repeatedlyWhilePressedUntilReleasedWhere(() -> {
-                    telemetry.addLine("damn you let go?? ");
-                    telemetry.update();
-                    return Unit.INSTANCE;
-                });
-
         gp1Commands
                 .where(ButtonType.ButtonY)
                 .triggers(() -> {
-                    telemetry.addLine("Hey this is HELD? " + atomicInteger.getAndAdd(1));
-                    telemetry.update();
+                    this.paperPlaneLauncher.setPosition(0.4);
                     return Unit.INSTANCE;
                 })
-                .repeatedlyWhilePressedUntilReleasedWhere(() -> {
-                    telemetry.addLine("damn you let go?? ");
-                    telemetry.update();
+                .andIsHeldUntilReleasedWhere(() -> {
+                    this.paperPlaneLauncher.setPosition(1.0);
                     return Unit.INSTANCE;
                 });
-
-        gp1Commands
-                .where(ButtonType.ButtonX)
-                .triggers(() -> {
-                    telemetry.addLine("Hey you clicked it " + atomicInteger.getAndAdd(1));
-                    telemetry.update();
-                    return Unit.INSTANCE;
-                })
-                .whenPressedOnce();
 
         gp1Commands.startListening();
         gp2Commands.startListening();

@@ -109,6 +109,8 @@ class VisionPipeline(
                 }
 
                 val angleEstimation = matchingRecognition.estimateAngleToObject(AngleUnit.DEGREES)
+                telemetry.addData("Object estimation", angleEstimation)
+
                 val estimatedTapeSide = gameObjectToAngleEstimations.entries
                     .firstOrNull {
                         angleEstimation.roundToInt() in it.key

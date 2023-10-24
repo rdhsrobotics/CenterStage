@@ -62,8 +62,7 @@ class AutoPipelineRedA : AbstractAutoPipeline()
                 "move and lower elevator"
             ) {
                 single("move forward towards tape") {
-                    Thread.sleep(1000L)
-                    // TODO
+                    forwardInches(10)
                 }
 
                 single("lower elevator") {
@@ -91,7 +90,7 @@ class AutoPipelineRedA : AbstractAutoPipeline()
                 "turn towards side bar while elevating claw",
             ) {
                 single("turn towards side bar/backdrop") {
-                    Thread.sleep(1000L)
+                    turnDegrees(90.0)
                     // TODO
                 }
 
@@ -103,7 +102,7 @@ class AutoPipelineRedA : AbstractAutoPipeline()
 
             // ---- depends on position of robot
             single("go forward") {
-                Thread.sleep(1000L)
+                forwardInches(10)
                 // TODO
             }
             // ----

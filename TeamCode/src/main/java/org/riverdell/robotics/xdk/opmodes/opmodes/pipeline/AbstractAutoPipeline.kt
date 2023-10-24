@@ -1,6 +1,9 @@
 package org.riverdell.robotics.xdk.opmodes.opmodes.pipeline
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorSimple
+import kotlin.math.abs
 
 abstract class AbstractAutoPipeline : LinearOpMode() 
 {
@@ -12,11 +15,11 @@ abstract class AbstractAutoPipeline : LinearOpMode()
 
     override fun runOpMode()
     {
-        frontLeft.direction = DcMotor.Direction.REVERSE
-        frontRight.direction = DcMotor.Direction.FORWARD
+        frontLeft.direction = DcMotorSimple.Direction.REVERSE
+        frontRight.direction = DcMotorSimple.Direction.FORWARD
 
-        backLeft.direction = DcMotor.Direction.REVERSE
-        backRight.direction = DcMotor.Direction.FORWARD
+        backLeft.direction = DcMotorSimple.Direction.REVERSE
+        backRight.direction = DcMotorSimple.Direction.FORWARD
         stopAndResetMotors()
     }
 
