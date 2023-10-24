@@ -70,6 +70,8 @@ class VisionPipeline(
     private val visionExecutor = Executors.newSingleThreadScheduledExecutor()
 
     private val fallbackTapeSide = TapeSide.Middle
+
+    // TODO: might need to fix if the camera is mounted under the aeroplane (:nerd:) launcher.
     private val gameObjectToAngleEstimations = mutableMapOf(
         -90..-5 to TapeSide.Left,
         -5..5 to TapeSide.Middle,
