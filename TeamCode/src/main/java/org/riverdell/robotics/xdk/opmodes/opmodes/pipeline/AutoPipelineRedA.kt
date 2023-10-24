@@ -27,7 +27,10 @@ class AutoPipelineRedA : LinearOpMode()
             telemetry = this.telemetry
         )
         vision.start()
-
+        
+        // keep all log entries
+        telemetry.isAutoClear = false
+        
         Mono.logSink = {
             telemetry.addLine("[Mono] $it")
             telemetry.update()
@@ -44,6 +47,9 @@ class AutoPipelineRedA : LinearOpMode()
         telemetry.update()
 
         waitForStart()
+
+        telemetry.addLine("Started! Execution the Mono execution group now with ${tapeSide.name}.")
+        telemetry.update()
 
         val group = Mono.buildExecutionGroup {
             single("update team element metadata") {
