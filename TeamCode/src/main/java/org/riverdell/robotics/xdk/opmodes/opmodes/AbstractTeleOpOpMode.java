@@ -30,10 +30,10 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        final Motor backLeft = new Motor(hardwareMap, "frontLeft");
-        final Motor backRight = new Motor(hardwareMap, "frontRight");
-        final Motor frontLeft = new Motor(hardwareMap, "backLeft");
-        final Motor frontRight = new Motor(hardwareMap, "backRight");
+        final Motor backLeft = new Motor(hardwareMap, "backLeft");
+        final Motor backRight = new Motor(hardwareMap, "backRight");
+        final Motor frontLeft = new Motor(hardwareMap, "frontLeft");
+        final Motor frontRight = new Motor(hardwareMap, "frontRight");
 
         MecanumDrive driveBase = new MecanumDrive(frontLeft, frontRight,
                 backLeft, backRight);
