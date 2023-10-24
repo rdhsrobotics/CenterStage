@@ -40,7 +40,7 @@ class AutoPipelineRedA : LinearOpMode()
             .recognizeGameObjectTapeSide()
             .join()
 
-        telemetry.addLine("Completed detection. Detected tape side: ${tapeSide.name}. Waiting for ")
+        telemetry.addLine("Completed detection. Detected tape side: ${tapeSide.name}. Waiting for start...")
         telemetry.update()
 
         waitForStart()

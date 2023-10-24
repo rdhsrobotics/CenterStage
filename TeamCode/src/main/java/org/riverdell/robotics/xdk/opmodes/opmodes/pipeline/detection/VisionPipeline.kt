@@ -118,6 +118,7 @@ class VisionPipeline(
                 }
             }
 
+            telemetry.addLine("(!) No object was recognized within the range of view, using default $fallbackTapeSide.")
             return@supplyAsync fallbackTapeSide
         }, visionExecutor)
     }
