@@ -1,4 +1,4 @@
-package org.riverdell.robotics.xdk.opmodes.opmodes.pipeline
+package org.riverdell.robotics.xdk.opmodes.pipeline
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode

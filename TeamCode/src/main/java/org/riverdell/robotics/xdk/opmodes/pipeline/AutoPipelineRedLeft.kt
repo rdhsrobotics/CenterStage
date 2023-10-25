@@ -1,11 +1,11 @@
-package org.riverdell.robotics.xdk.opmodes.opmodes.pipeline
+package org.riverdell.robotics.xdk.opmodes.pipeline
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.parallel
 import io.liftgate.robotics.mono.pipeline.single
-import org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection.TapeSide
-import org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection.TeamColor
+import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
+import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
 
 /**
  * @author Subham

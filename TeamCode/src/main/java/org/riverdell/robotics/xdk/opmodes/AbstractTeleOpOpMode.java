@@ -1,4 +1,4 @@
-package org.riverdell.robotics.xdk.opmodes.opmodes;
+package org.riverdell.robotics.xdk.opmodes;
 
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -7,8 +7,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-
-import java.util.concurrent.atomic.AtomicInteger;
+import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher;
+import org.riverdell.robotics.xdk.opmodes.subsystem.Drivebase;
 
 import io.liftgate.robotics.mono.Mono;
 import io.liftgate.robotics.mono.gamepad.ButtonType;
@@ -30,20 +30,15 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
     private GamepadCommands gp2Commands;
 
     @MonotonicNonNull
-    private Servo paperPlaneLauncher;
+    private AirplaneLauncher paperPlaneLauncher;
+
+    @MonotonicNonNull
+    private Drivebase drivebase;
 
     @Override
     public void runOpMode() {
-        final Motor backLeft = new Motor(hardwareMap, "backLeft");
-        final Motor backRight = new Motor(hardwareMap, "backRight");
-        final Motor frontLeft = new Motor(hardwareMap, "frontLeft");
-        final Motor frontRight = new Motor(hardwareMap, "frontRight");
-
-        this.paperPlaneLauncher = hardwareMap.get(Servo.class, "launcher");
-        this.paperPlaneLauncher.setPosition(1.0);
-
-        MecanumDrive driveBase = new MecanumDrive(frontLeft, frontRight,
-                backLeft, backRight);
+        this.drivebase = new Drivebase(this);
+        this.paperPlaneLauncher = new AirplaneLauncher(this);
 
         gp1Commands = Mono.INSTANCE.commands(gamepad1);
         gp2Commands = Mono.INSTANCE.commands(gamepad2);
@@ -58,29 +53,25 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
 
         while (opModeIsActive()) {
             final double multiplier = 0.6 + (gamepad1.right_trigger * 0.4);
-
-            driveBase.driveRobotCentric(
-                    driverOp.getLeftX() * multiplier,
-                    -driverOp.getLeftY() * multiplier,
-                    driverOp.getRightX() * multiplier,
-                    true
-            );
+            drivebase.driveRobotCentric(driverOp, multiplier);
         }
 
         gp1Commands.stopListening();
         gp2Commands.stopListening();
-        driveBase.stop();
+
+        paperPlaneLauncher.dispose();
+        drivebase.dispose();
     }
 
     private void buildCommands() {
         gp1Commands
                 .where(ButtonType.ButtonY)
                 .triggers(() -> {
-                    this.paperPlaneLauncher.setPosition(0.4);
+                    this.paperPlaneLauncher.launch();
                     return Unit.INSTANCE;
                 })
                 .andIsHeldUntilReleasedWhere(() -> {
-                    this.paperPlaneLauncher.setPosition(1.0);
+                    this.paperPlaneLauncher.reset();
                     return Unit.INSTANCE;
                 });
 

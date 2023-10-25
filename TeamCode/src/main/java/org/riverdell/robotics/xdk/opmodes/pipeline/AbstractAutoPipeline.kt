@@ -1,4 +1,4 @@
-package org.riverdell.robotics.xdk.opmodes.opmodes.pipeline
+package org.riverdell.robotics.xdk.opmodes.pipeline
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -6,11 +6,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
-import org.firstinspires.ftc.robotcore.external.Telemetry.Item
 import org.firstinspires.ftc.robotcore.external.Telemetry.Line
-import org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection.TapeSide
-import org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection.VisionPipeline
-import kotlin.concurrent.thread
+import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
+import org.riverdell.robotics.xdk.opmodes.pipeline.detection.VisionPipeline
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 import kotlin.math.sign
