@@ -68,16 +68,8 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         telemetry.update()
 
         val executionGroup = buildExecutionGroup(tapeSide)
-        val thread = thread {
-            executionGroup.executeBlocking()
-        }
+        executionGroup.executeBlocking()
 
-        while (opModeIsActive())
-        {
-            Thread.sleep(50L)
-        }
-
-        thread.interrupt()
         stopAndResetMotors()
         terminateAllMotors()
 
