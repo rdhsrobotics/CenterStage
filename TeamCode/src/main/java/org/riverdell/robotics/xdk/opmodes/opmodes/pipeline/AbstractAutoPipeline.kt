@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry.Line
 import org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection.VisionPipeline
 import kotlin.concurrent.thread
+import kotlin.math.abs
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
@@ -119,6 +120,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             // TODO: possible weird behavior when target is 0 ?
             averagePosition = averageMotorPositions * target.sign
 
+            val percentError = abs((averagePosition - target) / target) * 100
             error = averagePosition - target
             velocity = averagePosition - previous
             integral += error
@@ -129,7 +131,8 @@ abstract class AbstractAutoPipeline : LinearOpMode()
                 "Previous: ${"%.3f".format(previous.toFloat())} | " +
                     "Error: ${"%.3f".format(error.toFloat())} | " +
                     "Velocity: ${"%.3f".format(velocity.toFloat())} | " +
-                    "Integral: ${"%.3f".format(integral.toFloat())} | "
+                    "Integral: ${"%.3f".format(integral.toFloat())} |" +
+                    "Percent Error: ${"%.1f".format(percentError.toFloat())}"
             )
 
             motorControl(
