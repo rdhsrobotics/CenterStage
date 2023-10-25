@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
+import org.firstinspires.ftc.robotcore.external.Telemetry.Item
+import org.firstinspires.ftc.robotcore.external.Telemetry.Line
 import org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection.VisionPipeline
 import kotlin.concurrent.thread
@@ -89,6 +91,15 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         var previous: Double
         var integral = 0.0
 
+        var previousTelemetryLine: Line? = null
+        fun removePreviousStatusLine()
+        {
+            if (previousTelemetryLine != null)
+            {
+                telemetry.removeLine(previousTelemetryLine)
+            }
+        }
+
         stopAndResetMotors()
         runMotors()
 
@@ -112,11 +123,21 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             velocity = averagePosition - previous
             integral += error
 
+            removePreviousStatusLine()
+            previousTelemetryLine = telemetry.addLine(
+                "Current: ${"%.3f".format(averagePosition.toFloat())} | " +
+                "Previous: ${"%.3f".format(previous.toFloat())} | " +
+                    "Error: ${"%.3f".format(error.toFloat())} | " +
+                    "Velocity: ${"%.3f".format(velocity.toFloat())} | " +
+                    "Integral: ${"%.3f".format(integral.toFloat())} | "
+            )
+
             motorControl(
-                -0.002 * error - 0.00001 * integral + 0.05 * velocity
+                (-0.002 * error) - (0.00001 * integral) + (0.05 * velocity)
             )
         }
 
+        removePreviousStatusLine()
         lockUntilMotorsFree()
     }
 
