@@ -1,8 +1,16 @@
 package org.riverdell.robotics.xdk.opmodes.opmodes.pipeline
 
+import com.acmerobotics.dashboard.config.Config
+
+@Config
 object AutoPipelineUtilities
 {
-    const val UNITS_PER_INCH_STRAFE = 153.5
-    const val UNITS_PER_INCH_FORWARD = 89.127
-    const val UNITS_PER_DEGREE_TURN = 21.111
+    @JvmStatic
+    var UNITS_PER_INCH_STRAFE = 153.5
+
+    @JvmStatic
+    var UNITS_PER_INCH_FORWARD = 89.127
+
+    @JvmStatic
+    var UNITS_PER_DEGREE_TURN = 21.111
 }

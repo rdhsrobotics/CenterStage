@@ -3,7 +3,14 @@ package org.riverdell.robotics.xdk.opmodes.opmodes.pipeline
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import kotlin.math.abs
+import com.qualcomm.robotcore.hardware.HardwareDevice
+import io.liftgate.robotics.mono.Mono
+import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
+import org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection.TapeSide
+import org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection.VisionPipeline
+import kotlin.concurrent.thread
+import kotlin.math.absoluteValue
+import kotlin.math.sign
 
 abstract class AbstractAutoPipeline : LinearOpMode() 
 {
@@ -13,38 +20,118 @@ abstract class AbstractAutoPipeline : LinearOpMode()
     private val backRight by lazy { hardware<DcMotor>("backRight") }
     private val backLeft by lazy { hardware<DcMotor>("backLeft") }
 
+    internal val visionPipeline by lazy {
+        VisionPipeline(
+            webcam = hardware("webcam1"),
+            telemetry = this.telemetry
+        )
+    }
+
+    abstract fun buildExecutionGroup(tapeSide: TapeSide): RootExecutionGroup
+
     override fun runOpMode()
     {
+        visionPipeline.start()
+
+        // keep all log entries
+        telemetry.isAutoClear = false
+
+        Mono.logSink = {
+            telemetry.addLine("[Mono] $it")
+            telemetry.update()
+        }
+
         frontLeft.direction = DcMotorSimple.Direction.REVERSE
         frontRight.direction = DcMotorSimple.Direction.FORWARD
 
         backLeft.direction = DcMotorSimple.Direction.REVERSE
         backRight.direction = DcMotorSimple.Direction.FORWARD
+
         stopAndResetMotors()
+
+        telemetry.addLine("Waiting for start. Started detection...")
+        telemetry.update()
+
+        val tapeSide = visionPipeline
+            .recognizeGameObjectTapeSide()
+            .join()
+
+        telemetry.addLine("Completed detection. Detected tape side: ${tapeSide.name}. Waiting for start...")
+        telemetry.update()
+
+        waitForStart()
+
+        telemetry.addLine("Started! Executing the Mono execution group now with ${tapeSide.name}.")
+        telemetry.update()
+
+        val executionGroup = buildExecutionGroup(tapeSide)
+        val thread = thread {
+            executionGroup.executeBlocking()
+        }
+
+        while (opModeIsActive())
+        {
+            Thread.sleep(50L)
+        }
+
+        thread.interrupt()
+        stopAndResetMotors()
+        terminateAllMotors()
+
+        visionPipeline.stop()
     }
 
-    fun templatedMotorControl(target: Int, consumer: (Double) -> Unit)
+    fun templatedMotorControl(target: Int, motorControl: (Double) -> Unit)
     {
-        var averagePosition = 0
-        var error = target
-        var velocity = 100
-        var previous = 0
-        var integral = 0
+        var averagePosition = 0.0
+        var error: Double = target.toDouble()
+        var velocity = 100.0
+        var previous: Double
+        var integral = 0.0
 
         stopAndResetMotors()
         runMotors()
 
-        while (((abs(error) > 15) || (velocity > 15)) && opModeIsActive())
+        while (
+            (error.absoluteValue > 15 || velocity > 15) &&
+            opModeIsActive()
+        )
         {
+            val frontLeftPos = frontLeft.currentPosition.absoluteValue
+            val frontRightPos = frontRight.currentPosition.absoluteValue
+            val backRightPos = backRight.currentPosition.absoluteValue
+            val backLeftPos = backLeft.currentPosition.absoluteValue
+
+            val averageMotorPositions = (frontRightPos + frontLeftPos + backRightPos + backLeftPos) / 4.0
             previous = averagePosition
-            averagePosition = ((abs(frontLeft.currentPosition) + abs(frontRight.currentPosition) + abs(backLeft.currentPosition) + abs(backRight.currentPosition)) / 4) * (target / abs(target))
+
+            // TODO: possible weird behavior when target is 0 ?
+            averagePosition = averageMotorPositions * target.sign
+
             error = averagePosition - target
             velocity = averagePosition - previous
             integral += error
 
-            consumer(
+            motorControl(
                 -0.002 * error - 0.00001 * integral + 0.05 * velocity
             )
+        }
+
+        lockUntilMotorsFree()
+    }
+
+    fun lockUntilMotorsFree(maximumTimeMillis: Long = 150L)
+    {
+        val start = System.currentTimeMillis()
+        while (
+            System.currentTimeMillis() < start + maximumTimeMillis &&
+            (frontLeft.isBusy ||
+                frontRight.isBusy ||
+                backLeft.isBusy ||
+                backRight.isBusy)
+        )
+        {
+            sleep(50L)
         }
     }
 
@@ -65,6 +152,8 @@ abstract class AbstractAutoPipeline : LinearOpMode()
     {
         turn((degrees * AutoPipelineUtilities.UNITS_PER_DEGREE_TURN).toInt())  
     }
+
+    fun terminateAllMotors() = configureMotorsToDo(HardwareDevice::close)
 
     fun stopAndResetMotors() = configureMotorsToDo {
         it.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
