@@ -124,6 +124,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
                     "Integral: ${"%.3f".format(integral.toFloat())} |" +
                     "Percent Error: ${"%.1f".format(percentError.toFloat())}"
             )
+            telemetry.update()
 
             motorControl(
                 (-0.002 * error) - (0.00001 * integral) + (0.05 * velocity)

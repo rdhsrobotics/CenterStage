@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher;
 import org.riverdell.robotics.xdk.opmodes.subsystem.Drivebase;
+import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator;
 
 import io.liftgate.robotics.mono.Mono;
 import io.liftgate.robotics.mono.gamepad.ButtonType;
@@ -32,10 +33,14 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
     @MonotonicNonNull
     private Drivebase drivebase;
 
+    @MonotonicNonNull
+    private Elevator elevator;
+
     @Override
     public void runOpMode() {
         this.drivebase = new Drivebase(this);
         this.paperPlaneLauncher = new AirplaneLauncher(this);
+        this.elevator = new Elevator(this);
 
         gp1Commands = Mono.INSTANCE.commands(gamepad1);
         gp2Commands = Mono.INSTANCE.commands(gamepad2);
@@ -69,6 +74,19 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
                 })
                 .andIsHeldUntilReleasedWhere(() -> {
                     this.paperPlaneLauncher.reset();
+                    return Unit.INSTANCE;
+                });
+
+        gp1Commands
+                .where(ButtonType.ButtonX)
+                .triggers(() -> {
+                    telemetry.addData("Elevqtor", elevator.getBackingMotor().getCurrentPosition());
+                    telemetry.update();
+                    this.elevator.elevateTo(5);
+                    return Unit.INSTANCE;
+                })
+                .andIsHeldUntilReleasedWhere(() -> {
+                    this.elevator.reset();
                     return Unit.INSTANCE;
                 });
 
