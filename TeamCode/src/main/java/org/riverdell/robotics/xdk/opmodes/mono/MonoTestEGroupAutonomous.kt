@@ -1,4 +1,4 @@
-package org.riverdell.robotics.xdk.opmodes.pipeline
+package org.riverdell.robotics.xdk.opmodes.mono
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -6,8 +6,8 @@ import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.parallel
 import io.liftgate.robotics.mono.pipeline.single
 
-@Autonomous(name = "Mono | Test Auto")
-class MonoTestAutonomous : LinearOpMode()
+@Autonomous(name = "Mono | Test EGroup Auto Terminate")
+class MonoTestEGroupAutonomous : LinearOpMode()
 {
     override fun runOpMode()
     {
