@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import org.riverdell.robotics.xdk.opmodes.pipeline.hardware
+import kotlin.math.min
 
 class Drivebase(private val opMode: LinearOpMode) : Subsystem
 {
@@ -39,7 +40,7 @@ class Drivebase(private val opMode: LinearOpMode) : Subsystem
         backingDriveBase.driveRobotCentric(
             driverOp.leftX * scaleFactor,
             -driverOp.leftY * scaleFactor,
-            driverOp.rightX * scaleFactor,
+            driverOp.rightX * min(0.7, scaleFactor),
             true
         )
     }

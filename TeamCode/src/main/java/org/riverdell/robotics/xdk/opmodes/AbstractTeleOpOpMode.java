@@ -14,7 +14,8 @@ import io.liftgate.robotics.mono.gamepad.GamepadCommands;
 import kotlin.Unit;
 
 /**
- * Configures Mono gamepad commands and FTCLib drive systems for TeleOp.
+ * Configures Mono gamepad commands and FTCLib
+ * drive systems for TeleOp.
  *
  * @author Subham
  * @since 9/5/2023
@@ -31,15 +32,12 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
     private AirplaneLauncher paperPlaneLauncher;
 
     @MonotonicNonNull
-    private Drivebase drivebase;
-
-    @MonotonicNonNull
     private Elevator elevator;
 
     @Override
     public void runOpMode() {
-        this.drivebase = new Drivebase(this);
-        this.drivebase.initialize();
+        Drivebase drivebase = new Drivebase(this);
+        drivebase.initialize();
 
         this.paperPlaneLauncher = new AirplaneLauncher(this);
         this.paperPlaneLauncher.initialize();
@@ -67,6 +65,8 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
         gp2Commands.stopListening();
 
         paperPlaneLauncher.dispose();
+        elevator.dispose();
+
         drivebase.dispose();
     }
 
