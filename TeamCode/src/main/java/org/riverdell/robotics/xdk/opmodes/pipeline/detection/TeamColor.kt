@@ -1,4 +1,4 @@
-package org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection
+package org.riverdell.robotics.xdk.opmodes.pipeline.detection
 
 /**
  * @author Subham

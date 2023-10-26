@@ -76,7 +76,7 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
         gp1Commands
                 .where(ButtonType.ButtonY)
                 .triggers(() -> {
-                    this.paperPlaneLauncher.setPosition(0.45);
+                    this.paperPlaneLauncher.setPosition(0.4);
                     return Unit.INSTANCE;
                 })
                 .andIsHeldUntilReleasedWhere(() -> {

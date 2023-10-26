@@ -1,4 +1,4 @@
-package org.riverdell.robotics.xdk.opmodes.opmodes;
+package org.riverdell.robotics.xdk.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 

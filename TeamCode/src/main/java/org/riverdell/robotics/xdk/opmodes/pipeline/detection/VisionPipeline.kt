@@ -1,4 +1,4 @@
-package org.riverdell.robotics.xdk.opmodes.opmodes.pipeline.detection
+package org.riverdell.robotics.xdk.opmodes.pipeline.detection
 
 import android.annotation.SuppressLint
 import android.util.Size
@@ -68,7 +68,6 @@ class VisionPipeline(
     }
 
     private val visionExecutor = Executors.newSingleThreadScheduledExecutor()
-
     private val fallbackTapeSide = TapeSide.Middle
 
     // TODO: might need to fix if the camera is mounted under the aeroplane (:nerd:) launcher.
