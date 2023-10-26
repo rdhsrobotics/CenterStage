@@ -39,15 +39,20 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
     @Override
     public void runOpMode() {
         this.drivebase = new Drivebase(this);
+        this.drivebase.initialize();
+
         this.paperPlaneLauncher = new AirplaneLauncher(this);
+        this.paperPlaneLauncher.initialize();
+
         this.elevator = new Elevator(this);
+        this.elevator.initialize();
 
         gp1Commands = Mono.INSTANCE.commands(gamepad1);
         gp2Commands = Mono.INSTANCE.commands(gamepad2);
 
         final GamepadEx driverOp = new GamepadEx(gamepad1);
-
         buildCommands();
+
         telemetry.addLine("Configured commands. Waiting for start...");
         telemetry.update();
 
@@ -80,8 +85,6 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
         gp1Commands
                 .where(ButtonType.ButtonX)
                 .triggers(() -> {
-                    telemetry.addData("Elevqtor", elevator.getBackingMotor().getCurrentPosition());
-                    telemetry.update();
                     this.elevator.elevateTo(5);
                     return Unit.INSTANCE;
                 })
