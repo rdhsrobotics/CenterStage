@@ -22,17 +22,11 @@ import kotlin.Unit;
  */
 public abstract class AbstractTeleOpOpMode extends LinearOpMode {
 
-    @MonotonicNonNull
-    private GamepadCommands gp1Commands;
+    @MonotonicNonNull private GamepadCommands gp1Commands;
+    @MonotonicNonNull private GamepadCommands gp2Commands;
 
-    @MonotonicNonNull
-    private GamepadCommands gp2Commands;
-
-    @MonotonicNonNull
-    private AirplaneLauncher paperPlaneLauncher;
-
-    @MonotonicNonNull
-    private Elevator elevator;
+    @MonotonicNonNull private AirplaneLauncher paperPlaneLauncher;
+    @MonotonicNonNull private Elevator elevator;
 
     @Override
     public void runOpMode() {
