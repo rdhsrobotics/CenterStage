@@ -7,6 +7,7 @@ import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher;
 import org.riverdell.robotics.xdk.opmodes.subsystem.Drivebase;
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator;
+import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw;
 
 import io.liftgate.robotics.mono.Mono;
 import io.liftgate.robotics.mono.gamepad.ButtonType;
@@ -27,6 +28,7 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
 
     @MonotonicNonNull private AirplaneLauncher paperPlaneLauncher;
     @MonotonicNonNull private Elevator elevator;
+    @MonotonicNonNull private ExtendableClaw extendableClaw;
 
     @Override
     public void runOpMode() {
@@ -38,6 +40,9 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
 
         this.elevator = new Elevator(this);
         this.elevator.initialize();
+
+        this.extendableClaw = new ExtendableClaw(this);
+        this.extendableClaw.initialize();
 
         gp1Commands = Mono.INSTANCE.commands(gamepad1);
         gp2Commands = Mono.INSTANCE.commands(gamepad2);
@@ -53,6 +58,9 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
         while (opModeIsActive()) {
             final double multiplier = 0.6 + (gamepad1.right_trigger * 0.4);
             drivebase.driveRobotCentric(driverOp, multiplier);
+            extendableClaw.expandClaw(
+                    gamepad2.right_trigger
+            );
         }
 
         gp1Commands.stopListening();
