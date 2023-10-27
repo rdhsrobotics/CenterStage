@@ -38,6 +38,11 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
         backingClawOpener.turnToAngle(0.0)
     }
 
+    fun turnExtenderToAngle(angle: Double)
+    {
+        backingExtender.turnToAngle(angle)
+    }
+
     /**
      * Expand claw by the trigger amount. Accepts an expansion
      * range of [0.0, 1.0].

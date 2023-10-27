@@ -9,6 +9,8 @@ import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import org.firstinspires.ftc.robotcore.external.Telemetry.Line
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.VisionPipeline
+import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator
+import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 import kotlin.math.sign
@@ -20,6 +22,9 @@ abstract class AbstractAutoPipeline : LinearOpMode()
 
     private val backRight by lazy { hardware<DcMotor>("backRight") }
     private val backLeft by lazy { hardware<DcMotor>("backLeft") }
+
+    private val elevatorSubsystem by lazy { Elevator(this) }
+    private val clawSubsystem by lazy { ExtendableClaw(this) }
 
     internal val visionPipeline by lazy {
         VisionPipeline(
@@ -33,13 +38,15 @@ abstract class AbstractAutoPipeline : LinearOpMode()
     override fun runOpMode()
     {
         visionPipeline.start()
+        clawSubsystem.initialize()
+        elevatorSubsystem.initialize()
 
         // keep all log entries
-        telemetry.isAutoClear = false
+//        telemetry.isAutoClear = false
 
         Mono.logSink = {
-            telemetry.addLine("[Mono] $it")
-            telemetry.update()
+            /*telemetry.addLine("[Mono] $it")
+            telemetry.update()*/
         }
 
         frontLeft.direction = DcMotorSimple.Direction.REVERSE
@@ -72,6 +79,9 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         terminateAllMotors()
 
         visionPipeline.stop()
+
+        clawSubsystem.dispose()
+        elevatorSubsystem.dispose()
     }
 
     fun templatedMotorControl(target: Int, motorControl: (Double) -> Unit)

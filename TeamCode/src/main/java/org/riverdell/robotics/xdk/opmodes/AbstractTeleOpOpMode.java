@@ -23,12 +23,17 @@ import kotlin.Unit;
  */
 public abstract class AbstractTeleOpOpMode extends LinearOpMode {
 
-    @MonotonicNonNull private GamepadCommands gp1Commands;
-    @MonotonicNonNull private GamepadCommands gp2Commands;
+    @MonotonicNonNull
+    private GamepadCommands gp1Commands;
+    @MonotonicNonNull
+    private GamepadCommands gp2Commands;
 
-    @MonotonicNonNull private AirplaneLauncher paperPlaneLauncher;
-    @MonotonicNonNull private Elevator elevator;
-    @MonotonicNonNull private ExtendableClaw extendableClaw;
+    @MonotonicNonNull
+    private AirplaneLauncher paperPlaneLauncher;
+    @MonotonicNonNull
+    private Elevator elevator;
+    @MonotonicNonNull
+    private ExtendableClaw extendableClaw;
 
     @Override
     public void runOpMode() {
@@ -54,6 +59,9 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
+
+        telemetry.speak("Hello. Hall Stater grades are out.");
+        telemetry.update();
 
         while (opModeIsActive()) {
             final double multiplier = 0.6 + (gamepad1.right_trigger * 0.4);
@@ -84,10 +92,22 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
                     return Unit.INSTANCE;
                 });
 
-        gp1Commands
+        gp2Commands
+                .where(ButtonType.ButtonY)
+                .triggers(() -> {
+                    this.extendableClaw.turnExtenderToAngle(30.0);
+                    return Unit.INSTANCE;
+                })
+                .andIsHeldUntilReleasedWhere(() -> {
+                    // this is the extender default
+                    this.extendableClaw.turnExtenderToAngle(20.0);
+                    return Unit.INSTANCE;
+                });
+
+        gp2Commands
                 .where(ButtonType.ButtonX)
                 .triggers(() -> {
-                    this.elevator.elevateTo(5);
+                    this.elevator.elevateTo(100);
                     return Unit.INSTANCE;
                 })
                 .andIsHeldUntilReleasedWhere(() -> {
