@@ -14,6 +14,11 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 @Autonomous(name = "Red | Right", preselectTeleOp = "prod")
 class AutoPipelineRedRight : AbstractAutoPipeline()
 {
+    init
+    {
+        monoShouldDoLogging = false
+    }
+
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
             single("forward 12 inches") {

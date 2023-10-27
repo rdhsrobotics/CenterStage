@@ -26,6 +26,8 @@ abstract class AbstractAutoPipeline : LinearOpMode()
     private val elevatorSubsystem by lazy { Elevator(this) }
     private val clawSubsystem by lazy { ExtendableClaw(this) }
 
+    internal var monoShouldDoLogging = true
+
     internal val visionPipeline by lazy {
         VisionPipeline(
             webcam = hardware("webcam1"),
@@ -42,11 +44,14 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         elevatorSubsystem.initialize()
 
         // keep all log entries
-//        telemetry.isAutoClear = false
+        if (monoShouldDoLogging)
+        {
+            telemetry.isAutoClear = false
 
-        Mono.logSink = {
-            /*telemetry.addLine("[Mono] $it")
-            telemetry.update()*/
+            Mono.logSink = {
+                telemetry.addLine("[Mono] $it")
+                telemetry.update()
+            }
         }
 
         frontLeft.direction = DcMotorSimple.Direction.REVERSE
@@ -82,6 +87,8 @@ abstract class AbstractAutoPipeline : LinearOpMode()
 
         clawSubsystem.dispose()
         elevatorSubsystem.dispose()
+
+        Mono.logSink = { }
     }
 
     fun templatedMotorControl(target: Int, motorControl: (Double) -> Unit)
