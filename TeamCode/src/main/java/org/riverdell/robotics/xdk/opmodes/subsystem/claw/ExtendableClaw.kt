@@ -5,9 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ClawExpansionConstants.MAX_DEGREE_CLAW
-import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ClawExpansionConstants.MAX_DEGREE_EXTENDER
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ClawExpansionConstants.MIN_DEGREE_CLAW
-import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ClawExpansionConstants.MIN_DEGREE_EXTENDER
 
 class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
 {
@@ -15,7 +13,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
         SimpleServo(
             opMode.hardwareMap,
             "extender",
-            MIN_DEGREE_EXTENDER, MAX_DEGREE_EXTENDER
+            20.0, 45.0
         )
     }
 
@@ -34,13 +32,13 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
 
     override fun initialize()
     {
-        backingExtender.turnToAngle(20.0)
+        backingExtender.turnToAngle(0.0)
         backingClawOpener.turnToAngle(0.0)
     }
 
-    fun turnExtenderToAngle(angle: Double)
+    fun turnExtenderToAngle(expandsTo: Double)
     {
-        backingExtender.turnToAngle(angle)
+        backingExtender.turnToAngle(30 * expandsTo)
     }
 
     /**

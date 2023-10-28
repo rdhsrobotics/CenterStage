@@ -2,11 +2,13 @@ package org.riverdell.robotics.xdk.opmodes;
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher;
 import org.riverdell.robotics.xdk.opmodes.subsystem.Drivebase;
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator;
+import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ClawExpansionConstants;
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw;
 
 import io.liftgate.robotics.mono.Mono;
@@ -60,7 +62,7 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
 
         waitForStart();
 
-        telemetry.speak("Hello. Hall Stater grades are out.");
+        telemetry.speak("David go die.");
         telemetry.update();
 
         while (opModeIsActive()) {
@@ -69,6 +71,8 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
             extendableClaw.expandClaw(
                     gamepad2.right_trigger
             );
+            extendableClaw.turnExtenderToAngle(gamepad2.left_trigger);
+            elevator.configureElevator(gamepad2.right_stick_y);
         }
 
         gp1Commands.stopListening();
@@ -101,17 +105,6 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
                 .andIsHeldUntilReleasedWhere(() -> {
                     // this is the extender default
                     this.extendableClaw.turnExtenderToAngle(20.0);
-                    return Unit.INSTANCE;
-                });
-
-        gp2Commands
-                .where(ButtonType.ButtonX)
-                .triggers(() -> {
-                    this.elevator.elevateTo(100);
-                    return Unit.INSTANCE;
-                })
-                .andIsHeldUntilReleasedWhere(() -> {
-                    this.elevator.reset();
                     return Unit.INSTANCE;
                 });
 

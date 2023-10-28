@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import org.riverdell.robotics.xdk.opmodes.pipeline.hardware
+import kotlin.math.max
+import kotlin.math.min
 
 class Elevator(private val opMode: LinearOpMode) : Subsystem
 {
@@ -28,16 +30,16 @@ class Elevator(private val opMode: LinearOpMode) : Subsystem
         backingMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }
 
-    fun elevateTo(position: Int)
+    fun configureElevator(stick: Double)
     {
-        backingMotor.targetPosition = position
-        backingMotor.power = 0.7
-        backingMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
-    }
+        val target = min(
+            max((backingMotor.currentPosition + stick * 175).toInt(), -1130),
+            0
+        )
 
-    fun reset()
-    {
-        backingMotor.power = 0.0
+        backingMotor.power = stick
+        backingMotor.targetPosition = target
+        backingMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
 
     override fun isCompleted() = !backingMotor.isBusy
