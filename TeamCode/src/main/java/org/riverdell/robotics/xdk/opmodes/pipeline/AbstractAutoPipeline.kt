@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareDevice
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import org.firstinspires.ftc.robotcore.external.Telemetry.Line
+import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
+import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.ElevatorContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.VisionPipeline
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator
@@ -78,6 +80,14 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         telemetry.update()
 
         val executionGroup = buildExecutionGroup(tapeSide)
+        executionGroup.providesContext { _ ->
+            DrivebaseContext(
+                listOf(frontRight, frontLeft, backRight, backLeft)
+            )
+        }
+        executionGroup.providesContext { _ ->
+            ElevatorContext(elevatorSubsystem.backingMotor)
+        }
         executionGroup.executeBlocking()
 
         stopAndResetMotors()

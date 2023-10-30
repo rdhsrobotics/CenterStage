@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.parallel
 import io.liftgate.robotics.mono.pipeline.single
+import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
+import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.ElevatorContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
 
@@ -28,16 +30,16 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
         parallel(
             "move and lower elevator"
         ) {
-            single("move forward towards tape") {
+            single<DrivebaseContext>("move forward towards tape") {
                 forwardInches(10)
             }
 
-            single("lower elevator") {
+            single<ElevatorContext>("lower elevator") {
                 Thread.sleep(1000L)
                 // TODO
             }
         }
-        single("turn towards tape") {
+        single<DrivebaseContext>("turn towards tape") {
             Thread.sleep(1000L)
             // TODO
         }
@@ -45,7 +47,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
             Thread.sleep(1000L)
             // TODO
         }
-        single("elevate elevator") {
+        single<ElevatorContext>("elevate elevator") {
             Thread.sleep(1000L)
             // TODO
         }
@@ -56,7 +58,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
         parallel(
             "turn towards side bar while elevating claw",
         ) {
-            single("turn towards side bar/backdrop") {
+            single<DrivebaseContext>("turn towards side bar/backdrop") {
                 turnDegrees(90.0)
                 // TODO
             }
@@ -68,7 +70,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
         }
 
         // ---- depends on position of robot
-        single("go forward") {
+        single<DrivebaseContext>("go forward") {
             forwardInches(10)
             // TODO
         }
@@ -77,14 +79,14 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
         parallel(
             "strafe into position while elevating elevator"
         ) {
-            single("strafe into position") {
+            single<DrivebaseContext>("strafe into position") {
                 // wait for the initial detection
                 var detection = visionPipeline
                     .recognizeBackBoardAprilTag(teamColor, tapeSide)
                     .join()
                 // if there is no detection, skip deposit
                     ?: return@single kotlin.run {
-                        put("deposit-exempt", true)
+                        it["deposit-exempt"] = true
                     }
 
                 while (true)
@@ -99,7 +101,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
                     // we lost the april tag :(
                     if (locked == null)
                     {
-                        put("deposit-exempt", true)
+                        it["deposit-exempt"] = true
                         return@single
                     }
 
@@ -107,7 +109,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
                 }
             }
 
-            single("elevate claw") {
+            single<ElevatorContext>("elevate claw") {
                 Thread.sleep(1000L)
                 // TODO
             }
@@ -126,8 +128,8 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
         parallel(
             "back up and reset claw"
         ) {
-            single("back up") {
-                if (containsKey("deposit-exempt"))
+            single<DrivebaseContext>("back up") {
+                if (it.containsKey("deposit-exempt"))
                     return@single
 
                 Thread.sleep(1000L)
@@ -143,7 +145,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
             }
         }
 
-        single("move into parking zone") {
+        single<DrivebaseContext>("move into parking zone") {
             Thread.sleep(1000L)
             // TODO
         }

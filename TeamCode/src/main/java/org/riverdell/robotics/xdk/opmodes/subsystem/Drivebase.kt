@@ -32,6 +32,14 @@ class Drivebase(private val opMode: LinearOpMode) : Subsystem
 
     override fun composeStageContext() = object : StageContext
     {
+        override fun dispose()
+        {
+            motors.onEach {
+                it.power = 0.0
+                it.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+            }
+        }
+
         override fun isCompleted() = motors.none { it.isBusy }
     }
 
