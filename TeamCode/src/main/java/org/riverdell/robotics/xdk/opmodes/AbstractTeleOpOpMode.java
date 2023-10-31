@@ -73,6 +73,14 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
             );
             extendableClaw.turnExtenderToAngle(gamepad2.left_trigger);
             elevator.configureElevator(gamepad2.right_stick_y);
+
+            telemetry.addData("Elevator power", elevator.getBackingMotor().getPower());
+            telemetry.addData("Elevator Current position", elevator.getBackingMotor().getCurrentPosition());
+            telemetry.addData("Elevator TARGET position", elevator.getBackingMotor().getTargetPosition());
+
+            telemetry.addData("Claw Right Position", extendableClaw.getBackingClawOpenerRight().getPosition());
+            telemetry.addData("Claw Left Position", extendableClaw.getBackingClawOpenerLeft().getPosition());
+            telemetry.update();
         }
 
         gp1Commands.stopListening();
