@@ -71,15 +71,7 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
             extendableClaw.expandClaw(
                     gamepad2.right_trigger
             );
-            extendableClaw.turnExtenderToAngle(gamepad2.left_trigger);
             elevator.configureElevator(gamepad2.right_stick_y);
-
-            telemetry.addData("Elevator power", elevator.getBackingMotor().getPower());
-            telemetry.addData("Elevator Current position", elevator.getBackingMotor().getCurrentPosition());
-            telemetry.addData("Elevator TARGET position", elevator.getBackingMotor().getTargetPosition());
-
-            telemetry.addData("Claw Right Position", extendableClaw.getBackingClawOpenerRight().getPosition());
-            telemetry.addData("Claw Left Position", extendableClaw.getBackingClawOpenerLeft().getPosition());
             telemetry.update();
         }
 
@@ -107,12 +99,19 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
         gp2Commands
                 .where(ButtonType.ButtonY)
                 .triggers(() -> {
-                    this.extendableClaw.turnExtenderToAngle(30.0);
+                    this.extendableClaw.toggleExtender();
+                    return Unit.INSTANCE;
+                })
+                .whenPressedOnce();
+
+        gp2Commands
+                .where(ButtonType.DPadDown)
+                .triggers(() -> {
+                    this.extendableClaw.toggleExtender(ExtendableClaw.ClawState.Intake);
                     return Unit.INSTANCE;
                 })
                 .andIsHeldUntilReleasedWhere(() -> {
-                    // this is the extender default
-                    this.extendableClaw.turnExtenderToAngle(20.0);
+                    this.extendableClaw.toggleExtender(ExtendableClaw.ClawState.Deposit);
                     return Unit.INSTANCE;
                 });
 
