@@ -154,7 +154,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             telemetry.update()
 
             motorControl(
-                (-0.002 * error) - (0.00001 * integral) + (0.05 * velocity)
+                (AutoPipelineUtilities.PID_KP * error) - (AutoPipelineUtilities.PID_KI * integral) + (AutoPipelineUtilities.PID_KD * velocity)
             )
         }
 
