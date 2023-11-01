@@ -51,7 +51,8 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
 
             clawState = state
             backingExtender.turnToAngle(
-                if (clawState == ClawState.Intake) 0.0 else 21.75
+                if (clawState == ClawState.Intake)
+                    ClawExpansionConstants.MIN_EXTENDER_POSITION else ClawExpansionConstants.MAX_EXTENDER_POSITION
             )
             return
         }
@@ -60,13 +61,13 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
         {
             ClawState.Deposit ->
             {
-                backingExtender.turnToAngle(21.75)
+                backingExtender.turnToAngle(ClawExpansionConstants.MAX_EXTENDER_POSITION)
                 ClawState.Intake
             }
 
             ClawState.Intake ->
             {
-                backingExtender.turnToAngle(0.0)
+                backingExtender.turnToAngle(ClawExpansionConstants.MIN_EXTENDER_POSITION)
                 ClawState.Deposit
             }
         }
