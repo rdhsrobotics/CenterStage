@@ -1,12 +1,18 @@
 package org.riverdell.robotics.xdk.opmodes.pipeline
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareDevice
+import com.qualcomm.robotcore.hardware.IMU
+import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import org.firstinspires.ftc.robotcore.external.Telemetry.Line
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference
 import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.ElevatorContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
@@ -28,6 +34,17 @@ abstract class AbstractAutoPipeline : LinearOpMode()
     private val elevatorSubsystem by lazy { Elevator(this) }
     private val clawSubsystem by lazy { ExtendableClaw(this) }
 
+    private val imu by lazy {
+        val parameters = IMU.Parameters(
+            RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+            )
+        )
+
+        hardware<IMU>("imu").apply { initialize(parameters) }
+    }
+
     internal var monoShouldDoLogging = true
 
     internal val visionPipeline by lazy {
@@ -41,6 +58,8 @@ abstract class AbstractAutoPipeline : LinearOpMode()
 
     override fun runOpMode()
     {
+        imu
+
         visionPipeline.start()
         clawSubsystem.initialize()
         elevatorSubsystem.initialize()
@@ -153,8 +172,17 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             )
             telemetry.update()
 
+            val orientation = imu.getRobotOrientation(
+                AxesReference.INTRINSIC,
+                AxesOrder.XZX,
+                AngleUnit.DEGREES
+            )
+            imu.resetYaw()
+
             motorControl(
-                (AutoPipelineUtilities.PID_KP * error) - (AutoPipelineUtilities.PID_KI * integral) + (AutoPipelineUtilities.PID_KD * velocity)
+                (AutoPipelineUtilities.PID_KP * error) -
+                    (AutoPipelineUtilities.PID_KI * integral) +
+                    (AutoPipelineUtilities.PID_KD * velocity)
             )
         }
 
