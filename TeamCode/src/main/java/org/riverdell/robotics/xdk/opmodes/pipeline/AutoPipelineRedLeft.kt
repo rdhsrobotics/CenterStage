@@ -31,7 +31,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
             "move and lower elevator"
         ) {
             single<DrivebaseContext>("move forward towards tape") {
-                forwardInches(10)
+                forward(10.0)
             }
 
             single<ElevatorContext>("lower elevator") {
@@ -59,7 +59,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
             "turn towards side bar while elevating claw",
         ) {
             single<DrivebaseContext>("turn towards side bar/backdrop") {
-                turnDegrees(90.0)
+                forward(90.0)
                 // TODO
             }
 
@@ -71,7 +71,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
 
         // ---- depends on position of robot
         single<DrivebaseContext>("go forward") {
-            forwardInches(10)
+            forward(10.0)
             // TODO
         }
         // ----

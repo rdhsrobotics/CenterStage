@@ -1,9 +1,10 @@
 package org.riverdell.robotics.xdk.opmodes.pipeline.contexts
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import io.liftgate.robotics.mono.pipeline.StageContext
 
-class DrivebaseContext(private val motors: List<DcMotor>) : StageContext
+class DrivebaseContext(private val motors: List<DcMotor>, private val opMode: LinearOpMode) : StageContext
 {
     override fun dispose()
     {
@@ -13,5 +14,5 @@ class DrivebaseContext(private val motors: List<DcMotor>) : StageContext
         }
     }
 
-    override fun isCompleted() = motors.none { it.isBusy }
+    override fun isCompleted() = motors.none { it.isBusy } && !opMode.isStopRequested
 }

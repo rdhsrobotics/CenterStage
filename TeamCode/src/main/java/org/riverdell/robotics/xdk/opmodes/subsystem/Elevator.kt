@@ -23,7 +23,7 @@ class Elevator(private val opMode: LinearOpMode) : Subsystem
 
     override fun initialize()
     {
-        backingMotor.direction = DcMotorSimple.Direction.FORWARD
+        backingMotor.direction = DcMotorSimple.Direction.REVERSE
         backingMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         backingMotor.stopAndResetEncoder()
@@ -39,6 +39,13 @@ class Elevator(private val opMode: LinearOpMode) : Subsystem
 
         backingMotor.power = stick
         backingMotor.targetPosition = target
+        backingMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
+    }
+
+    fun configureElevatorManually(position: Double)
+    {
+        backingMotor.power = 0.86
+        backingMotor.targetPosition = (position * -1130).toInt()
         backingMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
 

@@ -7,7 +7,17 @@
 // the build definitions, you can place those customizations in this file, but
 // please think carefully as to whether such customizations are really necessary
 // before doing so.
-
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url = 'https://www.matthewo.tech/maven/'
+        }
+    }
+    dependencies {
+        classpath 'org.team11260:fast-load-plugin:0.1.1'
+    }
+}
 
 // Custom definitions may go here
 plugins {
@@ -18,6 +28,7 @@ plugins {
 // Include common definitions from above.
 apply from: "../build.common.gradle"
 apply from: "../build.dependencies.gradle"
+apply plugin: 'org.team11260.fast-load-plugin'
 
 android {
     namespace = "org.firstinspires.ftc.teamcode"
@@ -33,6 +44,10 @@ repositories {
     maven {
         url = 'https://maven.brott.dev/'
     }
+
+    maven {
+        url = 'https://www.matthewo.tech/maven/'
+    }
 }
 
 dependencies {
@@ -41,6 +56,7 @@ dependencies {
 
     implementation "com.acmerobotics.roadrunner:ftc:0.1.8"
     implementation "com.acmerobotics.dashboard:dashboard:0.4.13"
+    implementation 'org.team11260:fast-load:0.1.1'
 
     implementation project(":FtcRobotController")
     annotationProcessor files("lib/OpModeAnnotationProcessor.jar")

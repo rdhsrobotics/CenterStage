@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher;
 import org.riverdell.robotics.xdk.opmodes.subsystem.Drivebase;
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator;
@@ -62,14 +63,11 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
 
         waitForStart();
 
-        telemetry.speak("David go die.");
-        telemetry.update();
-
         while (opModeIsActive()) {
             final double multiplier = 0.6 + (gamepad1.right_trigger * 0.4);
             drivebase.driveRobotCentric(driverOp, multiplier);
             extendableClaw.expandClaw(
-                    gamepad2.right_trigger
+                    gamepad2.left_trigger
             );
             elevator.configureElevator(gamepad2.right_stick_y);
             telemetry.update();
