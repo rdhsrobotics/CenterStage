@@ -17,7 +17,6 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.VisionPipeline
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
-import java.util.concurrent.Executors
 import kotlin.math.abs
 import kotlin.math.absoluteValue
 import kotlin.math.sign
@@ -106,34 +105,14 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         }
         executionGroup.executeBlocking()
 
-        telemetry.addLine("Hors 0")
-        telemetry.update()
-        println("Hors 1")
-        telemetry.addLine("Hors 1")
-        telemetry.update()
+        stopAndResetMotors()
         terminateAllMotors()
-        println("Hors 2")
-        telemetry.addLine("Hors 2")
-        telemetry.update()
 
         visionPipeline.stop()
-        println("Hors 3")
-
-        telemetry.addLine("Hors 3")
-        telemetry.update()
         clawSubsystem.dispose()
-        println("Hors 4")
-        telemetry.addLine("Hors 4")
-        telemetry.update()
         elevatorSubsystem.dispose()
-        println("Hors 5")
-        telemetry.addLine("Hors 5")
-        telemetry.update()
 
         Mono.logSink = { }
-        println("Hors 6")
-        telemetry.addLine("Hors 6")
-        telemetry.update()
     }
 
     fun runMovementPID(target: Double, motorControl: (Double) -> Unit)
