@@ -74,7 +74,6 @@ class VisionPipeline(
     }
 
     private val visionExecutor = Executors.newSingleThreadScheduledExecutor()
-    var currentPosition = TapeSide.Middle
 
     private val gameObjectToAngleEstimations = mutableMapOf(
         -90..-20 to TapeSide.Left,

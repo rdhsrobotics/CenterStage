@@ -148,7 +148,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
 
         while (
             (error.absoluteValue > AutoPipelineUtilities.MOVEMENT_MAX_ERROR ||
-                    velocity > AutoPipelineUtilities.MOVEMENT_MAX_VELOCITY) &&
+                velocity > AutoPipelineUtilities.MOVEMENT_MAX_VELOCITY) &&
             opModeIsActive()
         )
         {
@@ -175,10 +175,10 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             removePreviousStatusLine()
             previousTelemetryLine = telemetry.addLine(
                 "Current: ${"%.3f".format(averagePosition.toFloat())} | " +
-                        "Previous: ${"%.3f".format(previous.toFloat())} | " +
-                        "Error: ${"%.3f".format(error.toFloat())} | " +
-                        "Velocity: ${"%.3f".format(velocity.toFloat())} | " +
-                        "Integral: ${"%.3f".format(integral.toFloat())} |"
+                    "Previous: ${"%.3f".format(previous.toFloat())} | " +
+                    "Error: ${"%.3f".format(error.toFloat())} | " +
+                    "Velocity: ${"%.3f".format(velocity.toFloat())} | " +
+                    "Integral: ${"%.3f".format(integral.toFloat())} |"
             )
             telemetry.update()
 
@@ -196,9 +196,9 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         while (
             System.currentTimeMillis() < start + maximumTimeMillis &&
             (frontLeft.isBusy ||
-                    frontRight.isBusy ||
-                    backLeft.isBusy ||
-                    backRight.isBusy)
+                frontRight.isBusy ||
+                backLeft.isBusy ||
+                backRight.isBusy)
         )
         {
             if (!opModeIsActive())
@@ -229,7 +229,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
 
         while (
             (error.absoluteValue > AutoPipelineUtilities.ROTATION_END_YAW ||
-                    velocity.absoluteValue > AutoPipelineUtilities.ROTATION_END_VELOCITY)
+                velocity.absoluteValue > AutoPipelineUtilities.ROTATION_END_VELOCITY)
         )
         {
             if (!opModeIsActive())
@@ -248,7 +248,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             val rampUp = (millisDiff / AutoPipelineUtilities.ROTATION_RAMP_UP_SPEED).coerceIn(0.0, 1.0)
 
             val rawPower = (AutoPipelineUtilities.PID_ROTATION_KP * error
-                    + AutoPipelineUtilities.PID_ROTATION_KD * velocity /*+
+                + AutoPipelineUtilities.PID_ROTATION_KD * velocity /*+
                         AutoPipelineUtilities.PID_ROTATION_KI * totalError*/)
             val power = rawPower.coerceIn(-1.0..1.0)
 
@@ -264,13 +264,13 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             removePreviousStatusLine()
             previousTelemetryLine = telemetry.addLine(
                 "Current Yaw: ${"%.3f".format(yaw.toFloat())} | " +
-                        "Error: ${"%.3f".format(error.toFloat())} | " +
-                        "Velocity: ${"%.3f".format(velocity)} | " +
-                        "Ramp Up: ${"%.3f".format(rampUp)} | " +
-                        "Power: ${"%.3f".format(power)} | " +
-                        "Raw Power: ${"%.3f".format(rawPower)} | " +
-                        "FInal Power: ${"%.3f".format(rampUp * power)} | " +
-                        "Stop req: ${opModeIsActive()} | "
+                    "Error: ${"%.3f".format(error.toFloat())} | " +
+                    "Velocity: ${"%.3f".format(velocity)} | " +
+                    "Ramp Up: ${"%.3f".format(rampUp)} | " +
+                    "Power: ${"%.3f".format(power)} | " +
+                    "Raw Power: ${"%.3f".format(rawPower)} | " +
+                    "FInal Power: ${"%.3f".format(rampUp * power)} | " +
+                    "Stop req: ${opModeIsActive()} | "
             )
             telemetry.update()
 
@@ -280,8 +280,10 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         stopAndResetMotors()
         lockUntilMotorsFree()
     }
-    private val frontDistanceSensor by lazy{hardware<DistanceSensor>("frontsensor")}
-    fun PIDToDistance(distanceTarget: Double) {
+
+    private val frontDistanceSensor by lazy { hardware<DistanceSensor>("frontsensor") }
+    fun PIDToDistance(distanceTarget: Double)
+    {
         var distance = 0.0
         var error = distanceTarget
         var velocity = 2.0
@@ -292,7 +294,8 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         stopAndResetMotors()
 
         var previousTelemetryLine: Line? = null
-        fun removePreviousStatusLine() {
+        fun removePreviousStatusLine()
+        {
             if (previousTelemetryLine != null)
             {
                 telemetry.removeLine(previousTelemetryLine)
@@ -301,7 +304,8 @@ abstract class AbstractAutoPipeline : LinearOpMode()
 
         runMotors()
 
-        while ((error.absoluteValue > 1.0 || velocity > 1.0 )&& opModeIsActive()) {
+        while ((error.absoluteValue > 1.0 || velocity > 1.0) && opModeIsActive())
+        {
 
             distance = frontDistanceSensor.getDistance(DistanceUnit.CM)
             previous = distance
@@ -310,18 +314,18 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             integral += error
 
             val rawPidPower = ((AutoPipelineUtilities.PID_DISTANCE_KP * error - AutoPipelineUtilities.PID_DISTANCE_KD * velocity))
-                    .coerceIn(-1.0..1.0)
+                .coerceIn(-1.0..1.0)
 
             val millisDiff = System.currentTimeMillis() - startTime
             val rampUp = (millisDiff / AutoPipelineUtilities.MOVEMENT_RAMP_UP_SPEED).coerceIn(0.0, 1.0)
 
             removePreviousStatusLine()
             previousTelemetryLine = telemetry.addLine(
-                    "Current: ${"%.3f".format(distance.toFloat())} | " +
-                            "Previous: ${"%.3f".format(previous.toFloat())} | " +
-                            "Error: ${"%.3f".format(error.toFloat())} | " +
-                            "Velocity: ${"%.3f".format(velocity.toFloat())} | " +
-                            "Integral: ${"%.3f".format(integral.toFloat())} |"
+                "Current: ${"%.3f".format(distance.toFloat())} | " +
+                    "Previous: ${"%.3f".format(previous.toFloat())} | " +
+                    "Error: ${"%.3f".format(error.toFloat())} | " +
+                    "Velocity: ${"%.3f".format(velocity.toFloat())} | " +
+                    "Integral: ${"%.3f".format(integral.toFloat())} |"
             )
             telemetry.update()
 
@@ -334,15 +338,18 @@ abstract class AbstractAutoPipeline : LinearOpMode()
 
     }
 
-    fun forward(target: Double) {
+    fun forward(target: Double)
+    {
         runMovementPID(target, ::setPower)
         Thread.sleep(450L)
     }
 
-    fun strafe(target: Double) {
+    fun strafe(target: Double)
+    {
         runMovementPID(target, ::setStrafePower)
         sleep(450)
     }
+
     fun turn(target: Double) = runRotationPID(target, ::setTurnPower)
 
     fun terminateAllMotors() = configureMotorsToDo(HardwareDevice::close)
