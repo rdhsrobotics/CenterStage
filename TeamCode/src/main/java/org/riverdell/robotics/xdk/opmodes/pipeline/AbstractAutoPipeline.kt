@@ -88,7 +88,9 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         telemetry.addLine("Waiting for start. Started detection...")
         telemetry.update()
 
-        val tapeSide = visionPipeline.currentPosition
+        val tapeSide = visionPipeline
+            .recognizeGameObjectTapeSide()
+            .join()
 
         telemetry.addLine("Completed detection. Detected tape side: ${tapeSide.name}. Waiting for start...")
         telemetry.update()
