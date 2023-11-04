@@ -3,6 +3,7 @@ package org.riverdell.robotics.xdk.opmodes.pipeline.detection
 import android.R.id
 import android.annotation.SuppressLint
 import android.util.Size
+import com.qualcomm.robotcore.hardware.DistanceSensor
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
@@ -38,7 +39,9 @@ import kotlin.math.roundToInt
  */
 class VisionPipeline(
     private val webcam: WebcamName,
+    private val frontDistanceSensor: DistanceSensor,
     private val telemetry: Telemetry
+    private val rightDistanceSensor: DistanceSensor
 )
 {
     companion object
@@ -84,32 +87,7 @@ class VisionPipeline(
     fun recognizeGameObjectTapeSide(): CompletableFuture<TapeSide?>
     {
         return CompletableFuture.supplyAsync({
-            var recogAttempts = 0
 
-            while (recogAttempts++ < 3)
-            {
-                val matchingRecognition = tfodCenterStageProcessor.recognitions
-                        .firstOrNull { it.label == "Pixel" }
-
-                if (matchingRecognition == null)
-                {
-                    Thread.sleep(500L)
-                    continue
-                }
-
-                val angleEstimation = matchingRecognition
-                        .estimateAngleToObject(AngleUnit.DEGREES)
-
-                val estimatedTapeSide = gameObjectToAngleEstimations.entries
-                        .firstOrNull {
-                            angleEstimation.roundToInt() in it.key
-                        }
-
-                if (estimatedTapeSide != null)
-                {
-                    return@supplyAsync estimatedTapeSide.value
-                }
-            }
 
             return@supplyAsync TapeSide.Middle
         }, visionExecutor)

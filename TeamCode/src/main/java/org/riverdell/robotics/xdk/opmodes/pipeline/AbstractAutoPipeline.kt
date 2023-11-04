@@ -31,6 +31,8 @@ abstract class AbstractAutoPipeline : LinearOpMode()
     private val backRight by lazy { hardware<DcMotor>("backRight") }
     private val backLeft by lazy { hardware<DcMotor>("backLeft") }
 
+    private val rightDistanceSensor by lazy { hardware<DistanceSensor>("rightdist") }
+
     internal val elevatorSubsystem by lazy { Elevator(this) }
     internal val clawSubsystem by lazy { ExtendableClaw(this) }
 
@@ -41,7 +43,9 @@ abstract class AbstractAutoPipeline : LinearOpMode()
     internal val visionPipeline by lazy {
         VisionPipeline(
             webcam = hardware("webcam1"),
-            telemetry = this.telemetry
+            telemetry = this.telemetry,
+                frontDistanceSensor = frontDistanceSensor,
+                rightDistanceSensor = rightDistanceSensor
         )
     }
 
