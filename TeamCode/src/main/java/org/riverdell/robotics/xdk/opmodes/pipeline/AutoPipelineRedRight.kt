@@ -46,27 +46,28 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
     override fun buildExecutionGroup(_OLD_tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
             single<DrivebaseContext>("move to detection") {
-                forward(MoveToDetection)
+                runMovementPID(MoveToDetection) {
+                    val tapeSide = visionPipeline
+                        .recognizeGameObjectTapeSide()
+                        .join()
+                    setPower(it)
 
-                val tapeSide = visionPipeline
-                    .recognizeGameObjectTapeSide()
-                    .join()
-
-                when (tapeSide)
-                {
-                    TapeSide.Right ->
+                    when (tapeSide)
                     {
-                        // do somethig when its right
-                    }
+                        TapeSide.Right ->
+                        {
+                            // do somethig when its right
+                        }
 
-                    TapeSide.Middle ->
-                    {
-                        // do somethig when its middl;e
-                    }
+                        TapeSide.Middle ->
+                        {
+                            // do somethig when its middl;e
+                        }
 
-                    TapeSide.Left ->
-                    {
-                        // do somethig when its left
+                        TapeSide.Left ->
+                        {
+                            // do somethig when its left
+                        }
                     }
                 }
             }
