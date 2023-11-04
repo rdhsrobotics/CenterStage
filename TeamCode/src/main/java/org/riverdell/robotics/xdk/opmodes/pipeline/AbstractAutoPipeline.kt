@@ -4,12 +4,14 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.hardware.DistanceSensor
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.IMU
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import org.firstinspires.ftc.robotcore.external.Telemetry.Line
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
 import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.ElevatorContext
@@ -47,6 +49,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
 
     override fun runOpMode()
     {
+        frontDistanceSensor
         this.imu = hardware("imu")
         this.imu.initialize(
             IMU.Parameters(
@@ -275,14 +278,69 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         stopAndResetMotors()
         lockUntilMotorsFree()
     }
+    private val frontDistanceSensor by lazy{hardware<DistanceSensor>("frontsensor")}
+    fun PIDToDistance(distanceTarget: Double) {
+        var distance = 0.0
+        var error = distanceTarget
+        var velocity = 2.0
+        var previous: Double
+        var integral = 0.0
 
-    fun forward(target: Double)
-    {
-        runMovementPID(target, ::setPower)
-        Thread.sleep(350L)
+        val startTime = System.currentTimeMillis()
+        stopAndResetMotors()
+
+        var previousTelemetryLine: Line? = null
+        fun removePreviousStatusLine() {
+            if (previousTelemetryLine != null)
+            {
+                telemetry.removeLine(previousTelemetryLine)
+            }
+        }
+
+        runMotors()
+
+        while ((error.absoluteValue > 1.0 || velocity > 1.0 )&& opModeIsActive()) {
+
+            distance = frontDistanceSensor.getDistance(DistanceUnit.CM)
+            previous = distance
+            error = distance - distanceTarget
+            velocity = distance - previous
+            integral += error
+
+            val rawPidPower = ((AutoPipelineUtilities.PID_DISTANCE_KP * error - AutoPipelineUtilities.PID_DISTANCE_KD * velocity))
+                    .coerceIn(-1.0..1.0)
+
+            val millisDiff = System.currentTimeMillis() - startTime
+            val rampUp = (millisDiff / AutoPipelineUtilities.MOVEMENT_RAMP_UP_SPEED).coerceIn(0.0, 1.0)
+
+            removePreviousStatusLine()
+            previousTelemetryLine = telemetry.addLine(
+                    "Current: ${"%.3f".format(distance.toFloat())} | " +
+                            "Previous: ${"%.3f".format(previous.toFloat())} | " +
+                            "Error: ${"%.3f".format(error.toFloat())} | " +
+                            "Velocity: ${"%.3f".format(velocity.toFloat())} | " +
+                            "Integral: ${"%.3f".format(integral.toFloat())} |"
+            )
+            telemetry.update()
+
+            setPower(rampUp * -rawPidPower)
+        }
+
+        stopAndResetMotors()
+        removePreviousStatusLine()
+        lockUntilMotorsFree()
+
     }
 
-    fun strafe(target: Double) = runMovementPID(target, ::setStrafePower)
+    fun forward(target: Double) {
+        runMovementPID(target, ::setPower)
+        Thread.sleep(450L)
+    }
+
+    fun strafe(target: Double) {
+        runMovementPID(target, ::setStrafePower)
+        sleep(450)
+    }
     fun turn(target: Double) = runRotationPID(target, ::setTurnPower)
 
     fun terminateAllMotors() = configureMotorsToDo(HardwareDevice::close)

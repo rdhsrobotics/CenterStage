@@ -4,8 +4,8 @@ import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.single
+import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.BackUpFromBackboard
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.ElevateElevatorAtBackboard
-import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.GoForwardFlushWithTheBackboard
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.GoToBackboard
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.MoveBackFromSpike
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.MovePixelToSpike
@@ -27,8 +27,8 @@ object RedRight
     @JvmField var TurnDegreesTowardBackboard = -90.0
     @JvmField var GoToBackboard = 700.0
     @JvmField var StrafeIntoBackboardPosition = -650.0
-    @JvmField var ElevateElevatorAtBackboard = 1.0
-    @JvmField var GoForwardFlushWithTheBackboard = 210.0
+    @JvmField var ElevateElevatorAtBackboard = 0.4
+    @JvmField var BackUpFromBackboard = -150.0
     // elevator
     @JvmField var StrafeIntoParkingZone = 975.0
 }
@@ -49,7 +49,6 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
 
             single<DrivebaseContext>("move back from spike") {
                 forward(MoveBackFromSpike)
-                sleep(500)
             }
 
             single<DrivebaseContext>("turn towards backboard") {
@@ -69,7 +68,7 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
             }
 
             single<DrivebaseContext>("meow") {
-                forward(GoForwardFlushWithTheBackboard)
+                PIDToDistance(2.0)
             }
 
             single("drop shi") {
@@ -83,7 +82,7 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
             }
 
             single<DrivebaseContext>("meow") {
-                forward(-GoForwardFlushWithTheBackboard)
+                forward(BackUpFromBackboard)
             }
 
             single<DrivebaseContext>("Straf") {

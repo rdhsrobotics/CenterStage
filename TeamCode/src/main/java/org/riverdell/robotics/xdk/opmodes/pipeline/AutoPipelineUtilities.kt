@@ -8,6 +8,9 @@ object AutoPipelineUtilities
     @JvmField var PID_MOVEMENT_KP = 0.06
     @JvmField var PID_MOVEMENT_KD = 0.02
 
+    @JvmField var PID_DISTANCE_KP = 0.3
+    @JvmField var PID_DISTANCE_KD = 0.05
+
     @JvmField var PID_ROTATION_KP = 0.05
     @JvmField var PID_ROTATION_KI = -0.013
     @JvmField var PID_ROTATION_KD = 0.002
