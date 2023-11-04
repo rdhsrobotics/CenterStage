@@ -21,6 +21,11 @@ class Elevator(private val opMode: LinearOpMode) : Subsystem
         override fun isCompleted() = !backingMotor.isBusy
     }
 
+    override fun dispose()
+    {
+        backingMotor.stopAndResetEncoder()
+    }
+
     override fun initialize()
     {
         backingMotor.direction = DcMotorSimple.Direction.REVERSE

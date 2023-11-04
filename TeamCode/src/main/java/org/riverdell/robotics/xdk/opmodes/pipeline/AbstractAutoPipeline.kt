@@ -56,7 +56,6 @@ abstract class AbstractAutoPipeline : LinearOpMode()
                 )
             )
         )
-        this.imu.resetYaw()
 
         visionPipeline.start()
         clawSubsystem.initialize()
@@ -81,6 +80,8 @@ abstract class AbstractAutoPipeline : LinearOpMode()
 
         stopAndResetMotors()
 
+        this.imu.resetYaw()
+
         telemetry.addLine("Waiting for start. Started detection...")
         telemetry.update()
 
@@ -89,7 +90,10 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         telemetry.addLine("Completed detection. Detected tape side: ${tapeSide.name}. Waiting for start...")
         telemetry.update()
 
+        this.clawSubsystem.toggleExtender(ExtendableClaw.ClawState.Start)
         waitForStart()
+
+        this.clawSubsystem.toggleExtender(ExtendableClaw.ClawState.Deposit)
 
         telemetry.addLine("Started! Executing the Mono execution group now with ${tapeSide.name}.")
         telemetry.update()
@@ -117,11 +121,6 @@ abstract class AbstractAutoPipeline : LinearOpMode()
 
     fun runMovementPID(target: Double, motorControl: (Double) -> Unit)
     {
-        if (target == 0.0)
-        {
-            return
-        }
-
         var averagePosition = 0.0
         var error = target
         var velocity = 100.0
@@ -129,7 +128,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         var integral = 0.0
 
         val startTime = System.currentTimeMillis()
-        var rampUp: Double
+        stopAndResetMotors()
 
         var previousTelemetryLine: Line? = null
         fun removePreviousStatusLine()
@@ -140,7 +139,6 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             }
         }
 
-        stopAndResetMotors()
         runMotors()
 
         while (
@@ -154,18 +152,20 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             val backRightPos = backRight.currentPosition.absoluteValue
             val backLeftPos = backLeft.currentPosition.absoluteValue
 
-            rampUp = ((System.currentTimeMillis() - startTime) / AutoPipelineUtilities.MOVEMENT_RAMP_UP_TIME).coerceAtMost(1.0)
-
             val averageMotorPositions =
                 (frontRightPos + frontLeftPos + backRightPos + backLeftPos) / 4.0
             previous = averagePosition
 
             averagePosition = averageMotorPositions * target.sign
-
-            val percentError = abs((averagePosition - target) / target) * 100
             error = averagePosition - target
             velocity = averagePosition - previous
             integral += error
+
+            val rawPidPower = ((AutoPipelineUtilities.PID_MOVEMENT_KP * error - AutoPipelineUtilities.PID_MOVEMENT_KD * velocity))
+                .coerceIn(-1.0..1.0)
+
+            val millisDiff = System.currentTimeMillis() - startTime
+            val rampUp = (millisDiff / AutoPipelineUtilities.MOVEMENT_RAMP_UP_SPEED).coerceIn(0.0, 1.0)
 
             removePreviousStatusLine()
             previousTelemetryLine = telemetry.addLine(
@@ -173,21 +173,19 @@ abstract class AbstractAutoPipeline : LinearOpMode()
                         "Previous: ${"%.3f".format(previous.toFloat())} | " +
                         "Error: ${"%.3f".format(error.toFloat())} | " +
                         "Velocity: ${"%.3f".format(velocity.toFloat())} | " +
-                        "Integral: ${"%.3f".format(integral.toFloat())} |" +
-                        "Percent Error: ${"%.1f".format(percentError.toFloat())}"
+                        "Integral: ${"%.3f".format(integral.toFloat())} |"
             )
-//            telemetry.update()
+            telemetry.update()
 
-            motorControl(
-                -rampUp * (AutoPipelineUtilities.PID_MOVEMENT_KP * error - AutoPipelineUtilities.PID_MOVEMENT_KD * velocity)
-            )
+            motorControl(rampUp * -rawPidPower)
         }
 
+        stopAndResetMotors()
         removePreviousStatusLine()
         lockUntilMotorsFree()
     }
 
-    fun lockUntilMotorsFree(maximumTimeMillis: Long = 500L)
+    fun lockUntilMotorsFree(maximumTimeMillis: Long = 1500L)
     {
         val start = System.currentTimeMillis()
         while (
@@ -209,18 +207,12 @@ abstract class AbstractAutoPipeline : LinearOpMode()
 
     fun runRotationPID(target: Double, block: (Double) -> Unit)
     {
-        if (target == 0.0)
-        {
-            return
-        }
-
         var orientation: YawPitchRollAngles
         var angularVelocity = imu.getRobotAngularVelocity(AngleUnit.DEGREES)
 
         var yaw: Double
 
         var velocity = angularVelocity.zRotationRate
-        var rampUp: Double
 
         val startTime = System.currentTimeMillis()
         var totalError = 0.0
@@ -247,12 +239,13 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             error = DegreeUtilities.degFrom(yaw, target)
             totalError += error
 
-            rampUp = ((System.currentTimeMillis() - startTime) / AutoPipelineUtilities.ROTATION_RAMP_UP_TIME).coerceAtMost(1.0)
+            val millisDiff = System.currentTimeMillis() - startTime
+            val rampUp = (millisDiff / AutoPipelineUtilities.ROTATION_RAMP_UP_SPEED).coerceIn(0.0, 1.0)
 
             val rawPower = (AutoPipelineUtilities.PID_ROTATION_KP * error
                     + AutoPipelineUtilities.PID_ROTATION_KD * velocity /*+
                         AutoPipelineUtilities.PID_ROTATION_KI * totalError*/)
-            val power = Math.min(1.0, Math.max(-1.0, rawPower))
+            val power = rawPower.coerceIn(-1.0..1.0)
 
             var previousTelemetryLine: Line? = null
             fun removePreviousStatusLine()
@@ -279,6 +272,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             block(-(rampUp * power))
         }
 
+        stopAndResetMotors()
         lockUntilMotorsFree()
     }
 
@@ -309,8 +303,9 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         backRight.power = -power
     }
 
-    fun setStrafePower(power: Double)
+    fun setStrafePower(_power: Double)
     {
+        val power = _power * 0.425
         frontLeft.power = power
         frontRight.power = -power
 

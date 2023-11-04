@@ -11,5 +11,6 @@ class ElevatorContext(private val motor: DcMotor, private val opMode: LinearOpMo
         motor.power = 0.0
     }
 
+    // TODO: NOT WORK 
     override fun isCompleted() = !motor.isBusy && !opMode.isStopRequested
 }

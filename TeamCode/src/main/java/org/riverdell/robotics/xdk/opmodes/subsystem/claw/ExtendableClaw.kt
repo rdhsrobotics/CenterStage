@@ -10,11 +10,7 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.hardware
 class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
 {
     private val backingExtender by lazy {
-        SimpleServo(
-            opMode.hardwareMap,
-            "extender",
-            0.0, 90.0
-        )
+        opMode.hardware<Servo>("extender")
     }
 
     private val backingClawOpener by lazy {
@@ -28,15 +24,15 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
 
     enum class ClawState
     {
-        Intake, Deposit
+        Intake, Deposit, Start
     }
 
-    private var clawState = ClawState.Deposit
+    private var clawState = ClawState.Start
 
     override fun initialize()
     {
-        backingExtender.turnToAngle(0.0)
-        backingClawOpener.position = 0.0
+        backingExtender.position = 0.0
+        backingClawOpener.position = 0.5
     }
 
     @JvmOverloads
@@ -44,32 +40,25 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
     {
         if (state != null)
         {
-            if (clawState == state)
+            clawState = state
+            backingExtender.position = when (clawState)
             {
-                return
+                ClawState.Deposit -> ClawExpansionConstants.MIN_EXTENDER_POSITION
+                ClawState.Start -> 0.0
+                ClawState.Intake -> ClawExpansionConstants.MAX_EXTENDER_POSITION
             }
 
-            clawState = state
-            backingExtender.turnToAngle(
-                if (clawState == ClawState.Intake)
-                    ClawExpansionConstants.MIN_EXTENDER_POSITION else ClawExpansionConstants.MAX_EXTENDER_POSITION
-            )
             return
         }
 
-        clawState = when (clawState)
+        clawState = if (clawState == ClawState.Deposit)
         {
-            ClawState.Deposit ->
-            {
-                backingExtender.turnToAngle(ClawExpansionConstants.MAX_EXTENDER_POSITION)
-                ClawState.Intake
-            }
-
-            ClawState.Intake ->
-            {
-                backingExtender.turnToAngle(ClawExpansionConstants.MIN_EXTENDER_POSITION)
-                ClawState.Deposit
-            }
+            backingExtender.position = ClawExpansionConstants.MAX_EXTENDER_POSITION
+            ClawState.Intake
+        } else
+        {
+            backingExtender.position = ClawExpansionConstants.MIN_EXTENDER_POSITION
+            ClawState.Deposit
         }
     }
 
@@ -79,7 +68,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
      */
     fun expandClaw(expandsTo: Double)
     {
-        backingClawOpener.position = expandsTo * ClawExpansionConstants.MAX_CLAW_POSITION
+        backingClawOpener.position = 0.5 - expandsTo * 0.5
     }
 
     override fun isCompleted() = true

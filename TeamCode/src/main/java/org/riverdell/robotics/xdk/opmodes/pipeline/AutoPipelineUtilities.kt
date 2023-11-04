@@ -12,11 +12,11 @@ object AutoPipelineUtilities
     @JvmField var PID_ROTATION_KI = -0.013
     @JvmField var PID_ROTATION_KD = 0.002
 
-    @JvmField var MOVEMENT_RAMP_UP_TIME = 300.0
     @JvmField var MOVEMENT_MAX_ERROR = 15.0
-    @JvmField var MOVEMENT_MAX_VELOCITY = 15.0
+    @JvmField var MOVEMENT_MAX_VELOCITY = 10.0
+    @JvmField var MOVEMENT_RAMP_UP_SPEED = 500.0
 
-    @JvmField var ROTATION_RAMP_UP_TIME = 300.0
+    @JvmField var ROTATION_RAMP_UP_SPEED = 500.0
     @JvmField var ROTATION_END_VELOCITY = 0.15
     @JvmField var ROTATION_END_YAW = 1.0
 }

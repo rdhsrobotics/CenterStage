@@ -63,6 +63,8 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
 
         waitForStart();
 
+        this.extendableClaw.toggleExtender(ExtendableClaw.ClawState.Deposit);
+
         while (opModeIsActive()) {
             final double multiplier = 0.6 + (gamepad1.right_trigger * 0.4);
             drivebase.driveRobotCentric(driverOp, multiplier);
