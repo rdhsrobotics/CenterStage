@@ -81,7 +81,7 @@ class VisionPipeline(
         20..90 to TapeSide.Right
     )
 
-    fun recognizeGameObjectTapeSide(): CompletableFuture<TapeSide>
+    fun recognizeGameObjectTapeSide(): CompletableFuture<TapeSide?>
     {
         return CompletableFuture.supplyAsync({
             var recogAttempts = 0
