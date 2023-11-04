@@ -47,7 +47,7 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
                 forward(MovePixelToSpike)
             }
 
-            single<DrivebaseContext>("move back") {
+            single<DrivebaseContext>("move back from spike") {
                 forward(MoveBackFromSpike)
                 sleep(500)
             }
@@ -60,7 +60,7 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
                 forward(GoToBackboard)
             }
 
-            single<DrivebaseContext>("strafe into db oposition") {
+            single<DrivebaseContext>("align with backboard") {
                 strafe(StrafeIntoBackboardPosition)
             }
 

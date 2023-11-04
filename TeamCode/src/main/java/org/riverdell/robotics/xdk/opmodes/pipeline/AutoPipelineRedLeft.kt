@@ -80,33 +80,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
             "strafe into position while elevating elevator"
         ) {
             single<DrivebaseContext>("strafe into position") {
-                // wait for the initial detection
-                var detection = visionPipeline
-                    .recognizeBackBoardAprilTag(teamColor, tapeSide)
-                    .join()
-                // if there is no detection, skip deposit
-                    ?: return@single kotlin.run {
-                        it["deposit-exempt"] = true
-                    }
 
-                while (true)
-                {
-                    val locked = visionPipeline
-                        // lock onto the april tag detection
-                        .recognizeBackBoardAprilTag(
-                            teamColor, tapeSide, lock = true
-                        )
-                        .join()
-
-                    // we lost the april tag :(
-                    if (locked == null)
-                    {
-                        it["deposit-exempt"] = true
-                        return@single
-                    }
-
-                    // TODO: align with the april tag lol
-                }
             }
 
             single<ElevatorContext>("elevate claw") {

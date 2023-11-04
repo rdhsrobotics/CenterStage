@@ -276,7 +276,12 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         lockUntilMotorsFree()
     }
 
-    fun forward(target: Double) = runMovementPID(target, ::setPower)
+    fun forward(target: Double)
+    {
+        runMovementPID(target, ::setPower)
+        Thread.sleep(350L)
+    }
+
     fun strafe(target: Double) = runMovementPID(target, ::setStrafePower)
     fun turn(target: Double) = runRotationPID(target, ::setTurnPower)
 
