@@ -90,6 +90,37 @@ class VisionPipeline(
             while (recogAttempts++ < 3)
             {
                 val matchingRecognition = tfodCenterStageProcessor.recognitions
+                        .firstOrNull { it.label == "Pixel" }
+
+                if (matchingRecognition == null)
+                {
+                    Thread.sleep(500L)
+                    continue
+                }
+
+                val angleEstimation = matchingRecognition
+                        .estimateAngleToObject(AngleUnit.DEGREES)
+
+                val estimatedTapeSide = gameObjectToAngleEstimations.entries
+                        .firstOrNull {
+                            angleEstimation.roundToInt() in it.key
+                        }
+
+                if (estimatedTapeSide != null)
+                {
+                    return@supplyAsync estimatedTapeSide.value
+                }
+            }
+
+            return@supplyAsync TapeSide.Middle
+        }, visionExecutor)
+    }
+    /*return CompletableFuture.supplyAsync({
+            var recogAttempts = 0
+
+            while (recogAttempts++ < 3)
+            {
+                val matchingRecognition = tfodCenterStageProcessor.recognitions
                     .firstOrNull { it.label == "Pixel" }
 
                 if (matchingRecognition == null)
@@ -113,6 +144,5 @@ class VisionPipeline(
             }
 
             return@supplyAsync TapeSide.Middle
-        }, visionExecutor)
-    }
+        }, visionExecutor)*/
 }

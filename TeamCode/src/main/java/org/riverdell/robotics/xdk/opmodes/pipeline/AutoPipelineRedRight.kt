@@ -9,6 +9,7 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.ElevateElevatorAtBac
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.GoToBackboard
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.MoveBackFromSpike
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.MovePixelToSpike
+import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.MoveToDetection
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.StrafeIntoBackboardPosition
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.StrafeIntoParkingZone
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.TurnDegreesTowardBackboard
@@ -22,6 +23,7 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 @Config
 object RedRight
 {
+    @JvmField var MoveToDetection = 700.0
     @JvmField var MovePixelToSpike = 825.0
     @JvmField var MoveBackFromSpike = -300.0
     @JvmField var TurnDegreesTowardBackboard = -90.0
@@ -43,6 +45,12 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
 
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
+            single<DrivebaseContext>("move to detection") {
+                forward(MoveToDetection)
+
+            }
+            //detection
+            //conditional
             single<DrivebaseContext>("move pixel to spike") {
                 forward(MovePixelToSpike)
             }
