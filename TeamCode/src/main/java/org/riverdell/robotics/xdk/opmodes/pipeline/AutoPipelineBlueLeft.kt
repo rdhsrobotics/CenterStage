@@ -2,7 +2,6 @@ package org.riverdell.robotics.xdk.opmodes.pipeline
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.single
 import org.riverdell.robotics.xdk.opmodes.pipeline.BlueLeft.MoveBackFromSpike
@@ -15,6 +14,7 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.BlueLeft.ElevateElevatorAtBac
 import org.riverdell.robotics.xdk.opmodes.pipeline.BlueLeft.StrafeIntoParkingZone
 import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
+import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
 
 /**
  * @author Subham
@@ -37,7 +37,9 @@ object BlueLeft
 @Autonomous(name = "Blue | Left", preselectTeleOp = "prod")
 class AutoPipelineBlueLeft : AbstractAutoPipeline()
 {
-    override fun buildExecutionGroup(_OLD_tapeSide: TapeSide) = Mono
+    override fun getTeamColor() = TeamColor.Blue
+
+    override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
             single<DrivebaseContext>("move pixel to spike") {
                 forward(MovePixelToSpike)

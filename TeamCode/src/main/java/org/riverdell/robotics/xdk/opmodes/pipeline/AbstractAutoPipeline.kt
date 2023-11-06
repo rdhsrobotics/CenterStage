@@ -16,11 +16,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
 import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.ElevatorContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
+import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.VisionPipeline
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
-import kotlin.math.abs
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
@@ -31,8 +31,6 @@ abstract class AbstractAutoPipeline : LinearOpMode()
 
     private val backRight by lazy { hardware<DcMotor>("backRight") }
     private val backLeft by lazy { hardware<DcMotor>("backLeft") }
-
-//    private val rightDistanceSensor by lazy { hardware<DistanceSensor>("rightdist") }
 
     internal val elevatorSubsystem by lazy { Elevator(this) }
     internal val clawSubsystem by lazy { ExtendableClaw(this) }
@@ -45,11 +43,11 @@ abstract class AbstractAutoPipeline : LinearOpMode()
     internal val visionPipeline by lazy {
         VisionPipeline(
             webcam = hardware("webcam1"),
-            telemetry = this.telemetry,
-                frontDistanceSensor = frontDistanceSensor,
-                /*rightDistanceSensor = rightDistanceSensor*/
+            teamColor = getTeamColor()
         )
     }
+
+    abstract fun getTeamColor(): TeamColor
 
     abstract fun buildExecutionGroup(tapeSide: TapeSide): RootExecutionGroup
 
@@ -96,17 +94,15 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         telemetry.addLine("Waiting for start. Started detection...")
         telemetry.update()
 
-        val tapeSide = visionPipeline
-            .recognizeGameObjectTapeSide()
-            .join()
-            ?: TapeSide.Middle
-
-        telemetry.addLine("Completed detection. Detected tape side: ${tapeSide.name}. Waiting for start...")
-        telemetry.update()
-
         this.clawSubsystem.toggleExtender(ExtendableClaw.ClawState.Start)
-        waitForStart()
 
+        while (!isStarted)
+        {
+            telemetry.addLine("Auto in initialized")
+            telemetry.addData("Tape side", visionPipeline.getTapeSide())
+        }
+
+        val tapeSide = visionPipeline.getTapeSide()
         this.clawSubsystem.toggleExtender(ExtendableClaw.ClawState.Deposit)
 
         telemetry.addLine("Started! Executing the Mono execution group now with ${tapeSide.name}.")
@@ -117,9 +113,6 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             DrivebaseContext(
                 listOf(frontRight, frontLeft, backRight, backLeft), this
             )
-        }
-        executionGroup.providesContext { _ ->
-            ElevatorContext(elevatorSubsystem.backingMotor, this)
         }
         executionGroup.executeBlocking()
 

@@ -9,12 +9,12 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.ElevateElevatorAtBac
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.GoToBackboard
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.MoveBackFromSpike
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.MovePixelToSpike
-import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.MoveToDetection
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.StrafeIntoBackboardPosition
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.StrafeIntoParkingZone
 import org.riverdell.robotics.xdk.opmodes.pipeline.RedRight.TurnDegreesTowardBackboard
 import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
+import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
 
 /**
  * @author Subham
@@ -43,37 +43,10 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
         monoShouldDoLogging = false
     }
 
-    override fun buildExecutionGroup(_OLD_tapeSide: TapeSide) = Mono
+    override fun getTeamColor() = TeamColor.Red
+
+    override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
-            /*single<DrivebaseContext>("move to detection") {
-                var tapeSide: TapeSide? = null
-
-                runMovementPID(MoveToDetection) {
-                    tapeSide = visionPipeline
-                        .recognizeGameObjectTapeSide()
-                        .join()
-                    setPower(it)
-                }
-
-                when (tapeSide)
-                {
-                    TapeSide.Right ->
-                    {
-                        // do somethig when its right
-                    }
-
-                    TapeSide.Middle ->
-                    {
-                        // do somethig when its middl;e
-                    }
-
-                    TapeSide.Left ->
-                    {
-                        // do somethig when its left
-                    }
-                }
-            }*/
-
             single<DrivebaseContext>("move pixel to spike") {
                 forward(MovePixelToSpike)
             }

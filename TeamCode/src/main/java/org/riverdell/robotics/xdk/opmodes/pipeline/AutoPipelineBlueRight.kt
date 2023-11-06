@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import io.liftgate.robotics.mono.Mono
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
+import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
 
 /**
  * @author Subham
@@ -13,6 +14,7 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 @Autonomous(name = "Blue | Right", preselectTeleOp = "prod")
 class AutoPipelineBlueRight : AbstractAutoPipeline()
 {
+    override fun getTeamColor() = TeamColor.Blue
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
             // TODO:
