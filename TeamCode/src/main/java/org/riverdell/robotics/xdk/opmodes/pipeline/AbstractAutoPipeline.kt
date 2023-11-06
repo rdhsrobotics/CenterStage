@@ -14,7 +14,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
 import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
-import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.ElevatorContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.VisionPipeline
