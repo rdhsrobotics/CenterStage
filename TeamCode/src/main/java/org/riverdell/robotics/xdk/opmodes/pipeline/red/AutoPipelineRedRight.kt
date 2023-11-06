@@ -1,17 +1,18 @@
-package org.riverdell.robotics.xdk.opmodes.pipeline
+package org.riverdell.robotics.xdk.opmodes.pipeline.red
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.single
-import org.riverdell.robotics.xdk.opmodes.pipeline.BlueLeft.MoveBackFromSpike
-import org.riverdell.robotics.xdk.opmodes.pipeline.BlueLeft.MovePixelToSpike
-import org.riverdell.robotics.xdk.opmodes.pipeline.BlueLeft.TurnDegreesTowardBackboard
-import org.riverdell.robotics.xdk.opmodes.pipeline.BlueLeft.GoToBackboard
-import org.riverdell.robotics.xdk.opmodes.pipeline.BlueLeft.BackUpFromBackboard
-import org.riverdell.robotics.xdk.opmodes.pipeline.BlueLeft.StrafeIntoBackboardPosition
-import org.riverdell.robotics.xdk.opmodes.pipeline.BlueLeft.ElevateElevatorAtBackboard
-import org.riverdell.robotics.xdk.opmodes.pipeline.BlueLeft.StrafeIntoParkingZone
+import org.riverdell.robotics.xdk.opmodes.pipeline.AbstractAutoPipeline
+import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.BackUpFromBackboard
+import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.ElevateElevatorAtBackboard
+import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.GoToBackboard
+import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.MoveBackFromSpike
+import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.MovePixelToSpike
+import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.StrafeIntoBackboardPosition
+import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.StrafeIntoParkingZone
+import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.TurnDegreesTowardBackboard
 import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
@@ -21,26 +22,33 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
  * @since 10/23/2023
  */
 @Config
-object BlueLeft
+object RedRight
 {
-    @JvmField var MovePixelToSpike = 790.0
+    @JvmField var MoveToDetection = 700.0
+    @JvmField var MovePixelToSpike = 825.0
     @JvmField var MoveBackFromSpike = -300.0
-    @JvmField var TurnDegreesTowardBackboard = 90.0
+    @JvmField var TurnDegreesTowardBackboard = -90.0
     @JvmField var GoToBackboard = 700.0
-    @JvmField var StrafeIntoBackboardPosition = 650.0
+    @JvmField var StrafeIntoBackboardPosition = -650.0
     @JvmField var ElevateElevatorAtBackboard = 0.4
     @JvmField var BackUpFromBackboard = -150.0
     // elevator
-    @JvmField var StrafeIntoParkingZone = -975.0
+    @JvmField var StrafeIntoParkingZone = 975.0
 }
 
-@Autonomous(name = "Blue | Left", preselectTeleOp = "prod")
-class AutoPipelineBlueLeft : AbstractAutoPipeline()
+@Autonomous(name = "Red | Right", preselectTeleOp = "prod")
+class AutoPipelineRedRight : AbstractAutoPipeline()
 {
-    override fun getTeamColor() = TeamColor.Blue
+    init
+    {
+        monoShouldDoLogging = false
+    }
+
+    override fun getTeamColor() = TeamColor.Red
 
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
+            // TODO: turn on at first
             single<DrivebaseContext>("move pixel to spike") {
                 forward(MovePixelToSpike)
             }

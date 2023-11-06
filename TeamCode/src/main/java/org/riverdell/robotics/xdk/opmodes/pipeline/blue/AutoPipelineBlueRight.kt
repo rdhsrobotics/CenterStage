@@ -1,8 +1,9 @@
-package org.riverdell.robotics.xdk.opmodes.pipeline
+package org.riverdell.robotics.xdk.opmodes.pipeline.blue
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import io.liftgate.robotics.mono.Mono
+import org.riverdell.robotics.xdk.opmodes.pipeline.AbstractAutoPipeline
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
 

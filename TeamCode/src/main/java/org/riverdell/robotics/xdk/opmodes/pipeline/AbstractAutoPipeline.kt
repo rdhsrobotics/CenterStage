@@ -17,6 +17,8 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.VisionPipeline
+import org.riverdell.robotics.xdk.opmodes.pipeline.utilities.AutoPipelineUtilities
+import org.riverdell.robotics.xdk.opmodes.pipeline.utilities.DegreeUtilities
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
@@ -168,7 +170,8 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             velocity = averagePosition - previous
             integral += error
 
-            val rawPidPower = ((AutoPipelineUtilities.PID_MOVEMENT_KP * error - AutoPipelineUtilities.PID_MOVEMENT_KD * velocity))
+            val rawPidPower = ((AutoPipelineUtilities.PID_MOVEMENT_KP * error /*+
+                        AutoPipelineUtilities.PID_MOVEMENT_KI * totalError*/ - AutoPipelineUtilities.PID_MOVEMENT_KD * velocity))
                 .coerceIn(-1.0..1.0)
 
             val millisDiff = System.currentTimeMillis() - startTime

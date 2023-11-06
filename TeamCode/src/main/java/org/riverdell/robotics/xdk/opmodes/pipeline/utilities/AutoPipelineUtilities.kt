@@ -1,4 +1,4 @@
-package org.riverdell.robotics.xdk.opmodes.pipeline
+package org.riverdell.robotics.xdk.opmodes.pipeline.utilities
 
 import com.acmerobotics.dashboard.config.Config
 
@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.config.Config
 object AutoPipelineUtilities
 {
     @JvmField var PID_MOVEMENT_KP = 0.06
+    @JvmField var PID_MOVEMENT_KI = -0.013
     @JvmField var PID_MOVEMENT_KD = 0.02
 
     @JvmField var PID_DISTANCE_KP = 0.02
