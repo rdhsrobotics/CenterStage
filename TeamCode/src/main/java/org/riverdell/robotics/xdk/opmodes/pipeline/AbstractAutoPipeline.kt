@@ -155,11 +155,6 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             opModeIsActive()
         )
         {
-            if (startTime + 5000L < System.currentTimeMillis())
-            {
-                break
-            }
-
             val frontLeftPos = frontLeft.currentPosition.absoluteValue
             val frontRightPos = frontRight.currentPosition.absoluteValue
             val backRightPos = backRight.currentPosition.absoluteValue
