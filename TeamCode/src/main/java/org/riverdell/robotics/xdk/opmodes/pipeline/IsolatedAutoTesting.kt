@@ -17,18 +17,7 @@ class IsolatedAutoTesting : AbstractAutoPipeline()
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
             single<DrivebaseContext>("move pixel to spike") {
-                while (opModeIsActive())
-                {
-                    turn(-90.0)
-                    forward(-400.0)
-                    sleep(250)
-                    turn(0.0)
-                    forward(-400.0)
-                    sleep(250)
-                    turn(90.0)
-                    forward(-400.0)
-                    sleep(250)
-                }
+                PIDToDistance(12.0)
             }
         }
 }

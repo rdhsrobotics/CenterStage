@@ -72,6 +72,7 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
                     gamepad2.left_trigger
             );
             elevator.configureElevator(gamepad2.right_stick_y);
+            telemetry.addLine(String.valueOf(extendableClaw.getBackingClawOpener().getPosition()));
             telemetry.update();
         }
 
@@ -104,16 +105,39 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
                 })
                 .whenPressedOnce();
 
+        // extender expansion ranges
         gp2Commands
                 .where(ButtonType.DPadDown)
                 .triggers(() -> {
-                    this.extendableClaw.toggleExtender(ExtendableClaw.ClawState.Intake);
+                    this.extendableClaw.decrementAddition();
                     return Unit.INSTANCE;
                 })
-                .andIsHeldUntilReleasedWhere(() -> {
-                    this.extendableClaw.toggleExtender(ExtendableClaw.ClawState.Deposit);
+                .whenPressedOnce();
+
+        gp2Commands
+                .where(ButtonType.DPadUp)
+                .triggers(() -> {
+                    this.extendableClaw.incrementAddition();
                     return Unit.INSTANCE;
-                });
+                })
+                .whenPressedOnce();
+
+        // claw expansion
+        gp2Commands
+                .where(ButtonType.DPadLeft)
+                .triggers(() -> {
+                    this.extendableClaw.decrementClawAddition();
+                    return Unit.INSTANCE;
+                })
+                .whenPressedOnce();
+
+        gp2Commands
+                .where(ButtonType.DPadRight)
+                .triggers(() -> {
+                    this.extendableClaw.incrementClawAddition();
+                    return Unit.INSTANCE;
+                })
+                .whenPressedOnce();
 
         gp1Commands.startListening();
         gp2Commands.startListening();

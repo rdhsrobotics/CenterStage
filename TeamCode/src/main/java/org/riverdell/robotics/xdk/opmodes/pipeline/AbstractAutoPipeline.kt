@@ -17,6 +17,7 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.ElevatorContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.VisionPipeline
+import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 import kotlin.math.abs
@@ -31,10 +32,11 @@ abstract class AbstractAutoPipeline : LinearOpMode()
     private val backRight by lazy { hardware<DcMotor>("backRight") }
     private val backLeft by lazy { hardware<DcMotor>("backLeft") }
 
-    private val rightDistanceSensor by lazy { hardware<DistanceSensor>("rightdist") }
+//    private val rightDistanceSensor by lazy { hardware<DistanceSensor>("rightdist") }
 
     internal val elevatorSubsystem by lazy { Elevator(this) }
     internal val clawSubsystem by lazy { ExtendableClaw(this) }
+    internal val airplaneSubsystem by lazy { AirplaneLauncher(this) }
 
     internal var monoShouldDoLogging = true
 
@@ -45,7 +47,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             webcam = hardware("webcam1"),
             telemetry = this.telemetry,
                 frontDistanceSensor = frontDistanceSensor,
-                rightDistanceSensor = rightDistanceSensor
+                /*rightDistanceSensor = rightDistanceSensor*/
         )
     }
 
@@ -54,6 +56,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
     override fun runOpMode()
     {
         frontDistanceSensor
+
         this.imu = hardware("imu")
         this.imu.initialize(
             IMU.Parameters(
@@ -67,6 +70,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         visionPipeline.start()
         clawSubsystem.initialize()
         elevatorSubsystem.initialize()
+        airplaneSubsystem.initialize()
 
         // keep all log entries
         if (monoShouldDoLogging)
@@ -95,6 +99,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         val tapeSide = visionPipeline
             .recognizeGameObjectTapeSide()
             .join()
+            ?: TapeSide.Middle
 
         telemetry.addLine("Completed detection. Detected tape side: ${tapeSide.name}. Waiting for start...")
         telemetry.update()
@@ -124,6 +129,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         visionPipeline.stop()
         clawSubsystem.dispose()
         elevatorSubsystem.dispose()
+        airplaneSubsystem.dispose()
 
         Mono.logSink = { }
     }
@@ -156,6 +162,11 @@ abstract class AbstractAutoPipeline : LinearOpMode()
             opModeIsActive()
         )
         {
+            if (startTime + 5000L < System.currentTimeMillis())
+            {
+                break
+            }
+
             val frontLeftPos = frontLeft.currentPosition.absoluteValue
             val frontRightPos = frontRight.currentPosition.absoluteValue
             val backRightPos = backRight.currentPosition.absoluteValue
@@ -207,7 +218,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         {
             if (!opModeIsActive())
             {
-                break
+                return
             }
 
             sleep(50L)
@@ -237,6 +248,11 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         )
         {
             if (!opModeIsActive())
+            {
+                return
+            }
+
+            if (startTime + 5000L < System.currentTimeMillis())
             {
                 break
             }
@@ -286,6 +302,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
     }
 
     private val frontDistanceSensor by lazy { hardware<DistanceSensor>("frontsensor") }
+
     fun PIDToDistance(distanceTarget: Double)
     {
         var distance = 0.0
@@ -308,8 +325,17 @@ abstract class AbstractAutoPipeline : LinearOpMode()
 
         runMotors()
 
-        while ((error.absoluteValue > 1.0 || velocity > 1.0) && opModeIsActive())
+        while ((error.absoluteValue > 1.0 || velocity > 1.0))
         {
+            if (!opModeIsActive())
+            {
+                return
+            }
+
+            if (startTime + 5000L < System.currentTimeMillis())
+            {
+                break
+            }
 
             distance = frontDistanceSensor.getDistance(DistanceUnit.CM)
             previous = distance
@@ -329,11 +355,12 @@ abstract class AbstractAutoPipeline : LinearOpMode()
                     "Previous: ${"%.3f".format(previous.toFloat())} | " +
                     "Error: ${"%.3f".format(error.toFloat())} | " +
                     "Velocity: ${"%.3f".format(velocity.toFloat())} | " +
-                    "Integral: ${"%.3f".format(integral.toFloat())} |"
+                    "Integral: ${"%.3f".format(integral.toFloat())} |" +
+                    "Distance: ${"%.3f".format(distance.toFloat())} |"
             )
             telemetry.update()
 
-            setPower(rampUp * -rawPidPower)
+            setPower(rampUp * rawPidPower)
         }
 
         stopAndResetMotors()

@@ -13,9 +13,12 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
         opMode.hardware<Servo>("extender")
     }
 
-    private val backingClawOpener by lazy {
+    val backingClawOpener by lazy {
         opMode.hardware<Servo>("claw")
     }
+
+    private var maxExtenderAddition = 0.0
+    private var clawIncrement = 0.0
 
     override fun composeStageContext() = object : StageContext
     {
@@ -35,6 +38,28 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
         backingClawOpener.position = 0.5
     }
 
+    fun incrementClawAddition()
+    {
+        clawIncrement += 0.025
+    }
+
+    fun decrementClawAddition()
+    {
+        clawIncrement -= 0.025
+    }
+
+    fun incrementAddition()
+    {
+        maxExtenderAddition -= 0.01
+        toggleExtender(clawState)
+    }
+
+    fun decrementAddition()
+    {
+        maxExtenderAddition += 0.01
+        toggleExtender(clawState)
+    }
+
     @JvmOverloads
     fun toggleExtender(state: ClawState? = null)
     {
@@ -45,7 +70,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
             {
                 ClawState.Deposit -> ClawExpansionConstants.MIN_EXTENDER_POSITION
                 ClawState.Start -> 0.0
-                ClawState.Intake -> ClawExpansionConstants.MAX_EXTENDER_POSITION
+                ClawState.Intake -> ClawExpansionConstants.MAX_EXTENDER_POSITION + maxExtenderAddition
             }
 
             return
@@ -53,7 +78,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
 
         clawState = if (clawState == ClawState.Deposit)
         {
-            backingExtender.position = ClawExpansionConstants.MAX_EXTENDER_POSITION
+            backingExtender.position = ClawExpansionConstants.MAX_EXTENDER_POSITION + maxExtenderAddition
             ClawState.Intake
         } else
         {
@@ -68,7 +93,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
      */
     fun expandClaw(expandsTo: Double)
     {
-        backingClawOpener.position = 0.5 - expandsTo * 0.5
+        backingClawOpener.position = (0.5 + clawIncrement) - expandsTo * (0.5 - clawIncrement)
     }
 
     override fun isCompleted() = true

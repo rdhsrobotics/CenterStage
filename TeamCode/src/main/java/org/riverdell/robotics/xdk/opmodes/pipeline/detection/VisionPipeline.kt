@@ -40,8 +40,8 @@ import kotlin.math.roundToInt
 class VisionPipeline(
     private val webcam: WebcamName,
     private val frontDistanceSensor: DistanceSensor,
-    private val telemetry: Telemetry
-    private val rightDistanceSensor: DistanceSensor
+    private val telemetry: Telemetry/*,
+    private val rightDistanceSensor: DistanceSensor*/
 )
 {
     companion object
@@ -49,9 +49,17 @@ class VisionPipeline(
         @SuppressLint("SdCardPath")
         const val CENTER_STAGE_TFLITE_MODEL = "/sdcard/FIRST/tflitemodels/CenterStage.tflite"
         @JvmStatic
-        val CENTER_STAGE_MODEL_LABELS = arrayOf("Pixel")
+        val CENTER_STAGE_MODEL_LABELS = arrayOf("pixel")
     }
 
+    private val aprilTagProcessor: AprilTagProcessor = AprilTagProcessor.Builder()
+        .setDrawTagOutline(true)
+        .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+        .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
+        .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+        .build()
+
+    @SuppressLint("SdCardPath")
     private val tfodCenterStageProcessor = TfodProcessor.Builder()
         .setModelFileName(CENTER_STAGE_TFLITE_MODEL)
         .setModelLabels(CENTER_STAGE_MODEL_LABELS)
@@ -67,7 +75,7 @@ class VisionPipeline(
             .enableLiveView(true)
             .setStreamFormat(VisionPortal.StreamFormat.YUY2)
             .setAutoStopLiveView(true)
-            .addProcessors(tfodCenterStageProcessor)
+            .addProcessors(aprilTagProcessor, tfodCenterStageProcessor)
             .build()
     }
 
@@ -87,12 +95,6 @@ class VisionPipeline(
     fun recognizeGameObjectTapeSide(): CompletableFuture<TapeSide?>
     {
         return CompletableFuture.supplyAsync({
-
-
-            return@supplyAsync TapeSide.Middle
-        }, visionExecutor)
-    }
-    /*return CompletableFuture.supplyAsync({
             var recogAttempts = 0
 
             while (recogAttempts++ < 3)
@@ -109,6 +111,9 @@ class VisionPipeline(
                 val angleEstimation = matchingRecognition
                     .estimateAngleToObject(AngleUnit.DEGREES)
 
+                telemetry.addLine("Estimation: $angleEstimation")
+                telemetry.update()
+
                 val estimatedTapeSide = gameObjectToAngleEstimations.entries
                     .firstOrNull {
                         angleEstimation.roundToInt() in it.key
@@ -121,5 +126,14 @@ class VisionPipeline(
             }
 
             return@supplyAsync TapeSide.Middle
+        }, visionExecutor)
+
+        /*return CompletableFuture.supplyAsync({
+
+
+            return@supplyAsync TapeSide.Middle
         }, visionExecutor)*/
+    }
+
+    /**/
 }

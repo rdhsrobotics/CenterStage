@@ -45,7 +45,7 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
 
     override fun buildExecutionGroup(_OLD_tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
-            single<DrivebaseContext>("move to detection") {
+            /*single<DrivebaseContext>("move to detection") {
                 var tapeSide: TapeSide? = null
 
                 runMovementPID(MoveToDetection) {
@@ -72,7 +72,7 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
                         // do somethig when its left
                     }
                 }
-            }
+            }*/
 
             single<DrivebaseContext>("move pixel to spike") {
                 forward(MovePixelToSpike)
@@ -80,6 +80,7 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
 
             single<DrivebaseContext>("move back from spike") {
                 forward(MoveBackFromSpike)
+                Thread.sleep(500)
             }
 
             single<DrivebaseContext>("turn towards backboard") {
@@ -99,7 +100,7 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
             }
 
             single<DrivebaseContext>("meow") {
-                PIDToDistance(2.0)
+                PIDToDistance(12.0)
             }
 
             single("drop shi") {
