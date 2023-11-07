@@ -1,6 +1,7 @@
 package org.riverdell.robotics.xdk.opmodes.pipeline.detection
 
 import android.util.Size
+import com.acmerobotics.dashboard.FtcDashboard
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.vision.VisionPortal
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.prop.PropPipeline
@@ -11,22 +12,31 @@ class VisionPipeline(
 )
 {
     private var portal: VisionPortal? = null
-    private val propPipeline by lazy {
+    val propPipeline by lazy {
         PropPipeline(teamColor)
     }
 
     fun getTapeSide() = propPipeline.location
 
-    fun start()
+    @JvmOverloads
+    fun start(dashboard: Boolean = false)
     {
         portal = VisionPortal.Builder()
             .setCamera(webcam)
-            .setCameraResolution(Size(640, 480))
+            .setCameraResolution(Size(1920, 1080))
             .enableLiveView(true)
-            .setStreamFormat(VisionPortal.StreamFormat.YUY2)
             .setAutoStopLiveView(true)
             .addProcessors(propPipeline)
             .build()
+
+        if (!dashboard)
+        {
+            return
+        }
+
+        FtcDashboard.getInstance().startCameraStream(
+            propPipeline, 30.0
+        )
     }
 
     fun stop()

@@ -116,7 +116,7 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
             } else {
                 // right zone has it
                 location = TapeSide.Right;
-                Imgproc.rectangle(frame, centerZoneArea, new Scalar(255, 255, 0));
+                Imgproc.rectangle(frame, centerZoneArea, new Scalar(255, 255, 255));
             }
         } else {
             if (leftColor > threshold) {
