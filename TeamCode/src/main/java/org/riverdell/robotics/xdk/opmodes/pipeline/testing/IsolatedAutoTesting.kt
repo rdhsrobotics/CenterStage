@@ -8,7 +8,7 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
 
-@Autonomous(name = "Auto | Testing", preselectTeleOp = "prod")
+@Autonomous(name = "Test | Auto Movement", preselectTeleOp = "prod")
 class IsolatedAutoTesting : AbstractAutoPipeline()
 {
     init
