@@ -2,14 +2,12 @@ package org.riverdell.robotics.xdk.opmodes;
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.jetbrains.annotations.NotNull;
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher;
 import org.riverdell.robotics.xdk.opmodes.subsystem.Drivebase;
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator;
-import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ClawExpansionConstants;
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw;
 
 import io.liftgate.robotics.mono.Mono;
@@ -37,6 +35,12 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
     private Elevator elevator;
     @MonotonicNonNull
     private ExtendableClaw extendableClaw;
+
+    public abstract void driveRobot(
+            @NotNull final Drivebase drivebase,
+            @NotNull final GamepadEx driverOp,
+            final double multiplier
+    );
 
     @Override
     public void runOpMode() {
@@ -67,13 +71,10 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
 
         while (opModeIsActive()) {
             final double multiplier = 0.6 + (gamepad1.right_trigger * 0.4);
-            drivebase.driveRobotCentric(driverOp, multiplier);
-            extendableClaw.expandClaw(
-                    gamepad2.left_trigger
-            );
+            driveRobot(drivebase, driverOp, multiplier);
+
+            extendableClaw.expandClaw(gamepad2.left_trigger);
             elevator.configureElevator(gamepad2.right_stick_y);
-            telemetry.addLine(String.valueOf(extendableClaw.getBackingClawOpener().getPosition()));
-            telemetry.update();
         }
 
         gp1Commands.stopListening();

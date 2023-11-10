@@ -40,23 +40,27 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
 
     fun incrementClawAddition()
     {
-        clawIncrement += 0.025
+        clawIncrement = (clawIncrement + 0.025)
+            .coerceIn(-0.2, 0.2)
     }
 
     fun decrementClawAddition()
     {
-        clawIncrement -= 0.025
+        clawIncrement = (clawIncrement - 0.025)
+            .coerceIn(-0.2, 0.2)
     }
 
     fun incrementAddition()
     {
-        maxExtenderAddition -= 0.01
+        maxExtenderAddition = (maxExtenderAddition - 0.01)
+            .coerceIn(-0.1, 0.1)
         toggleExtender(clawState)
     }
 
     fun decrementAddition()
     {
-        maxExtenderAddition += 0.01
+        maxExtenderAddition = (maxExtenderAddition + 0.01)
+            .coerceIn(-0.1, 0.1)
         toggleExtender(clawState)
     }
 
@@ -93,7 +97,8 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
      */
     fun expandClaw(expandsTo: Double)
     {
-        backingClawOpener.position = (0.5 + clawIncrement) - expandsTo * (0.5 - clawIncrement)
+        backingClawOpener.position = (0.5 + clawIncrement) -
+            expandsTo * (0.5 - clawIncrement)
     }
 
     override fun isCompleted() = true

@@ -5,8 +5,10 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.IMU
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.Subsystem
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.riverdell.robotics.xdk.opmodes.pipeline.hardware
 import kotlin.math.min
 
@@ -20,6 +22,8 @@ class Drivebase(private val opMode: LinearOpMode) : Subsystem
             opMode.hardware("frontRight")
         )
     }
+
+    private val imu by lazy { opMode.hardware<IMU>("imu") }
 
     private val backingDriveBase by lazy {
         val backLeft = Motor(opMode.hardwareMap, "backLeft")
@@ -52,6 +56,18 @@ class Drivebase(private val opMode: LinearOpMode) : Subsystem
             true
         )
     }
+
+    fun driveFieldCentric(driverOp: GamepadEx, scaleFactor: Double)
+    {
+        backingDriveBase.driveFieldCentric(
+            -driverOp.leftX * scaleFactor,
+            -driverOp.leftY * scaleFactor,
+            driverOp.rightX * min(0.7, scaleFactor),
+            imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES),
+            true
+        )
+    }
+
 
     override fun initialize()
     {
