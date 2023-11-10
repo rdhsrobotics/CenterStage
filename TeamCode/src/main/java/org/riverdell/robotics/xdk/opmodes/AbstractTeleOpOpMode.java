@@ -44,7 +44,7 @@ public abstract class AbstractTeleOpOpMode extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Drivebase drivebase = new Drivebase(this);
+        final Drivebase drivebase = new Drivebase(this);
         drivebase.initialize();
 
         this.paperPlaneLauncher = new AirplaneLauncher(this);

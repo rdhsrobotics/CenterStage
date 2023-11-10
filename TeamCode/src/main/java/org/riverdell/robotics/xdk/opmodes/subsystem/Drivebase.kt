@@ -3,6 +3,7 @@ package org.riverdell.robotics.xdk.opmodes.subsystem
 import com.arcrobotics.ftclib.drivebase.MecanumDrive
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.hardware.motors.Motor
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.IMU
@@ -59,18 +60,29 @@ class Drivebase(private val opMode: LinearOpMode) : Subsystem
 
     fun driveFieldCentric(driverOp: GamepadEx, scaleFactor: Double)
     {
+        val heading = imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
+
         backingDriveBase.driveFieldCentric(
             -driverOp.leftX * scaleFactor,
             -driverOp.leftY * scaleFactor,
             driverOp.rightX * min(0.7, scaleFactor),
-            imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES),
+            heading,
             true
         )
     }
 
-
     override fun initialize()
     {
+        imu.initialize(
+            IMU.Parameters(
+                RevHubOrientationOnRobot(
+                    RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                    RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+                )
+            )
+        )
+        imu.resetYaw()
+
         backingDriveBase
     }
 
