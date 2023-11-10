@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.IMU
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
+import io.liftgate.robotics.mono.subsystem.Subsystem
 import org.firstinspires.ftc.robotcore.external.Telemetry.Line
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
@@ -25,8 +26,10 @@ import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
-abstract class AbstractAutoPipeline : LinearOpMode()
+abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.subsystem.System
 {
+    override val subsystems = mutableSetOf<Subsystem>()
+
     private val frontRight by lazy { hardware<DcMotor>("frontRight") }
     private val frontLeft by lazy { hardware<DcMotor>("frontLeft") }
 
@@ -67,9 +70,12 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         )
 
         visionPipeline.start()
-        clawSubsystem.initialize()
-        elevatorSubsystem.initialize()
-        airplaneSubsystem.initialize()
+
+        register(
+            clawSubsystem,
+            elevatorSubsystem,
+            airplaneSubsystem
+        )
 
         // keep all log entries
         if (monoShouldDoLogging)
@@ -121,9 +127,7 @@ abstract class AbstractAutoPipeline : LinearOpMode()
         terminateAllMotors()
 
         visionPipeline.stop()
-        clawSubsystem.dispose()
-        elevatorSubsystem.dispose()
-        airplaneSubsystem.dispose()
+        disposeOfAll()
 
         Mono.logSink = { }
     }

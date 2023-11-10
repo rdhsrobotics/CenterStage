@@ -1,13 +1,12 @@
 package org.riverdell.robotics.xdk.opmodes.subsystem.claw
 
-import com.arcrobotics.ftclib.hardware.SimpleServo
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.Servo
 import io.liftgate.robotics.mono.pipeline.StageContext
-import io.liftgate.robotics.mono.subsystem.Subsystem
+import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import org.riverdell.robotics.xdk.opmodes.pipeline.hardware
 
-class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
+class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
     private val backingExtender by lazy {
         opMode.hardware<Servo>("extender")
@@ -32,7 +31,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : Subsystem
 
     private var clawState = ClawState.Start
 
-    override fun initialize()
+    override fun doInitialize()
     {
         backingExtender.position = 0.0
         backingClawOpener.position = 0.5

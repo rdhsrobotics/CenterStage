@@ -20,19 +20,10 @@ class MonoTestDualSelectOverride : LinearOpMode()
             }
             .whenPressedOnce()
 
-        gp1Commands
-            .where(ButtonType.ButtonA)
-            .and(ButtonType.ButtonB)
-            .triggers {
-                telemetry.addLine("Hey, button B mapping!")
-                telemetry.update()
-            }
-            .whenPressedOnce()
-
         telemetry.addLine("Waiting for start")
 
         waitForStart()
-        gp1Commands.startListening()
+        gp1Commands.initialize()
         telemetry.addLine("Listening for commands")
 
         while (opModeIsActive())
@@ -40,6 +31,6 @@ class MonoTestDualSelectOverride : LinearOpMode()
             Thread.sleep(100L)
         }
 
-        gp1Commands.stopListening()
+        gp1Commands.dispose()
     }
 }

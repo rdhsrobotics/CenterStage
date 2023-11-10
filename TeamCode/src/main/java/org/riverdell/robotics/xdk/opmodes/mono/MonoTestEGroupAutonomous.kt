@@ -3,7 +3,7 @@ package org.riverdell.robotics.xdk.opmodes.mono
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import io.liftgate.robotics.mono.Mono
-import io.liftgate.robotics.mono.pipeline.parallel
+import io.liftgate.robotics.mono.pipeline.simultaneous
 import io.liftgate.robotics.mono.pipeline.single
 
 @Autonomous(name = "Mono | Test EGroup Auto Terminate")
@@ -34,7 +34,7 @@ class MonoTestEGroupAutonomous : LinearOpMode()
                     Thread.sleep(1000)
                 }
 
-                parallel("asd3") {
+                simultaneous("asd3") {
                     single("14") {
                         Thread.sleep(1000)
                     }

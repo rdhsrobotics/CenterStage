@@ -5,12 +5,13 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import io.liftgate.robotics.mono.pipeline.StageContext
+import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import org.riverdell.robotics.xdk.opmodes.pipeline.hardware
 import kotlin.math.max
 import kotlin.math.min
 
-class Elevator(private val opMode: LinearOpMode) : Subsystem
+class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
     val backingMotor by lazy {
         opMode.hardware<DcMotorEx>("elevator")
@@ -26,7 +27,7 @@ class Elevator(private val opMode: LinearOpMode) : Subsystem
         backingMotor.stopAndResetEncoder()
     }
 
-    override fun initialize()
+    override fun doInitialize()
     {
         backingMotor.direction = DcMotorSimple.Direction.REVERSE
         backingMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE

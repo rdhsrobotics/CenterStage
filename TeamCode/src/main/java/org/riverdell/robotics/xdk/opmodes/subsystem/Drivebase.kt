@@ -8,12 +8,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.IMU
 import io.liftgate.robotics.mono.pipeline.StageContext
+import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.riverdell.robotics.xdk.opmodes.pipeline.hardware
 import kotlin.math.min
 
-class Drivebase(private val opMode: LinearOpMode) : Subsystem
+class Drivebase(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
     private val motors by lazy {
         mutableListOf<DcMotor>(
@@ -71,7 +72,7 @@ class Drivebase(private val opMode: LinearOpMode) : Subsystem
         )
     }
 
-    override fun initialize()
+    override fun doInitialize()
     {
         imu.initialize(
             IMU.Parameters(
