@@ -16,6 +16,7 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.TurnDegreesTowar
 import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
+import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 
 /**
  * @author Subham
@@ -24,7 +25,6 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
 @Config
 object RedRight
 {
-    @JvmField var MoveToDetection = 700.0
     @JvmField var MovePixelToSpike = 825.0
     @JvmField var MoveBackFromSpike = -300.0
     @JvmField var TurnDegreesTowardBackboard = -90.0
@@ -80,8 +80,15 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
 
             single("drop shi") {
                 Thread.sleep(350L)
-                clawSubsystem.expandClaw(1.0)
+                clawSubsystem.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawState.Open
+                )
                 Thread.sleep(1000L)
+                clawSubsystem.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawState.Closed
+                )
             }
 
             single("drop shi2") {

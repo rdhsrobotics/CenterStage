@@ -16,6 +16,7 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.blue.BlueLeft.StrafeIntoParki
 import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
+import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 
 /**
  * @author Subham
@@ -74,8 +75,15 @@ class AutoPipelineBlueLeft : AbstractAutoPipeline()
 
             single("drop shi") {
                 Thread.sleep(350L)
-                clawSubsystem.expandClaw(1.0)
+                clawSubsystem.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawState.Open
+                )
                 Thread.sleep(1000L)
+                clawSubsystem.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawState.Closed
+                )
             }
 
             single("drop shi2") {
