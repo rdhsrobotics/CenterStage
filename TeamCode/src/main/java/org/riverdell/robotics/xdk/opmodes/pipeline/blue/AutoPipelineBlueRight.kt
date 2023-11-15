@@ -18,6 +18,5 @@ class AutoPipelineBlueRight : AbstractAutoPipeline()
     override fun getTeamColor() = TeamColor.Blue
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
-            // TODO:
         }
 }

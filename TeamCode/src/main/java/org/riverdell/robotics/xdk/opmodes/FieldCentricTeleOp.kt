@@ -1,9 +1,11 @@
 package org.riverdell.robotics.xdk.opmodes
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.riverdell.robotics.xdk.opmodes.subsystem.Drivebase
 
+@Disabled
 @TeleOp(name = "Prod | Field Centric")
 class FieldCentricTeleOp : AbstractTeleOp()
 {

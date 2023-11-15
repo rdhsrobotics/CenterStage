@@ -6,6 +6,7 @@ import io.liftgate.robotics.mono.Mono.commands
 import io.liftgate.robotics.mono.gamepad.ButtonType
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import io.liftgate.robotics.mono.subsystem.System
+import org.riverdell.robotics.xdk.opmodes.pipeline.scheduleAsyncExecution
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher
 import org.riverdell.robotics.xdk.opmodes.subsystem.Drivebase
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator
@@ -53,15 +54,13 @@ abstract class AbstractTeleOp : LinearOpMode(), System
         waitForStart()
 
         extendableClaw.toggleExtender(
-            ExtendableClaw.ClawState.Deposit
+            ExtendableClaw.ExtenderState.Deposit
         )
 
         while (opModeIsActive())
         {
             val multiplier = 0.6 + gamepad1.right_trigger * 0.4
             driveRobot(drivebase, driverOp, multiplier)
-
-            extendableClaw.expandClaw(gamepad2.left_trigger.toDouble())
             elevator.configureElevator(gamepad2.right_stick_y.toDouble())
         }
 
@@ -71,19 +70,13 @@ abstract class AbstractTeleOp : LinearOpMode(), System
     private fun buildCommands()
     {
         gp1Commands
-            .where(ButtonType.ButtonY)
+            .where(ButtonType.ButtonA)
             .triggers {
                 paperPlaneLauncher.launch()
             }
             .andIsHeldUntilReleasedWhere {
                 paperPlaneLauncher.reset()
             }
-        gp2Commands
-            .where(ButtonType.ButtonY)
-            .triggers {
-                extendableClaw.toggleExtender()
-            }
-            .whenPressedOnce()
 
         // extender expansion ranges
         gp2Commands
@@ -92,6 +85,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 extendableClaw.decrementAddition()
             }
             .whenPressedOnce()
+
         gp2Commands
             .where(ButtonType.DPadUp)
             .triggers {
@@ -99,11 +93,18 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             }
             .whenPressedOnce()
 
-        // claw expansion
+        var bundleExecutionInProgress = false
+
+        // claw expansion.
         gp2Commands
             .where(ButtonType.DPadLeft)
+            .onlyWhen { !bundleExecutionInProgress }
             .triggers {
                 extendableClaw.decrementClawAddition()
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawState.Closed
+                )
             }
             .whenPressedOnce()
 
@@ -111,7 +112,108 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             .where(ButtonType.DPadRight)
             .triggers {
                 extendableClaw.incrementClawAddition()
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawState.Closed
+                )
             }
             .whenPressedOnce()
+
+        // bumper commands for opening closing claw
+        gp2Commands
+            .where(ButtonType.BumperLeft)
+            .onlyWhen { !bundleExecutionInProgress }
+            .triggers {
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Left,
+                    ExtendableClaw.ClawState.Open
+                )
+            }
+            .andIsHeldUntilReleasedWhere {
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Left,
+                    ExtendableClaw.ClawState.Closed
+                )
+            }
+
+        gp2Commands
+            .where(ButtonType.BumperRight)
+            .onlyWhen { !bundleExecutionInProgress }
+            .triggers {
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Right,
+                    ExtendableClaw.ClawState.Open
+                )
+            }
+            .andIsHeldUntilReleasedWhere {
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Right,
+                    ExtendableClaw.ClawState.Closed
+                )
+            }
+
+        gp2Commands
+            .where(ButtonType.ButtonX)
+            .triggers {
+                elevator.configureElevatorManually(0.5)
+            }
+            .whenPressedOnce()
+
+        gp2Commands
+            .where(ButtonType.ButtonB)
+            .triggers {
+                elevator.configureElevatorManually(0.0)
+            }
+            .whenPressedOnce()
+
+        gp2Commands
+            .where(ButtonType.ButtonB)
+            .triggers {
+                elevator.configureElevatorManually(0.5)
+            }
+            .whenPressedOnce()
+
+        gp2Commands
+            .where(ButtonType.ButtonY)
+            .onlyWhen { !bundleExecutionInProgress }
+            .triggers {
+                extendableClaw.toggleExtender(
+                    ExtendableClaw.ExtenderState.Intake
+                )
+            }
+            .andIsHeldUntilReleasedWhere {
+                extendableClaw.toggleExtender(
+                    ExtendableClaw.ExtenderState.Deposit
+                )
+            }
+
+        gp2Commands
+            .where(ButtonType.ButtonA)
+            .onlyWhen { !bundleExecutionInProgress }
+            .triggers {
+                extendableClaw.toggleExtender(
+                    ExtendableClaw.ExtenderState.Intake
+                )
+
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawState.Open
+                )
+            }
+            .andIsHeldUntilReleasedWhere {
+                bundleExecutionInProgress = true
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawState.Closed
+                )
+
+                scheduleAsyncExecution(350L) {
+                    extendableClaw.toggleExtender(
+                        ExtendableClaw.ExtenderState.Deposit
+                    )
+
+                    bundleExecutionInProgress = false
+                }
+            }
     }
 }

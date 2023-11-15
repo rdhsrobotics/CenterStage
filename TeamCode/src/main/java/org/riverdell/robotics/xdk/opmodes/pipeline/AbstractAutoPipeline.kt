@@ -101,7 +101,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         telemetry.addLine("Waiting for start. Started detection...")
         telemetry.update()
 
-        this.clawSubsystem.toggleExtender(ExtendableClaw.ClawState.Start)
+        this.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Start)
 
         while (!isStarted)
         {
@@ -110,7 +110,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         }
 
         val tapeSide = visionPipeline.getTapeSide()
-        this.clawSubsystem.toggleExtender(ExtendableClaw.ClawState.Deposit)
+        this.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
 
         telemetry.addLine("Started! Executing the Mono execution group now with ${tapeSide.name}.")
         telemetry.update()
