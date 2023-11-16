@@ -2,8 +2,10 @@ package org.riverdell.robotics.xdk.opmodes
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.hardware.Gamepad.LedEffect
 import io.liftgate.robotics.mono.Mono.commands
 import io.liftgate.robotics.mono.gamepad.ButtonType
+import io.liftgate.robotics.mono.gamepad.GamepadCommands
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import io.liftgate.robotics.mono.subsystem.System
 import org.riverdell.robotics.xdk.opmodes.pipeline.scheduleAsyncExecution
@@ -62,6 +64,17 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             val multiplier = 0.6 + gamepad1.right_trigger * 0.4
             driveRobot(drivebase, driverOp, multiplier)
             elevator.configureElevator(gamepad2.right_stick_y.toDouble())
+
+            if (extendableClaw.extenderState == ExtendableClaw.ExtenderState.Intake)
+            {
+                // physical feedback towards the driver when driving with the extender down
+                if (gamepad1.nextRumbleApproxFinishTime > 0)
+                {
+                    continue
+                }
+
+                gamepad1.rumble(1000)
+            }
         }
 
         disposeOfAll()
@@ -70,7 +83,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
     private fun buildCommands()
     {
         gp1Commands
-            .where(ButtonType.ButtonA)
+            .where(ButtonType.PlayStationCross)
             .triggers {
                 paperPlaneLauncher.launch()
             }
@@ -79,15 +92,17 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             }
 
         // extender expansion ranges
-        gp2Commands
-            .where(ButtonType.DPadDown)
+        gp1Commands
+            .where(ButtonType.PlayStationTouchpad)
+            .onlyWhen { gamepad1.touchpad_finger_1_y <= 0.0 }
             .triggers {
                 extendableClaw.decrementAddition()
             }
             .whenPressedOnce()
 
-        gp2Commands
-            .where(ButtonType.DPadUp)
+        gp1Commands
+            .where(ButtonType.PlayStationTouchpad)
+            .onlyWhen { gamepad1.touchpad_finger_1_y >= 0.0 }
             .triggers {
                 extendableClaw.incrementAddition()
             }
@@ -95,10 +110,11 @@ abstract class AbstractTeleOp : LinearOpMode(), System
 
         var bundleExecutionInProgress = false
 
-        // claw expansion.
-        gp2Commands
-            .where(ButtonType.DPadLeft)
-            .onlyWhen { !bundleExecutionInProgress }
+        // claw expansion ranges
+        /*gp1Commands
+            .where(ButtonType.PlayStationTouchpad)
+            .onlyWhenNot { bundleExecutionInProgress }
+            .onlyWhen { gamepad1.touchpad_finger_1_x <= 0.0 }
             .triggers {
                 extendableClaw.decrementClawAddition()
                 extendableClaw.updateClawState(
@@ -108,8 +124,10 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             }
             .whenPressedOnce()
 
-        gp2Commands
-            .where(ButtonType.DPadRight)
+        gp1Commands
+            .where(ButtonType.PlayStationTouchpad)
+            .onlyWhenNot { bundleExecutionInProgress }
+            .onlyWhen { gamepad1.touchpad_finger_1_x >= 0.0 }
             .triggers {
                 extendableClaw.incrementClawAddition()
                 extendableClaw.updateClawState(
@@ -117,9 +135,9 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                     ExtendableClaw.ClawState.Closed
                 )
             }
-            .whenPressedOnce()
+            .whenPressedOnce()*/
 
-        // bumper commands for opening closing claw
+        // bumper commands for opening closing claw fingers individually
         gp2Commands
             .where(ButtonType.BumperLeft)
             .onlyWhen { !bundleExecutionInProgress }
@@ -152,13 +170,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 )
             }
 
-        gp2Commands
-            .where(ButtonType.ButtonX)
-            .triggers {
-                elevator.configureElevatorManually(0.5)
-            }
-            .whenPressedOnce()
-
+        // elevator preset return to home
         gp2Commands
             .where(ButtonType.ButtonB)
             .triggers {
@@ -166,13 +178,15 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             }
             .whenPressedOnce()
 
+        // elevator preset (low backboard)
         gp2Commands
-            .where(ButtonType.ButtonB)
+            .where(ButtonType.ButtonX)
             .triggers {
                 elevator.configureElevatorManually(0.5)
             }
             .whenPressedOnce()
 
+        // extender to intake
         gp2Commands
             .where(ButtonType.ButtonY)
             .onlyWhen { !bundleExecutionInProgress }
@@ -187,10 +201,45 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 )
             }
 
+        fun GamepadCommands.ButtonMappingBuilder.depositPresetReleaseOnElevatorHeight(position: Double)
+        {
+            triggers {
+                bundleExecutionInProgress = true
+                elevator.configureElevatorManually(position)
+            }.andIsHeldUntilReleasedWhere {
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawState.Open
+                )
+
+                scheduleAsyncExecution(450L) {
+                    elevator.configureElevatorManually(0.0)
+                    bundleExecutionInProgress = false
+                }
+            }
+        }
+
+        gp2Commands
+            .where(ButtonType.DPadLeft)
+            .onlyWhenNot { bundleExecutionInProgress }
+            .depositPresetReleaseOnElevatorHeight(0.5)
+
+        gp2Commands
+            .where(ButtonType.DPadUp)
+            .onlyWhenNot { bundleExecutionInProgress }
+            .depositPresetReleaseOnElevatorHeight(0.75)
+
+        gp2Commands
+            .where(ButtonType.DPadRight)
+            .onlyWhenNot { bundleExecutionInProgress }
+            .depositPresetReleaseOnElevatorHeight(1.0)
+
+        // human station pickup preset
         gp2Commands
             .where(ButtonType.ButtonA)
-            .onlyWhen { !bundleExecutionInProgress }
+            .onlyWhenNot { bundleExecutionInProgress }
             .triggers {
+                bundleExecutionInProgress = true
                 extendableClaw.toggleExtender(
                     ExtendableClaw.ExtenderState.Intake
                 )
@@ -201,13 +250,12 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 )
             }
             .andIsHeldUntilReleasedWhere {
-                bundleExecutionInProgress = true
                 extendableClaw.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Both,
                     ExtendableClaw.ClawState.Closed
                 )
 
-                scheduleAsyncExecution(350L) {
+                scheduleAsyncExecution(450L) {
                     extendableClaw.toggleExtender(
                         ExtendableClaw.ExtenderState.Deposit
                     )

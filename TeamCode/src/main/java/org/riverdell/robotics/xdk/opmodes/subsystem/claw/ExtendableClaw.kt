@@ -55,7 +55,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         Intake, Deposit, Start
     }
 
-    private var extenderState = ExtenderState.Start
+    var extenderState = ExtenderState.Start
 
     // TODO: we might not need this right now. good to have though.
     private var rightClawState = ClawState.Closed
