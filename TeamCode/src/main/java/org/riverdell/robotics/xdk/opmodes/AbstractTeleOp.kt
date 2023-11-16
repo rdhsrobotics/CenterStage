@@ -85,8 +85,8 @@ abstract class AbstractTeleOp : LinearOpMode(), System
         gp1Commands
             .where(ButtonType.PlayStationTouchpad)
             .onlyWhen { 
-                gamepad1.touchpad_finger_1_y <= 0.0 &&
-                gamepad1.touchpad_finger_2_y >= 0.0 
+                gamepad1.touchpad_finger_1_x <= 0.0 &&
+                gamepad1.touchpad_finger_2_x >= 0.0 
             }
             .triggers {
                 paperPlaneLauncher.launch()
