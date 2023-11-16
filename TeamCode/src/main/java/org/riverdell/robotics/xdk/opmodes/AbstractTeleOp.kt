@@ -92,7 +92,11 @@ abstract class AbstractTeleOp : LinearOpMode(), System
     private fun buildCommands()
     {
         gp1Commands
-            .where(ButtonType.PlayStationCross)
+            .where(ButtonType.PlayStationTouchpad)
+            .onlyWhen {
+                gamepad1.touchpad_finger_1_x <= 0.0 &&
+                        gamepad1.touchpad_finger_2_x >= 0.0
+            }
             .triggers {
                 paperPlaneLauncher.launch()
             }
