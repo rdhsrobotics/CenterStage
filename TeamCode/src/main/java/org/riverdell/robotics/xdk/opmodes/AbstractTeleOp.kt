@@ -178,14 +178,6 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             }
             .whenPressedOnce()
 
-        // elevator preset (low backboard)
-        gp2Commands
-            .where(ButtonType.ButtonX)
-            .triggers {
-                elevator.configureElevatorManually(0.5)
-            }
-            .whenPressedOnce()
-
         // extender to intake
         gp2Commands
             .where(ButtonType.ButtonY)
@@ -195,7 +187,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                     ExtendableClaw.ExtenderState.Intake
                 )
             }
-            .andIsHeldUntilReleasedWhere {
+            .repeatedlyWhilePressedUntilReleasedWhere {
                 extendableClaw.toggleExtender(
                     ExtendableClaw.ExtenderState.Deposit
                 )
@@ -212,7 +204,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                     ExtendableClaw.ClawState.Open
                 )
 
-                scheduleAsyncExecution(450L) {
+                scheduleAsyncExecution(250L) {
                     elevator.configureElevatorManually(0.0)
                     bundleExecutionInProgress = false
                 }
@@ -243,7 +235,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 extendableClaw.toggleExtender(
                     ExtendableClaw.ExtenderState.Intake
                 )
-
+                
                 extendableClaw.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Both,
                     ExtendableClaw.ClawState.Open
