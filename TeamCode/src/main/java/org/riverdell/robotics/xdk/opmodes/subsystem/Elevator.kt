@@ -55,5 +55,13 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
         backingMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
 
+
+    fun configureElevatorManuallyRaw(position: Int)
+    {
+        backingMotor.power = 1.0
+        backingMotor.targetPosition = position
+        backingMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
+    }
+
     override fun isCompleted() = !backingMotor.isBusy
 }

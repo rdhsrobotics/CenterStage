@@ -55,6 +55,9 @@ abstract class AbstractTeleOp : LinearOpMode(), System
         initializeAll()
         waitForStart()
 
+        telemetry.addLine("Started!")
+        telemetry.update()
+
         extendableClaw.toggleExtender(
             ExtendableClaw.ExtenderState.Deposit
         )
@@ -63,22 +66,28 @@ abstract class AbstractTeleOp : LinearOpMode(), System
         {
             val multiplier = 0.6 + gamepad1.right_trigger * 0.4
             driveRobot(drivebase, driverOp, multiplier)
-            elevator.configureElevator(gamepad2.right_stick_y.toDouble())
+
+            if (!bundleExecutionInProgress)
+            {
+                elevator.configureElevator(gamepad2.right_stick_y.toDouble())
+            }
 
             if (extendableClaw.extenderState == ExtendableClaw.ExtenderState.Intake)
             {
                 // physical feedback towards the driver when driving with the extender down
-                if (gamepad1.nextRumbleApproxFinishTime > 0)
+                if (gamepad1.nextRumbleApproxFinishTime > java.lang.System.currentTimeMillis())
                 {
                     continue
                 }
 
-                gamepad1.rumble(1000)
+                gamepad1.rumble(250)
             }
         }
 
         disposeOfAll()
     }
+
+    private var bundleExecutionInProgress = false
 
     private fun buildCommands()
     {
@@ -89,6 +98,15 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             }
             .andIsHeldUntilReleasedWhere {
                 paperPlaneLauncher.reset()
+            }
+
+        gp1Commands
+            .where(ButtonType.BumperRight)
+            .triggers {
+                extendableClaw.toggleExtender(ExtendableClaw.ExtenderState.Intermediate)
+            }
+            .andIsHeldUntilReleasedWhere {
+                extendableClaw.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
             }
 
         // extender expansion ranges
@@ -108,13 +126,11 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             }
             .whenPressedOnce()
 
-        var bundleExecutionInProgress = false
-
         // claw expansion ranges
-        /*gp1Commands
+        gp1Commands
             .where(ButtonType.PlayStationTouchpad)
             .onlyWhenNot { bundleExecutionInProgress }
-            .onlyWhen { gamepad1.touchpad_finger_1_x <= 0.0 }
+            .onlyWhen { !gamepad1.touchpad_finger_2 && gamepad1.touchpad_finger_1_x <= 0.0 }
             .triggers {
                 extendableClaw.decrementClawAddition()
                 extendableClaw.updateClawState(
@@ -127,7 +143,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
         gp1Commands
             .where(ButtonType.PlayStationTouchpad)
             .onlyWhenNot { bundleExecutionInProgress }
-            .onlyWhen { gamepad1.touchpad_finger_1_x >= 0.0 }
+            .onlyWhen { !gamepad1.touchpad_finger_2 && gamepad1.touchpad_finger_1_x >= 0.0 }
             .triggers {
                 extendableClaw.incrementClawAddition()
                 extendableClaw.updateClawState(
@@ -135,7 +151,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                     ExtendableClaw.ClawState.Closed
                 )
             }
-            .whenPressedOnce()*/
+            .whenPressedOnce()
 
         // bumper commands for opening closing claw fingers individually
         gp2Commands
@@ -201,19 +217,35 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 )
             }
 
-        fun GamepadCommands.ButtonMappingBuilder.depositPresetReleaseOnElevatorHeight(position: Double)
+        fun GamepadCommands.ButtonMappingBuilder.depositPresetReleaseOnElevatorHeight(position: Int)
         {
             triggers {
+                if (bundleExecutionInProgress)
+                {
+                    return@triggers
+                }
+
                 bundleExecutionInProgress = true
-                elevator.configureElevatorManually(position)
+                elevator.configureElevatorManuallyRaw(position)
             }.andIsHeldUntilReleasedWhere {
+                if (!bundleExecutionInProgress)
+                {
+                    return@andIsHeldUntilReleasedWhere
+                }
+
                 extendableClaw.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Both,
                     ExtendableClaw.ClawState.Open
                 )
 
-                scheduleAsyncExecution(450L) {
-                    elevator.configureElevatorManually(0.0)
+                scheduleAsyncExecution(150L) {
+                    extendableClaw.updateClawState(
+                        ExtendableClaw.ClawStateUpdate.Both,
+                        ExtendableClaw.ClawState.Closed
+                    )
+                    elevator.configureElevatorManuallyRaw(0)
+
+                    Thread.sleep(500L)
                     bundleExecutionInProgress = false
                 }
             }
@@ -221,24 +253,19 @@ abstract class AbstractTeleOp : LinearOpMode(), System
 
         gp2Commands
             .where(ButtonType.DPadLeft)
-            .onlyWhenNot { bundleExecutionInProgress }
-            .depositPresetReleaseOnElevatorHeight(0.5)
+            .depositPresetReleaseOnElevatorHeight(-630)
 
         gp2Commands
             .where(ButtonType.DPadUp)
-            .onlyWhenNot { bundleExecutionInProgress }
-            .depositPresetReleaseOnElevatorHeight(0.75)
+            .depositPresetReleaseOnElevatorHeight(-1130)
 
-        gp2Commands
-            .where(ButtonType.DPadRight)
-            .onlyWhenNot { bundleExecutionInProgress }
-            .depositPresetReleaseOnElevatorHeight(1.0)
-
-        // human station pickup preset
-        gp2Commands
-            .where(ButtonType.ButtonA)
-            .onlyWhenNot { bundleExecutionInProgress }
+        gp2Commands.where(ButtonType.ButtonA)
             .triggers {
+                if (bundleExecutionInProgress)
+                {
+                    return@triggers
+                }
+
                 bundleExecutionInProgress = true
                 extendableClaw.toggleExtender(
                     ExtendableClaw.ExtenderState.Intake
@@ -250,16 +277,20 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 )
             }
             .andIsHeldUntilReleasedWhere {
+                if (!bundleExecutionInProgress)
+                {
+                    return@andIsHeldUntilReleasedWhere
+                }
+
                 extendableClaw.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Both,
                     ExtendableClaw.ClawState.Closed
                 )
 
-                scheduleAsyncExecution(450L) {
+                scheduleAsyncExecution(250L) {
                     extendableClaw.toggleExtender(
                         ExtendableClaw.ExtenderState.Deposit
                     )
-
                     bundleExecutionInProgress = false
                 }
             }

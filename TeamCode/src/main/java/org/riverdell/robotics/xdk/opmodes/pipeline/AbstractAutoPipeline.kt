@@ -101,7 +101,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         telemetry.addLine("Waiting for start. Started detection...")
         telemetry.update()
 
-        this.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Start)
+        this.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
 
         while (!isStarted)
         {
