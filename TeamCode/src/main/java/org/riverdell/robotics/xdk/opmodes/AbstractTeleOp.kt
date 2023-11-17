@@ -2,6 +2,7 @@ package org.riverdell.robotics.xdk.opmodes
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.Gamepad.LedEffect
 import io.liftgate.robotics.mono.Mono.commands
 import io.liftgate.robotics.mono.gamepad.ButtonType
@@ -49,13 +50,22 @@ abstract class AbstractTeleOp : LinearOpMode(), System
         val driverOp = GamepadEx(gamepad1)
         buildCommands()
 
-        telemetry.addLine("Configured commands. Waiting for start...")
+        telemetry.addLine("Configured all subsystems. Waiting for start...")
+
+        if (
+            gamepad1.type != Gamepad.Type.SONY_PS4 &&
+            gamepad1.type != Gamepad.Type.SONY_PS4_SUPPORTED_BY_KERNEL
+        )
+        {
+            telemetry.addLine("WARNING! We require a Sony PS4 controller to be used as GAMEPAD 1. Please fix this to ensure everything works as intended!")
+        }
+
         telemetry.update()
 
         initializeAll()
         waitForStart()
 
-        telemetry.addLine("Started!")
+        telemetry.addLine("Initialized all subsystems. We're ready to go!")
         telemetry.update()
 
         extendableClaw.toggleExtender(
