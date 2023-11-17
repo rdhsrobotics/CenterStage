@@ -36,7 +36,9 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
         backingMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }
 
-    fun configureElevator(stick: Double)
+    private var elevatorUpdateLock = Any()
+
+    fun configureElevator(stick: Double) = synchronized(elevatorUpdateLock)
     {
         val target = min(
             max((backingMotor.currentPosition + stick * 175).toInt(), -1130),
@@ -48,15 +50,14 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
         backingMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
 
-    fun configureElevatorManually(position: Double)
+    fun configureElevatorManually(position: Double) = synchronized(elevatorUpdateLock)
     {
         backingMotor.power = 0.86
         backingMotor.targetPosition = (position * -1130).toInt()
         backingMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
 
-
-    fun configureElevatorManuallyRaw(position: Int)
+    fun configureElevatorManuallyRaw(position: Int) = synchronized(elevatorUpdateLock)
     {
         backingMotor.power = 1.0
         backingMotor.targetPosition = position
