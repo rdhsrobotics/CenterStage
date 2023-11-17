@@ -1,10 +1,12 @@
 package org.riverdell.robotics.xdk.opmodes.mono
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.gamepad.ButtonType
 
+@Disabled
 @TeleOp(name = "Mono | Test Select Override")
 class MonoTestDualSelectOverride : LinearOpMode()
 {

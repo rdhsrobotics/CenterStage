@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.single
+import org.riverdell.robotics.xdk.opmodes.Global
 import org.riverdell.robotics.xdk.opmodes.pipeline.AbstractAutoPipeline
 import org.riverdell.robotics.xdk.opmodes.pipeline.blue.BlueLeft.MoveBackFromSpike
 import org.riverdell.robotics.xdk.opmodes.pipeline.blue.BlueLeft.MovePixelToSpike
@@ -36,7 +37,7 @@ object BlueLeft
     @JvmField var StrafeIntoParkingZone = -975.0
 }
 
-@Autonomous(name = "Blue | Left", preselectTeleOp = "prod")
+@Autonomous(name = "Blue | Left", preselectTeleOp = Global.RobotCentricTeleOpName)
 class AutoPipelineBlueLeft : AbstractAutoPipeline()
 {
     override fun getTeamColor() = TeamColor.Blue

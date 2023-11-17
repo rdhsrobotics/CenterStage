@@ -1,11 +1,13 @@
 package org.riverdell.robotics.xdk.opmodes.mono
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.simultaneous
 import io.liftgate.robotics.mono.pipeline.single
 
+@Disabled
 @Autonomous(name = "Mono | Test EGroup Auto Terminate")
 class MonoTestEGroupAutonomous : LinearOpMode()
 {

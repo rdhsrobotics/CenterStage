@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.single
+import org.riverdell.robotics.xdk.opmodes.Global
 import org.riverdell.robotics.xdk.opmodes.pipeline.AbstractAutoPipeline
 import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.BackUpFromBackboard
 import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.ElevateElevatorAtBackboard
@@ -36,7 +37,7 @@ object RedRight
     @JvmField var StrafeIntoParkingZone = 975.0
 }
 
-@Autonomous(name = "Red | Right", preselectTeleOp = "prod")
+@Autonomous(name = "Red | Right", preselectTeleOp = Global.RobotCentricTeleOpName)
 class AutoPipelineRedRight : AbstractAutoPipeline()
 {
     init
