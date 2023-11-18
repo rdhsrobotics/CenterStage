@@ -308,11 +308,10 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 )
 
                 scheduleAsyncExecution(150L) {
-                    extendableClaw.updateClawState(
-                        ExtendableClaw.ClawStateUpdate.Both,
-                        ExtendableClaw.ClawState.Closed
-                    )
-                    elevator.configureElevatorManuallyRaw(0)
+                    if (gamepad2.right_trigger <= 0.5)
+                    {
+                        elevator.configureElevatorManuallyRaw(0)
+                    }
 
                     Thread.sleep(500L)
                     bundleExecutionInProgress = false
