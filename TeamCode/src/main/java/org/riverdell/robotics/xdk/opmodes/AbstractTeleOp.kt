@@ -294,8 +294,16 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                     return@andIsHeldUntilReleasedWhere
                 }
 
+                val applyUpdatesTo = when (true)
+                {
+                    gamepad2.left_bumper -> ExtendableClaw.ClawStateUpdate.Left
+                    gamepad2.right_bumper -> ExtendableClaw.ClawStateUpdate.Right
+                    (gamepad2.right_bumper && gamepad2.left_bumper) -> ExtendableClaw.ClawStateUpdate.Both
+                    else -> ExtendableClaw.ClawStateUpdate.Both
+                }
+
                 extendableClaw.updateClawState(
-                    ExtendableClaw.ClawStateUpdate.Both,
+                    applyUpdatesTo,
                     ExtendableClaw.ClawState.Open
                 )
 
