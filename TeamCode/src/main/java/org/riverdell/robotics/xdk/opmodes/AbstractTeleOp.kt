@@ -3,7 +3,6 @@ package org.riverdell.robotics.xdk.opmodes
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.Gamepad
-import com.qualcomm.robotcore.hardware.Gamepad.LedEffect
 import io.liftgate.robotics.mono.Mono.commands
 import io.liftgate.robotics.mono.gamepad.ButtonType
 import io.liftgate.robotics.mono.gamepad.GamepadCommands
@@ -76,6 +75,9 @@ abstract class AbstractTeleOp : LinearOpMode(), System
         {
             val multiplier = 0.6 + gamepad1.right_trigger * 0.4
             driveRobot(drivebase, driverOp, multiplier)
+
+            telemetry.addData("current ", elevator.backingHangMotor.currentPosition)
+            telemetry.update()
 
             if (!bundleExecutionInProgress)
             {
@@ -204,6 +206,13 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 )
             }
 
+        gp1Commands
+            .where(ButtonType.PlayStationShare)
+            .triggers {
+                elevator.toggleHangLift()
+            }
+            .whenPressedOnce()
+
         // elevator preset (low backboard)
         gp2Commands
             .where(ButtonType.ButtonX)
@@ -312,6 +321,11 @@ abstract class AbstractTeleOp : LinearOpMode(), System
 
                 scheduleAsyncExecution(150L) {
                     elevator.configureElevatorManuallyRaw(0)
+
+                    extendableClaw.updateClawState(
+                        applyUpdatesTo,
+                        ExtendableClaw.ClawState.Closed
+                    )
 
                     Thread.sleep(500L)
                     bundleExecutionInProgress = false
