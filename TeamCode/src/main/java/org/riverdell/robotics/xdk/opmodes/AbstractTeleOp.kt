@@ -319,7 +319,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                     )
                 }
 
-                scheduleAsyncExecution(150L) {
+                scheduleAsyncExecution(350L) {
                     elevator.configureElevatorManuallyRaw(0)
 
                     extendableClaw.updateClawState(
