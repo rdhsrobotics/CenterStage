@@ -1,5 +1,6 @@
 package org.riverdell.robotics.xdk.opmodes.pipeline
 
+import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -18,6 +19,7 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.VisionPipeline
+import org.riverdell.robotics.xdk.opmodes.pipeline.pid.PIDController
 import org.riverdell.robotics.xdk.opmodes.pipeline.utilities.AutoPipelineUtilities
 import org.riverdell.robotics.xdk.opmodes.pipeline.utilities.DegreeUtilities
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher
@@ -63,8 +65,8 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         this.imu.initialize(
             IMU.Parameters(
                 RevHubOrientationOnRobot(
-                    RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                    RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+                    RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
+                    RevHubOrientationOnRobot.UsbFacingDirection.UP
                 )
             )
         )
@@ -96,11 +98,10 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
         stopAndResetMotors()
 
-        this.imu.resetYaw()
-
         telemetry.addLine("Waiting for start. Started detection...")
         telemetry.update()
 
+        this.imu.resetYaw()
         this.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
 
         while (!isStarted)
@@ -130,6 +131,149 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         disposeOfAll()
 
         Mono.logSink = { }
+    }
+
+    private val v2 = V2()
+    fun v2() = v2
+
+    inner class V2
+    {
+        // get all lynx modules so we can reset their caches later on
+        private val lynxModules = hardwareMap.getAll(LynxModule::class.java)
+        private val drivebaseMotors = listOf(frontLeft, frontRight, backLeft, backRight)
+
+        private fun buildPIDControllerMovement(setPoint: Double) = PIDController(
+            kP = AutoPipelineUtilities.PID_MOVEMENT_KP,
+            kD = AutoPipelineUtilities.PID_MOVEMENT_KD,
+            kI = AutoPipelineUtilities.PID_MOVEMENT_KI,
+            setPoint = setPoint,
+            setPointTolerance = AutoPipelineUtilities.PID_MOVEMENT_TOLERANCE,
+            maxTotalError = AutoPipelineUtilities.PID_MOVEMENT_MAX_ERROR
+        )
+
+        private fun buildPIDControllerRotation(setPoint: Double) = PIDController(
+            kP = AutoPipelineUtilities.PID_ROTATION_KP,
+            kD = AutoPipelineUtilities.PID_ROTATION_KD,
+            kI = AutoPipelineUtilities.PID_ROTATION_KI,
+            setPoint = setPoint,
+            setPointTolerance = AutoPipelineUtilities.PID_ROTATION_TOLERANCE,
+            maxTotalError = AutoPipelineUtilities.PID_ROTATION_MAX_ERROR
+        )
+
+        private fun buildPIDControllerDistance(setPoint: Double) = PIDController(
+            kP = AutoPipelineUtilities.PID_DISTANCE_KP,
+            kD = AutoPipelineUtilities.PID_DISTANCE_KD,
+            kI = AutoPipelineUtilities.PID_DISTANCE_KI,
+            setPoint = setPoint,
+            setPointTolerance = AutoPipelineUtilities.PID_DISTANCE_TOLERANCE,
+            maxTotalError = AutoPipelineUtilities.PID_DISTANCE_MAX_ERROR
+        )
+
+        fun move(ticks: Double) = movementPID(
+            setPoint = ticks,
+            setMotorPowers = this@AbstractAutoPipeline::setPower
+        )
+
+        fun strafe(ticks: Double) = movementPID(
+            setPoint = ticks,
+            setMotorPowers = this@AbstractAutoPipeline::setStrafePower
+        )
+
+        fun turn(degrees: Double) = rotationPID(
+            setPoint = degrees,
+            setMotorPowers = this@AbstractAutoPipeline::setTurnPower
+        )
+
+        private fun shortestAngleDistance(target: Double, current: Double): Double
+        {
+            val diff = target - current
+
+            return if (diff.absoluteValue <= 180)
+                diff
+            else
+                360 - diff.absoluteValue
+        }
+
+        private fun rotationPID(
+            setPoint: Double,
+            setMotorPowers: (Double) -> Unit
+        ) = driveBasePID(
+            controller = buildPIDControllerRotation(setPoint = setPoint)
+                .customErrorCalculator {
+                    shortestAngleDistance(setPoint, it)
+                },
+            currentPositionBlock = {
+                val imuResult = imu.robotYawPitchRollAngles
+                val currentYaw = imuResult.getYaw(AngleUnit.DEGREES)
+
+                if (currentYaw < 0)
+                {
+                    360 + currentYaw
+                } else
+                {
+                    currentYaw
+                }
+            },
+            setMotorPowers = setMotorPowers
+        )
+
+        private fun movementPID(
+            setPoint: Double,
+            setMotorPowers: (Double) -> Unit
+        ) = driveBasePID(
+            controller = buildPIDControllerMovement(setPoint = setPoint),
+            currentPositionBlock = {
+                drivebaseMotors
+                    .map { it.currentPosition.absoluteValue }
+                    .average()
+            },
+            setMotorPowers = setMotorPowers
+        )
+
+        private fun movementDistancePID(
+            setPoint: Double,
+            setMotorPowers: (Double) -> Unit
+        ) = driveBasePID(
+            controller = buildPIDControllerDistance(setPoint = setPoint),
+            currentPositionBlock = {
+                frontDistanceSensor.getDistance(DistanceUnit.CM)
+            },
+            setMotorPowers = setMotorPowers
+        )
+
+        private fun driveBasePID(
+            controller: PIDController,
+            currentPositionBlock: () -> Double,
+            setMotorPowers: (Double) -> Unit
+        )
+        {
+            stopAndResetMotors()
+            runMotors()
+
+            val startTime = System.currentTimeMillis()
+            while (opModeIsActive())
+            {
+                // clear cached motor positions
+                lynxModules.forEach(LynxModule::clearBulkCache)
+
+                val realCurrentPosition = currentPositionBlock()
+                if (controller.atSetPoint(realCurrentPosition))
+                {
+                    break
+                }
+
+                val millisDiff = System.currentTimeMillis() - startTime
+                val rampUp = (millisDiff / AutoPipelineUtilities.RAMP_UP_SPEED)
+                    .coerceIn(0.0, 1.0)
+
+                setMotorPowers(
+                    rampUp * -controller.calculate(realCurrentPosition)
+                )
+            }
+
+            stopAndResetMotors()
+            lockUntilMotorsFree()
+        }
     }
 
     fun runMovementPID(target: Double, motorControl: (Double) -> Unit)
@@ -174,12 +318,12 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             velocity = averagePosition - previous
             integral += error
 
-            val rawPidPower = ((AutoPipelineUtilities.PID_MOVEMENT_KP * error /*+
-                        AutoPipelineUtilities.PID_MOVEMENT_KI * totalError*/ - AutoPipelineUtilities.PID_MOVEMENT_KD * velocity))
+            val rawPidPower = ((AutoPipelineUtilities.PID_MOVEMENT_KP * error +
+                        AutoPipelineUtilities.PID_MOVEMENT_KI - AutoPipelineUtilities.PID_MOVEMENT_KD * velocity))
                 .coerceIn(-1.0..1.0)
 
             val millisDiff = System.currentTimeMillis() - startTime
-            val rampUp = (millisDiff / AutoPipelineUtilities.MOVEMENT_RAMP_UP_SPEED).coerceIn(0.0, 1.0)
+            val rampUp = (millisDiff / AutoPipelineUtilities.RAMP_UP_SPEED).coerceIn(0.0, 1.0)
 
             removePreviousStatusLine()
             previousTelemetryLine = telemetry.addLine(
@@ -190,6 +334,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
                     "Integral: ${"%.3f".format(integral.toFloat())} |"
             )
             telemetry.update()
+
 
             motorControl(rampUp * -rawPidPower)
         }
@@ -259,7 +404,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             totalError += error
 
             val millisDiff = System.currentTimeMillis() - startTime
-            val rampUp = (millisDiff / AutoPipelineUtilities.ROTATION_RAMP_UP_SPEED).coerceIn(0.0, 1.0)
+            val rampUp = (millisDiff / AutoPipelineUtilities.RAMP_UP_SPEED).coerceIn(0.0, 1.0)
 
             val rawPower = (AutoPipelineUtilities.PID_ROTATION_KP * error
                 + AutoPipelineUtilities.PID_ROTATION_KD * velocity /*+
@@ -341,7 +486,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
                 .coerceIn(-1.0..1.0)
 
             val millisDiff = System.currentTimeMillis() - startTime
-            val rampUp = (millisDiff / AutoPipelineUtilities.MOVEMENT_RAMP_UP_SPEED).coerceIn(0.0, 1.0)
+            val rampUp = (millisDiff / AutoPipelineUtilities.RAMP_UP_SPEED).coerceIn(0.0, 1.0)
 
             removePreviousStatusLine()
             previousTelemetryLine = telemetry.addLine(
