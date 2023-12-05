@@ -174,6 +174,11 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             setMotorPowers = this@AbstractAutoPipeline::setPower
         )
 
+        fun moveUntilDistanceReached(distance: Double) = movementDistancePID(
+            setPoint = distance,
+            setMotorPowers = this@AbstractAutoPipeline::setPower
+        )
+
         fun strafe(ticks: Double) = movementPID(
             setPoint = ticks,
             setMotorPowers = this@AbstractAutoPipeline::setStrafePower
