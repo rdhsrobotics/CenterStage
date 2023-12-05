@@ -17,6 +17,10 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
         opMode.hardware<DcMotorEx>("elevator")
     }
 
+    val backingHangMotor by lazy {
+        opMode.hardware<DcMotorEx>("hang")
+    }
+
     override fun composeStageContext() = object : StageContext
     {
         override fun isCompleted() = !backingMotor.isBusy
@@ -25,18 +29,42 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
     override fun dispose()
     {
         backingMotor.stopAndResetEncoder()
+        backingHangMotor.stopAndResetEncoder()
     }
 
     override fun doInitialize()
     {
-        backingMotor.direction = DcMotorSimple.Direction.REVERSE
-        backingMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        listOf(backingMotor).forEach {
+            it.direction = DcMotorSimple.Direction.REVERSE
+            it.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
-        backingMotor.stopAndResetEncoder()
-        backingMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
+            it.stopAndResetEncoder()
+            it.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        }
+
+        backingHangMotor.direction = DcMotorSimple.Direction.REVERSE
+        backingHangMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+
+        backingHangMotor.stopAndResetEncoder()
+        backingHangMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     }
 
     private var elevatorUpdateLock = Any()
+    private var hangLiftState = HangLiftState.Retracted
+
+    enum class HangLiftState(val position: Int)
+    {
+        Hanging(-1130), Retracted(0)
+    }
+
+    fun toggleHangLift()
+    {
+        hangLiftState = if (hangLiftState == HangLiftState.Retracted)
+            HangLiftState.Hanging else HangLiftState.Retracted
+
+        backingMotor.power = if (hangLiftState == HangLiftState.Retracted) -1.0 else 1.0
+        backingMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+    }
 
     fun configureElevator(stick: Double) = synchronized(elevatorUpdateLock)
     {
