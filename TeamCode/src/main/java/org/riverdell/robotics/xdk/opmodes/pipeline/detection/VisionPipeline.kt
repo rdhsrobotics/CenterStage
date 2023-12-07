@@ -24,23 +24,16 @@ class VisionPipeline(
         portal = VisionPortal.Builder()
             .setCamera(webcam)
             .setCameraResolution(Size(640, 480))
-            .enableLiveView(true)
+            .enableLiveView(dashboard)
             .setAutoStopLiveView(true)
             .addProcessors(propPipeline)
             .build()
 
-        if (!dashboard)
+        if (dashboard)
         {
-            return
+            FtcDashboard.getInstance().startCameraStream(propPipeline, 30.0)
         }
-
-        FtcDashboard.getInstance().startCameraStream(
-            propPipeline, 30.0
-        )
     }
 
-    fun stop()
-    {
-        portal!!.close()
-    }
+    fun stop() = portal?.close()
 }
