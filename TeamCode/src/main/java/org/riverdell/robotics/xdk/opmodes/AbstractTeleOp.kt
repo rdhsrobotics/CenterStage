@@ -104,29 +104,12 @@ abstract class AbstractTeleOp : LinearOpMode(), System
     private fun buildCommands()
     {
         gp1Commands
-            .where(ButtonType.PlayStationTouchpad)
-            .onlyWhen {
-                gamepad1.touchpad_finger_1_x <= 0.0 &&
-                        gamepad1.touchpad_finger_2_x >= 0.0
-            }
+            .where(ButtonType.PlayStationLogo)
             .triggers {
                 paperPlaneLauncher.launch()
             }
             .andIsHeldUntilReleasedWhere {
                 paperPlaneLauncher.reset()
-            }
-
-        gp1Commands
-            .where(ButtonType.BumperRight)
-            .triggers {
-                extendableClaw.toggleExtender(
-                    ExtendableClaw.ExtenderState.Intermediate
-                )
-            }
-            .andIsHeldUntilReleasedWhere {
-                extendableClaw.toggleExtender(
-                    ExtendableClaw.ExtenderState.Deposit
-                )
             }
 
        /* // extender expansion ranges
@@ -173,6 +156,20 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             }
             .whenPressedOnce()*/
 
+        // going underneath stage door. drive should be able to take over:
+        gp1Commands
+            .where(ButtonType.BumperRight)
+            .triggers {
+                extendableClaw.toggleExtender(
+                    ExtendableClaw.ExtenderState.Intermediate
+                )
+            }
+            .andIsHeldUntilReleasedWhere {
+                extendableClaw.toggleExtender(
+                    ExtendableClaw.ExtenderState.Deposit
+                )
+            }
+
         // bumper commands for opening closing claw fingers individually
         gp2Commands
             .where(ButtonType.BumperLeft)
@@ -206,6 +203,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 )
             }
 
+        // lift motor toggles
         gp1Commands
             .where(ButtonType.PlayStationShare)
             .triggers {
@@ -216,7 +214,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             }
 
         gp1Commands
-            .where(ButtonType.PlayStationLogo)
+            .where(ButtonType.PlayStationOptions)
             .triggers {
                 elevator.toggleHangLift(1.0)
             }
@@ -225,13 +223,6 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             }
 
         // elevator preset (low backboard)
-        gp2Commands
-            .where(ButtonType.ButtonX)
-            .triggers {
-                elevator.configureElevatorManually(0.7)
-            }
-            .whenPressedOnce()
-
         gp2Commands
             .where(ButtonType.ButtonB)
             .triggers {
