@@ -6,11 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.VisionPipeline
-import org.riverdell.robotics.xdk.opmodes.pipeline.detection.prop.PropPipelineV2
 import org.riverdell.robotics.xdk.opmodes.pipeline.hardware
 
-@TeleOp(name = "Test | Vision")
-class IsolatedVisionTest : LinearOpMode()
+@TeleOp(name = "Test | Vision RED")
+class IsolatedVisionTestRed : LinearOpMode()
 {
     private val pipeline by lazy {
         VisionPipeline(
