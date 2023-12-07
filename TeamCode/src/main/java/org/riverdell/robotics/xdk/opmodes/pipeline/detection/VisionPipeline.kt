@@ -23,7 +23,7 @@ class VisionPipeline(
     {
         portal = VisionPortal.Builder()
             .setCamera(webcam)
-            .setCameraResolution(Size(1920, 1080))
+            .setCameraResolution(Size(640, 480))
             .enableLiveView(true)
             .setAutoStopLiveView(true)
             .addProcessors(propPipeline)

@@ -13,8 +13,9 @@ class V2ControlTestAutoTurn : AbstractAutoPipeline()
 {
     override fun getTeamColor() = TeamColor.Red
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono.buildExecutionGroup {
-        single<DrivebaseContext>("strafe") {
+        single("strafe") {
             v2().turn(90.0)
+            Thread.sleep(20000L * 4)
         }
     }
 }

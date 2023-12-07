@@ -35,20 +35,21 @@ public class PropPipeline implements VisionProcessor, CameraStreamSource {
 
     private final Mat finalMat = new Mat();
 
-    public static int blueLeftX = 800;
-    public static int blueLeftY = 550;
+    public static int width = 80; // Adjusted width value for the zone
+    public static int height = 80; // Adjusted height value for the zone
 
-    public static int blueCenterX = 1175;
-    public static int blueCenterY = 175;
+    // Adjusted coordinates to fit within the 640x480 resolution
+    public static int blueLeftX = 280;
+    public static int blueLeftY = 200;
 
-    public static int redLeftX = 900;
-    public static int redLeftY = 525;
+    public static int blueCenterX = 400;
+    public static int blueCenterY = 100;
 
-    public static int redCenterX = 1325;
-    public static int redCenterY = 100;
+    public static int redLeftX = 300;
+    public static int redLeftY = 190;
 
-    public static int width = 125;
-    public static int height = 125;
+    public static int redCenterX = 425;
+    public static int redCenterY = 80;
 
     public static double redThreshold = 2.5;
     public static double blueThreshold = 0.2;

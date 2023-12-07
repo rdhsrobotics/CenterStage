@@ -50,20 +50,11 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
     }
 
     private var elevatorUpdateLock = Any()
-    private var hangLiftState = HangLiftState.Retracted
 
-    enum class HangLiftState(val position: Int)
+    fun toggleHangLift(power: Double)
     {
-        Hanging(-1130), Retracted(0)
-    }
-
-    fun toggleHangLift()
-    {
-        hangLiftState = if (hangLiftState == HangLiftState.Retracted)
-            HangLiftState.Hanging else HangLiftState.Retracted
-
-        backingMotor.power = if (hangLiftState == HangLiftState.Retracted) -1.0 else 1.0
-        backingMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        backingHangMotor.power = power
+        backingHangMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     }
 
     fun configureElevator(stick: Double) = synchronized(elevatorUpdateLock)

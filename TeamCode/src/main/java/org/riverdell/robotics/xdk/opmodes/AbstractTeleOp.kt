@@ -129,7 +129,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 )
             }
 
-        // extender expansion ranges
+       /* // extender expansion ranges
         gp1Commands
             .where(ButtonType.PlayStationTouchpad)
             .onlyWhen { gamepad1.touchpad_finger_1_y <= 0.0 }
@@ -171,7 +171,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                     ExtendableClaw.ClawState.Closed
                 )
             }
-            .whenPressedOnce()
+            .whenPressedOnce()*/
 
         // bumper commands for opening closing claw fingers individually
         gp2Commands
@@ -209,9 +209,20 @@ abstract class AbstractTeleOp : LinearOpMode(), System
         gp1Commands
             .where(ButtonType.PlayStationShare)
             .triggers {
-                elevator.toggleHangLift()
+                elevator.toggleHangLift(-1.0)
             }
-            .whenPressedOnce()
+            .andIsHeldUntilReleasedWhere {
+                elevator.toggleHangLift(0.0)
+            }
+
+        gp1Commands
+            .where(ButtonType.PlayStationLogo)
+            .triggers {
+                elevator.toggleHangLift(1.0)
+            }
+            .andIsHeldUntilReleasedWhere {
+                elevator.toggleHangLift(0.0)
+            }
 
         // elevator preset (low backboard)
         gp2Commands

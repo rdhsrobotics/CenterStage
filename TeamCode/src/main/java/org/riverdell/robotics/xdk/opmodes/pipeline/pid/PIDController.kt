@@ -1,14 +1,16 @@
 package org.riverdell.robotics.xdk.opmodes.pipeline.pid
 
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import kotlin.math.absoluteValue
 
 class PIDController(
     private val kP: Double,
     private val kI: Double,
     private val kD: Double,
-    private val setPoint: Double,
+    val setPoint: Double,
     private val setPointTolerance: Int,
-    private val maxTotalError: Int
+    private val maxTotalError: Int,
+    private val telemetry: Telemetry
 )
 {
     private var integral = 0.0
@@ -24,6 +26,7 @@ class PIDController(
         val error = customErrorCalculator?.invoke(currentValue)
             ?: (setPoint - currentValue)
 
+        telemetry.addData("error", error)
         integral += error
         val derivative = error - previousError
 
@@ -37,7 +40,6 @@ class PIDController(
 
     fun atSetPoint(currentValue: Double): Boolean
     {
-        return (totalError.absoluteValue <= maxTotalError) ||
-            (setPoint - setPointTolerance <= currentValue && currentValue <= setPoint + setPointTolerance)
+        return /*(totalError.absoluteValue <= maxTotalError) ||*/ (setPoint - setPointTolerance <= currentValue && currentValue <= setPoint + setPointTolerance)
     }
 }

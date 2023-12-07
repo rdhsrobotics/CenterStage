@@ -20,10 +20,10 @@ object AutoPipelineUtilities
     @JvmField var PID_ROTATION_KP = 0.05
     @JvmField var PID_ROTATION_KI = -0.013
     @JvmField var PID_ROTATION_KD = 0.002
-    @JvmField var PID_ROTATION_TOLERANCE = 10
+    @JvmField var PID_ROTATION_TOLERANCE = 1
     @JvmField var PID_ROTATION_MAX_ERROR = 99
 
-    @JvmField var RAMP_UP_SPEED = 500.0
+    @JvmField var RAMP_UP_SPEED = 2000.0
 
     @Deprecated("v2")
     @JvmField

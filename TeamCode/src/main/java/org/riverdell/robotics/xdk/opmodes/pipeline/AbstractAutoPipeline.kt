@@ -1,5 +1,7 @@
 package org.riverdell.robotics.xdk.opmodes.pipeline
 
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -11,6 +13,7 @@ import com.qualcomm.robotcore.hardware.IMU
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import io.liftgate.robotics.mono.subsystem.Subsystem
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.Telemetry.Line
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
@@ -27,6 +30,7 @@ import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 import kotlin.math.absoluteValue
 import kotlin.math.sign
+
 
 abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.subsystem.System
 {
@@ -59,19 +63,20 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
     override fun runOpMode()
     {
-        frontDistanceSensor
-
         this.imu = hardware("imu")
         this.imu.initialize(
             IMU.Parameters(
                 RevHubOrientationOnRobot(
-                    RevHubOrientationOnRobot.LogoFacingDirection.FORWARD,
-                    RevHubOrientationOnRobot.UsbFacingDirection.UP
+                    RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
+                    RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
                 )
             )
         )
 
-        visionPipeline.start()
+        kotlin.runCatching {
+            frontDistanceSensor
+            visionPipeline.start()
+        }
 
         register(
             clawSubsystem,
@@ -113,6 +118,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         val tapeSide = visionPipeline.getTapeSide()
         this.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
 
+        telemetry.clear()
         telemetry.addLine("Started! Executing the Mono execution group now with ${tapeSide.name}.")
         telemetry.update()
 
@@ -127,13 +133,17 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         stopAndResetMotors()
         terminateAllMotors()
 
-        visionPipeline.stop()
+        kotlin.runCatching {
+            visionPipeline.stop()
+        }
         disposeOfAll()
 
         Mono.logSink = { }
     }
 
-    private val v2 = V2()
+    private val v2 by lazy {
+        V2()
+    }
     fun v2() = v2
 
     inner class V2
@@ -141,6 +151,10 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         // get all lynx modules so we can reset their caches later on
         private val lynxModules = hardwareMap.getAll(LynxModule::class.java)
         private val drivebaseMotors = listOf(frontLeft, frontRight, backLeft, backRight)
+        private val telemetry = MultipleTelemetry(
+            this@AbstractAutoPipeline.telemetry,
+            FtcDashboard.getInstance().telemetry
+        )
 
         private fun buildPIDControllerMovement(setPoint: Double) = PIDController(
             kP = AutoPipelineUtilities.PID_MOVEMENT_KP,
@@ -148,7 +162,8 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             kI = AutoPipelineUtilities.PID_MOVEMENT_KI,
             setPoint = setPoint,
             setPointTolerance = AutoPipelineUtilities.PID_MOVEMENT_TOLERANCE,
-            maxTotalError = AutoPipelineUtilities.PID_MOVEMENT_MAX_ERROR
+            maxTotalError = AutoPipelineUtilities.PID_MOVEMENT_MAX_ERROR,
+            telemetry = telemetry
         )
 
         private fun buildPIDControllerRotation(setPoint: Double) = PIDController(
@@ -157,7 +172,8 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             kI = AutoPipelineUtilities.PID_ROTATION_KI,
             setPoint = setPoint,
             setPointTolerance = AutoPipelineUtilities.PID_ROTATION_TOLERANCE,
-            maxTotalError = AutoPipelineUtilities.PID_ROTATION_MAX_ERROR
+            maxTotalError = AutoPipelineUtilities.PID_ROTATION_MAX_ERROR,
+            telemetry = telemetry
         )
 
         private fun buildPIDControllerDistance(setPoint: Double) = PIDController(
@@ -166,7 +182,8 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             kI = AutoPipelineUtilities.PID_DISTANCE_KI,
             setPoint = setPoint,
             setPointTolerance = AutoPipelineUtilities.PID_DISTANCE_TOLERANCE,
-            maxTotalError = AutoPipelineUtilities.PID_DISTANCE_MAX_ERROR
+            maxTotalError = AutoPipelineUtilities.PID_DISTANCE_MAX_ERROR,
+            telemetry = telemetry
         )
 
         fun move(ticks: Double) = movementPID(
@@ -186,7 +203,9 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
         fun turn(degrees: Double) = rotationPID(
             setPoint = degrees,
-            setMotorPowers = this@AbstractAutoPipeline::setTurnPower
+            setMotorPowers = {
+                this@AbstractAutoPipeline.setTurnPower(-it)
+            }
         )
 
         private fun shortestAngleDistance(target: Double, current: Double): Double
@@ -256,6 +275,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             runMotors()
 
             val startTime = System.currentTimeMillis()
+            telemetry.addLine("Doing a thing")
             while (opModeIsActive())
             {
                 // clear cached motor positions
@@ -267,13 +287,24 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
                     break
                 }
 
+                if (System.currentTimeMillis() - startTime > 3000L)
+                {
+                    break
+                }
+
                 val millisDiff = System.currentTimeMillis() - startTime
                 val rampUp = (millisDiff / AutoPipelineUtilities.RAMP_UP_SPEED)
                     .coerceIn(0.0, 1.0)
 
+                val pid = controller.calculate(realCurrentPosition)
                 setMotorPowers(
-                    rampUp * -controller.calculate(realCurrentPosition)
+                    rampUp * pid
                 )
+                telemetry.addData("Ramp up", rampUp)
+                telemetry.addData("pid", pid)
+                telemetry.addData("IMU Angle", imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES))
+                telemetry.addData("target", controller.setPoint)
+                telemetry.update()
             }
 
             stopAndResetMotors()
@@ -530,6 +561,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
     fun terminateAllMotors() = configureMotorsToDo(HardwareDevice::close)
 
     fun stopAndResetMotors() = configureMotorsToDo {
+        it.power = 0.0
         it.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
     }
 
