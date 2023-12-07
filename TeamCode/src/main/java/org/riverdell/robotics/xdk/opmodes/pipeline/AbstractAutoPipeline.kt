@@ -106,17 +106,21 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         telemetry.addLine("Waiting for start. Started detection...")
         telemetry.update()
 
-        this.imu.resetYaw()
         this.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
 
-        while (!isStarted)
+        while (opModeInInit())
         {
             telemetry.addLine("Auto in initialized")
             telemetry.addData("Tape side", visionPipeline.getTapeSide())
+
+            telemetry.addLine("=== PID Tuning Graph Outputs ===")
+            telemetry.addData("PID Output", 0.0)
+            telemetry.update()
         }
+        waitForStart()
 
         val tapeSide = visionPipeline.getTapeSide()
-        this.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
+        this.imu.resetYaw()
 
         telemetry.clear()
         telemetry.addLine("Started! Executing the Mono execution group now with ${tapeSide.name}.")
@@ -128,6 +132,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
                 listOf(frontRight, frontLeft, backRight, backLeft), this
             )
         }
+
         executionGroup.executeBlocking()
 
         stopAndResetMotors()
@@ -141,9 +146,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         Mono.logSink = { }
     }
 
-    private val v2 by lazy {
-        V2()
-    }
+    private val v2 by lazy(::V2)
     fun v2() = v2
 
     inner class V2
@@ -275,7 +278,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             runMotors()
 
             val startTime = System.currentTimeMillis()
-            telemetry.addLine("Doing a thing")
+
             while (opModeIsActive())
             {
                 // clear cached motor positions
@@ -297,13 +300,9 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
                     .coerceIn(0.0, 1.0)
 
                 val pid = controller.calculate(realCurrentPosition)
-                setMotorPowers(
-                    rampUp * pid
-                )
-                telemetry.addData("Ramp up", rampUp)
-                telemetry.addData("pid", pid)
-                telemetry.addData("IMU Angle", imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES))
-                telemetry.addData("target", controller.setPoint)
+                setMotorPowers(rampUp * pid)
+
+                telemetry.addData("PID Output", pid)
                 telemetry.update()
             }
 

@@ -4,12 +4,10 @@ import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.opencv.core.Scalar
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.VisionPipeline
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.prop.PropPipelineV2
 import org.riverdell.robotics.xdk.opmodes.pipeline.hardware
-
 
 @TeleOp(name = "Test | Vision")
 class IsolatedVisionTest : LinearOpMode()
@@ -23,38 +21,28 @@ class IsolatedVisionTest : LinearOpMode()
 
     override fun runOpMode()
     {
+        val telemetry = MultipleTelemetry(
+            this.telemetry,
+            FtcDashboard.getInstance().telemetry
+        )
+
         pipeline.start(true)
-        val telemetry = MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().telemetry)
 
         telemetry.addLine("Waiting for start. Started vision pipeline.")
         telemetry.update()
-
-//        val scale = Scalar(1 / 1000000.0, 1 / 1000000.0, 1 / 1000000.0)
-        while (opModeInInit())
-        {
-            /*telemetry.addData("Location", pipeline.propPipeline.location)
-
-            telemetry.addData("leftZone", pipeline.propPipeline.left.mul(scale).toString())
-            telemetry.addData("centerZone", pipeline.propPipeline.center.mul(scale).toString())
-
-            telemetry.addData("leftZone", pipeline.propPipeline.leftColor)
-            telemetry.addData("centerZone", pipeline.propPipeline.centerColor)*/
-
-            telemetry.update()
-        }
 
         waitForStart()
 
         while (opModeIsActive())
         {
-            telemetry.addLine("Pipelining")
+            telemetry.addLine("Running pipeline (RED):")
             telemetry.addData(
                 "Tape Side",
                 pipeline.propPipeline.tapeSide
             )
             telemetry.addData(
                 "Percentage",
-                PropPipelineV2.colorPercentage
+                pipeline.propPipeline.percentageColorMatch
             )
             telemetry.update()
         }

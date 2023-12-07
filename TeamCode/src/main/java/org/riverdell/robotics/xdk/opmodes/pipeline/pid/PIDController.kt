@@ -22,7 +22,8 @@ class PIDController(
     fun customErrorCalculator(block: (current: Double) -> Double) =
         apply { customErrorCalculator = block }
 
-    fun calculate(currentValue: Double): Double {
+    fun calculate(currentValue: Double): Double
+    {
         val error = customErrorCalculator?.invoke(currentValue)
             ?: (setPoint - currentValue)
 
