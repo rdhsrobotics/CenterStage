@@ -90,7 +90,12 @@ public class PropPipelineV2 implements CameraStreamSource, VisionProcessor {
         Imgproc.cvtColor(input, hsvMat, Imgproc.COLOR_RGB2HSV);
 
         if (teamColor == TeamColor.Red) {
-            Core.inRange(hsvMat, new Scalar(LR_B, LR_G, LR_R),  new Scalar(UR_B, UR_G, UR_R), mask);
+            Core.inRange(
+                    hsvMat,
+                    new Scalar(LR_B, LR_G, LR_R),
+                    new Scalar(UR_B, UR_G, UR_R),
+                    mask
+            );
         } else {
             Core.inRange(hsvMat, lowerBlueBound, upperBlueBound, mask);
         }
