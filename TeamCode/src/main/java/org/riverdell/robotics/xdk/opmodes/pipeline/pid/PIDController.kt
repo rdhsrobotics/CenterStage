@@ -9,7 +9,7 @@ class PIDController(
     private val kD: Double,
     val setPoint: Double,
     private val setPointTolerance: Int,
-    private val maxTotalError: Int,
+    private val minimumVelocity: Double,
     private val telemetry: Telemetry
 )
 {
@@ -20,9 +20,13 @@ class PIDController(
     private var velocity = 0.0
 
     private var customErrorCalculator: ((current: Double) -> Double)? = null
+    private var customVelocityCalculator: (() -> Double)? = null
 
     fun customErrorCalculator(block: (current: Double) -> Double) =
         apply { customErrorCalculator = block }
+
+    fun customVelocityCalculator(block: () -> Double) =
+        apply { customVelocityCalculator = block }
 
     fun calculate(currentValue: Double): Double
     {
@@ -33,9 +37,9 @@ class PIDController(
         telemetry.addData("Target", setPoint)
 
         val prevValue = (previousValue ?: currentValue) - currentValue
+        val derivative = error - previousError
 
         integral += error
-        val derivative = error - previousError
 
         val output = (kP * error) + (kI * integral) + (kD * derivative)
         telemetry.addData("Output", output)
@@ -53,7 +57,7 @@ class PIDController(
 
     fun atSetPoint(currentValue: Double): Boolean
     {
-        return velocity.absoluteValue < 15 && (
+        return velocity.absoluteValue < minimumVelocity && (
                 setPoint - setPointTolerance <= currentValue &&
                         currentValue <= setPoint + setPointTolerance
         )

@@ -13,7 +13,6 @@ import com.qualcomm.robotcore.hardware.IMU
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import io.liftgate.robotics.mono.subsystem.Subsystem
-import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.Telemetry.Line
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
@@ -174,7 +173,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             kI = AutoPipelineUtilities.PID_MOVEMENT_KI,
             setPoint = setPoint,
             setPointTolerance = AutoPipelineUtilities.PID_MOVEMENT_TOLERANCE,
-            maxTotalError = AutoPipelineUtilities.PID_MOVEMENT_MAX_ERROR,
+            minimumVelocity = AutoPipelineUtilities.PID_MOVEMENT_MIN_VELOCITY,
             telemetry = multipleTelemetry
         )
 
@@ -184,7 +183,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             kI = AutoPipelineUtilities.PID_ROTATION_KI,
             setPoint = setPoint,
             setPointTolerance = AutoPipelineUtilities.PID_ROTATION_TOLERANCE,
-            maxTotalError = AutoPipelineUtilities.PID_ROTATION_MAX_ERROR,
+            minimumVelocity = AutoPipelineUtilities.PID_ROTATION_MIN_VELOCITY,
             telemetry = multipleTelemetry
         )
 
@@ -194,15 +193,13 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             kI = AutoPipelineUtilities.PID_DISTANCE_KI,
             setPoint = setPoint,
             setPointTolerance = AutoPipelineUtilities.PID_DISTANCE_TOLERANCE,
-            maxTotalError = AutoPipelineUtilities.PID_DISTANCE_MAX_ERROR,
+            minimumVelocity = AutoPipelineUtilities.PID_DISTANCE_MIN_VELOCITY,
             telemetry = multipleTelemetry
         )
 
         fun move(ticks: Double) = movementPID(
             setPoint = ticks,
-            setMotorPowers = {
-                setPower(-it)
-            }
+            setMotorPowers = this@AbstractAutoPipeline::setPower
         )
 
         fun moveUntilDistanceReached(distance: Double) = movementDistancePID(
@@ -239,6 +236,10 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             controller = buildPIDControllerRotation(setPoint = setPoint)
                 .customErrorCalculator {
                     shortestAngleDistance(setPoint, it)
+                }
+                .customVelocityCalculator {
+                    imu.getRobotAngularVelocity(AngleUnit.DEGREES)
+                        .zRotationRate.toDouble()
                 },
             currentPositionBlock = {
                 val imuResult = imu.robotYawPitchRollAngles
@@ -261,7 +262,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         ) = driveBasePID(
             controller = buildPIDControllerMovement(setPoint = setPoint),
             currentPositionBlock = {
-                -drivebaseMotors
+                drivebaseMotors
                     .map { it.currentPosition.absoluteValue }
                     .average()
             },
@@ -311,7 +312,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
                     .coerceIn(0.0, 1.0)
 
                 val pid = controller.calculate(realCurrentPosition)
-                setMotorPowers(rampUp * pid)
+                setMotorPowers((rampUp * pid).coerceIn(-0.6..0.6))
 
                 multipleTelemetry.update()
             }
@@ -345,7 +346,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
         while (
             (error.absoluteValue > AutoPipelineUtilities.MOVEMENT_MAX_ERROR ||
-                velocity > AutoPipelineUtilities.MOVEMENT_MAX_VELOCITY) &&
+                velocity > AutoPipelineUtilities.PID_MOVEMENT_MIN_VELOCITY) &&
             opModeIsActive()
         )
         {
