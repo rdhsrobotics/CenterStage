@@ -30,7 +30,6 @@ import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
-
 abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.subsystem.System
 {
     override val subsystems = mutableSetOf<Subsystem>()
@@ -107,8 +106,6 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         backLeft.direction = DcMotorSimple.Direction.REVERSE
         backLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         backRight.direction = DcMotorSimple.Direction.FORWARD
-        backRight.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-
 
         stopAndResetMotors()
 
@@ -312,7 +309,8 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
                     .coerceIn(0.0, 1.0)
 
                 val pid = controller.calculate(realCurrentPosition)
-                setMotorPowers((rampUp * pid).coerceIn(-0.6..0.6))
+                val finalPower = (rampUp * pid).coerceIn(-0.6..0.6)
+                setMotorPowers(finalPower)
 
                 multipleTelemetry.update()
             }
@@ -592,9 +590,8 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         backRight.power = -power
     }
 
-    fun setStrafePower(_power: Double)
+    fun setStrafePower(power: Double)
     {
-        val power = _power * 0.425
         frontLeft.power = power
         frontRight.power = -power
 
