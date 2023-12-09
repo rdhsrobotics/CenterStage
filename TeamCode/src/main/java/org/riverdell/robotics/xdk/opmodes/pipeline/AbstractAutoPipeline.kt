@@ -57,6 +57,13 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         )
     }
 
+    val multipleTelemetry by lazy {
+        MultipleTelemetry(
+            this.telemetry,
+            FtcDashboard.getInstance().telemetry
+        )
+    }
+
     abstract fun getTeamColor(): TeamColor
 
     abstract fun buildExecutionGroup(tapeSide: TapeSide): RootExecutionGroup
@@ -87,44 +94,50 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         // keep all log entries
         if (monoShouldDoLogging)
         {
-            telemetry.isAutoClear = false
-
             Mono.logSink = {
-                telemetry.addLine("[Mono] $it")
-                telemetry.update()
+                multipleTelemetry.addLine("[Mono] $it")
+                multipleTelemetry.update()
             }
         }
 
         frontLeft.direction = DcMotorSimple.Direction.REVERSE
+        frontLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         frontRight.direction = DcMotorSimple.Direction.FORWARD
+        frontRight.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         backLeft.direction = DcMotorSimple.Direction.REVERSE
+        backLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         backRight.direction = DcMotorSimple.Direction.FORWARD
+        backRight.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+
 
         stopAndResetMotors()
 
-        telemetry.addLine("Waiting for start. Started detection...")
-        telemetry.update()
+        multipleTelemetry.addLine("Waiting for start. Started detection...")
+        multipleTelemetry.update()
 
         this.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
 
         while (opModeInInit())
         {
-            telemetry.addLine("Auto in initialized")
-            telemetry.addData("Tape side", visionPipeline.getTapeSide())
+            multipleTelemetry.addLine("Auto in initialized")
+            multipleTelemetry.addData("Tape side", visionPipeline.getTapeSide())
 
-            telemetry.addLine("=== PID Tuning Graph Outputs ===")
-            telemetry.addData("PID Output", 0.0)
-            telemetry.update()
+            multipleTelemetry.addLine("=== PID Tuning Graph Outputs ===")
+            multipleTelemetry.addData("Error", 0.0)
+            multipleTelemetry.addData("Target", 0.0)
+            multipleTelemetry.addData("Input", 0.0)
+            multipleTelemetry.addData("Output", 0.0)
+            multipleTelemetry.update()
         }
         waitForStart()
 
         val tapeSide = visionPipeline.getTapeSide()
         this.imu.resetYaw()
 
-        telemetry.clear()
-        telemetry.addLine("Started! Executing the Mono execution group now with ${tapeSide.name}.")
-        telemetry.update()
+/*        multipleTelemetry.clear()
+        multipleTelemetry.addLine("Started! Executing the Mono execution group now with ${tapeSide.name}.")
+        multipleTelemetry.update()*/
 
         val executionGroup = buildExecutionGroup(tapeSide)
         executionGroup.providesContext { _ ->
@@ -154,10 +167,6 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         // get all lynx modules so we can reset their caches later on
         private val lynxModules = hardwareMap.getAll(LynxModule::class.java)
         private val drivebaseMotors = listOf(frontLeft, frontRight, backLeft, backRight)
-        private val telemetry = MultipleTelemetry(
-            this@AbstractAutoPipeline.telemetry,
-            FtcDashboard.getInstance().telemetry
-        )
 
         private fun buildPIDControllerMovement(setPoint: Double) = PIDController(
             kP = AutoPipelineUtilities.PID_MOVEMENT_KP,
@@ -166,7 +175,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             setPoint = setPoint,
             setPointTolerance = AutoPipelineUtilities.PID_MOVEMENT_TOLERANCE,
             maxTotalError = AutoPipelineUtilities.PID_MOVEMENT_MAX_ERROR,
-            telemetry = telemetry
+            telemetry = multipleTelemetry
         )
 
         private fun buildPIDControllerRotation(setPoint: Double) = PIDController(
@@ -176,7 +185,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             setPoint = setPoint,
             setPointTolerance = AutoPipelineUtilities.PID_ROTATION_TOLERANCE,
             maxTotalError = AutoPipelineUtilities.PID_ROTATION_MAX_ERROR,
-            telemetry = telemetry
+            telemetry = multipleTelemetry
         )
 
         private fun buildPIDControllerDistance(setPoint: Double) = PIDController(
@@ -186,12 +195,14 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             setPoint = setPoint,
             setPointTolerance = AutoPipelineUtilities.PID_DISTANCE_TOLERANCE,
             maxTotalError = AutoPipelineUtilities.PID_DISTANCE_MAX_ERROR,
-            telemetry = telemetry
+            telemetry = multipleTelemetry
         )
 
         fun move(ticks: Double) = movementPID(
             setPoint = ticks,
-            setMotorPowers = this@AbstractAutoPipeline::setPower
+            setMotorPowers = {
+                setPower(-it)
+            }
         )
 
         fun moveUntilDistanceReached(distance: Double) = movementDistancePID(
@@ -250,7 +261,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         ) = driveBasePID(
             controller = buildPIDControllerMovement(setPoint = setPoint),
             currentPositionBlock = {
-                drivebaseMotors
+                -drivebaseMotors
                     .map { it.currentPosition.absoluteValue }
                     .average()
             },
@@ -302,8 +313,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
                 val pid = controller.calculate(realCurrentPosition)
                 setMotorPowers(rampUp * pid)
 
-                telemetry.addData("PID Output", pid)
-                telemetry.update()
+                multipleTelemetry.update()
             }
 
             stopAndResetMotors()

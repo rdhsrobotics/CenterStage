@@ -20,8 +20,8 @@ class IsolatedAutoTesting : AbstractAutoPipeline()
 
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
-            single<DrivebaseContext>("move pixel to spike") {
-                PIDToDistance(12.0)
+            single("move pixel to spike") {
+                v2().move(500.0)
             }
         }
 }
