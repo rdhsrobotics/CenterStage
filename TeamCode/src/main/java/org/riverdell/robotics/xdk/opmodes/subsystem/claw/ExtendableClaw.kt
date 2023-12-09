@@ -52,18 +52,17 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
 
     enum class ExtenderState
     {
-        Intake, Intermediate, Deposit
+        PreLoad, Intake, Intermediate, Deposit
     }
 
-    var extenderState = ExtenderState.Deposit
+    var extenderState = ExtenderState.PreLoad
 
-    // TODO: we might not need this right now. good to have though.
     private var rightClawState = ClawState.Closed
     private var leftClawState = ClawState.Closed
 
     override fun doInitialize()
     {
-        toggleExtender(ExtenderState.Deposit)
+        toggleExtender(ExtenderState.PreLoad)
         updateClawState(
             ClawStateUpdate.Both,
             ClawState.Closed
@@ -104,12 +103,27 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
             extenderState = state
             backingExtender.position = when (extenderState)
             {
+                ExtenderState.PreLoad -> ClawExpansionConstants.PRELOAD_EXTENDER_POSITION
                 ExtenderState.Deposit -> ClawExpansionConstants.MIN_EXTENDER_POSITION
                 ExtenderState.Intermediate -> ClawExpansionConstants.INTERMEDIATE_EXTENDER_POSITION
                 ExtenderState.Intake -> ClawExpansionConstants.MAX_EXTENDER_POSITION + maxExtenderAddition
             }
 
             return
+        }
+
+        extenderState = when (extenderState)
+        {
+            ExtenderState.Deposit ->
+            {
+                backingExtender.position = ClawExpansionConstants.MAX_EXTENDER_POSITION + maxExtenderAddition
+                ExtenderState.Intake
+            }
+            else ->
+            {
+                backingExtender.position = ClawExpansionConstants.MIN_EXTENDER_POSITION
+                ExtenderState.Deposit
+            }
         }
 
         extenderState = if (extenderState == ExtenderState.Deposit)

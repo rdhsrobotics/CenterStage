@@ -112,7 +112,6 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 paperPlaneLauncher.reset()
             }
 
-       /* // extender expansion ranges
         gp1Commands
             .where(ButtonType.PlayStationTouchpad)
             .onlyWhen { gamepad1.touchpad_finger_1_y <= 0.0 }
@@ -128,6 +127,9 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 extendableClaw.incrementAddition()
             }
             .whenPressedOnce()
+
+       /* // extender expansion ranges
+
 
         // claw expansion ranges
         gp1Commands
@@ -206,6 +208,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
         // lift motor toggles
         gp1Commands
             .where(ButtonType.PlayStationShare)
+            .onlyWhen { gamepad1.left_bumper }
             .triggers {
                 elevator.toggleHangLift(-1.0)
             }
@@ -215,6 +218,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
 
         gp1Commands
             .where(ButtonType.PlayStationOptions)
+            .onlyWhen { gamepad1.left_bumper }
             .triggers {
                 elevator.toggleHangLift(1.0)
             }
@@ -253,7 +257,8 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 )
             }
 
-        gp2Commands.where(ButtonType.ButtonA)
+        gp2Commands
+            .where(ButtonType.ButtonA)
             .triggers {
                 if (bundleExecutionInProgress)
                 {
