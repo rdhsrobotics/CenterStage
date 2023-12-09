@@ -13,7 +13,7 @@ object ClawExpansionConstants
     @JvmField var CLOSED_LEFT_CLAW = 0.5
     @JvmField var OPEN_LEFT_CLAW = 0.7
 
-    @JvmField var CLOSED_RIGHT_CLAW = 1.0
+    @JvmField var CLOSED_RIGHT_CLAW = 0.9
     @JvmField var OPEN_RIGHT_CLAW = 0.7
 
     @JvmField var DEFAULT_PLANE_POSITION = 1.0

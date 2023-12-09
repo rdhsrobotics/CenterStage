@@ -6,17 +6,9 @@ import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.single
 import org.riverdell.robotics.xdk.opmodes.Global
 import org.riverdell.robotics.xdk.opmodes.pipeline.AbstractAutoPipeline
-import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.BackUpFromBackboard
-import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.ElevateElevatorAtBackboard
-import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.GoToBackboard
-import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.MoveBackFromSpike
-import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.MovePixelToSpike
-import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.StrafeIntoBackboardPosition
-import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.StrafeIntoParkingZone
-import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.TurnDegreesTowardBackboard
-import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
+import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.MoveForwardToTape
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 
 /**
@@ -26,7 +18,7 @@ import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 @Config
 object RedRight
 {
-    @JvmField var MovePixelToSpike = 825.0
+    /*@JvmField var MovePixelToSpike = 825.0
     @JvmField var MoveBackFromSpike = -300.0
     @JvmField var TurnDegreesTowardBackboard = -90.0
     @JvmField var GoToBackboard = 700.0
@@ -34,7 +26,8 @@ object RedRight
     @JvmField var ElevateElevatorAtBackboard = 0.4
     @JvmField var BackUpFromBackboard = -150.0
     // elevator
-    @JvmField var StrafeIntoParkingZone = 975.0
+    @JvmField var StrafeIntoParkingZone = 975.0*/
+    @JvmField var MoveForwardToTape = 550.0
 }
 
 @Autonomous(name = "Red | Right", preselectTeleOp = Global.RobotCentricTeleOpName)
@@ -50,7 +43,34 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
             // TODO: turn on at first
-            single<DrivebaseContext>("move pixel to spike") {
+            single("move forward") {
+                clawSubsystem.toggleExtender(
+                    ExtendableClaw.ExtenderState.Intake
+                )
+                v2().move(MoveForwardToTape)
+            }
+
+            if (tapeSide == TapeSide.Middle)
+            {
+
+            }
+
+            single("open left claw") {
+                clawSubsystem.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Left,
+                    ExtendableClaw.ClawState.Open
+                )
+                Thread.sleep(250L)
+                clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
+            }
+
+            single("move back") {
+                v2().move(-200.0)
+            }
+
+
+
+           /* single<DrivebaseContext>("move pixel to spike") {
                 forward(MovePixelToSpike)
             }
 
@@ -102,6 +122,6 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
 
             single<DrivebaseContext>("Straf") {
                 strafe(StrafeIntoParkingZone)
-            }
+            }*/
         }
 }

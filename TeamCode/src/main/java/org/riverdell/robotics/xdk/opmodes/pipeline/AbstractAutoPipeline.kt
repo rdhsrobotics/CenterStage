@@ -68,6 +68,12 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
     override fun runOpMode()
     {
+        register(
+            clawSubsystem,
+            elevatorSubsystem,
+            airplaneSubsystem
+        )
+
         this.imu = hardware("imu")
         this.imu.initialize(
             IMU.Parameters(
@@ -82,12 +88,6 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             frontDistanceSensor
             visionPipeline.start()
         }
-
-        register(
-            clawSubsystem,
-            elevatorSubsystem,
-            airplaneSubsystem
-        )
 
         // keep all log entries
         if (monoShouldDoLogging)
@@ -114,6 +114,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
         this.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
 
+        initializeAll()
         while (opModeInInit())
         {
             multipleTelemetry.addLine("Auto in initialized")
@@ -124,8 +125,10 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             multipleTelemetry.addData("Target", 0.0)
             multipleTelemetry.addData("Input", 0.0)
             multipleTelemetry.addData("Output", 0.0)
+            multipleTelemetry.addData("Velocity", 0.0)
             multipleTelemetry.update()
         }
+
         waitForStart()
 
         val tapeSide = visionPipeline.getTapeSide()
@@ -299,17 +302,17 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
                     break
                 }
 
-                if (System.currentTimeMillis() - startTime > 3000L)
+                /*if (System.currentTimeMillis() - startTime > 3000L)
                 {
                     break
-                }
+                }*/
 
                 val millisDiff = System.currentTimeMillis() - startTime
                 val rampUp = (millisDiff / AutoPipelineUtilities.RAMP_UP_SPEED)
                     .coerceIn(0.0, 1.0)
 
                 val pid = controller.calculate(realCurrentPosition)
-                val finalPower = (rampUp * pid).coerceIn(-0.6..0.6)
+                val finalPower = (rampUp * -pid).coerceIn(-0.5..0.5)
                 setMotorPowers(finalPower)
 
                 multipleTelemetry.update()
