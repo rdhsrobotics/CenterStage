@@ -20,8 +20,6 @@ class IsolatedAutoTesting : AbstractAutoPipeline()
 
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
-            single("move pixel to spike") {
 
-            }
         }
 }

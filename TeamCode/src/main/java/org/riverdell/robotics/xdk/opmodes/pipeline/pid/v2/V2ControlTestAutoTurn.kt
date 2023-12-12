@@ -15,7 +15,6 @@ class V2ControlTestAutoTurn : AbstractAutoPipeline()
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono.buildExecutionGroup {
         single("strafe") {
             v2().turn(90.0)
-            Thread.sleep(20000L * 4)
         }
     }
 }

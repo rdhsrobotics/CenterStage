@@ -54,7 +54,7 @@ public class PropPipelineV2 implements CameraStreamSource, VisionProcessor {
     public static double Y_OFFSET_TOP = 0.4;
     public static double Y_OFFSET_BOTTOM = 0.6;
 
-    public static double PERCENTAGE_REQUIRED_RED = 0.30;
+    public static double PERCENTAGE_REQUIRED_RED = 0.20;
     public static double PERCENTAGE_REQUIRED_BLUE = 0.50;
 
     private final Scalar lowerBlueBound = new Scalar(90, 100, 100);
@@ -118,7 +118,7 @@ public class PropPipelineV2 implements CameraStreamSource, VisionProcessor {
                 input.width(), input.height(), Bitmap.Config.RGB_565
         );
 
-        Utils.matToBitmap(/*mask*/input, bitmap);
+        Utils.matToBitmap(mask, bitmap);
         this.lastFrame.set(bitmap);
         return input;
     }

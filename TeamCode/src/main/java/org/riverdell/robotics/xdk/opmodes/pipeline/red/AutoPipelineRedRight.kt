@@ -8,6 +8,7 @@ import org.riverdell.robotics.xdk.opmodes.Global
 import org.riverdell.robotics.xdk.opmodes.pipeline.AbstractAutoPipeline
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
+import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.MoveBackFromTape
 import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight.MoveForwardToTape
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 
@@ -28,9 +29,10 @@ object RedRight
     // elevator
     @JvmField var StrafeIntoParkingZone = 975.0*/
     @JvmField var MoveForwardToTape = 550.0
+    @JvmField var MoveBackFromTape = -200.0
 }
 
-@Autonomous(name = "Red | Right", preselectTeleOp = Global.RobotCentricTeleOpName)
+@Autonomous(name = "Red | Right", group = "Red", preselectTeleOp = Global.RobotCentricTeleOpName)
 class AutoPipelineRedRight : AbstractAutoPipeline()
 {
     init
@@ -47,12 +49,29 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
                 clawSubsystem.toggleExtender(
                     ExtendableClaw.ExtenderState.Intake
                 )
-                v2().move(MoveForwardToTape)
+                if (tapeSide == TapeSide.Middle)
+                {
+                    v2().move(-MoveForwardToTape + 60)
+                } else
+                {
+                    v2().move(-MoveForwardToTape + 100)
+                }
             }
+            var deg: Double = 0.0
 
-            if (tapeSide == TapeSide.Middle)
+            if (tapeSide == TapeSide.Left)
             {
-
+                single("turn 20 deg") {
+                    v2().turn(25.0)
+                    deg = 25.0
+                }
+            } else if (tapeSide == TapeSide.Right)
+            {
+                single("turn 20 deg") {
+                    v2().turn(-65.0)
+                    deg = -65.0
+                    v2().move(-50.0)
+                }
             }
 
             single("open left claw") {
@@ -60,68 +79,19 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
                     ExtendableClaw.ClawStateUpdate.Left,
                     ExtendableClaw.ClawState.Open
                 )
-                Thread.sleep(250L)
+                Thread.sleep(350L)
                 clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
             }
 
             single("move back") {
-                v2().move(-200.0)
+                if (deg != 0.0)
+                {
+                    v2().move(160.0)
+                    v2().turn(-deg)
+                }
+                v2().move(-MoveBackFromTape)
+                v2().turn(-90.0)
+                v2().move(-600.0)
             }
-
-
-
-           /* single<DrivebaseContext>("move pixel to spike") {
-                forward(MovePixelToSpike)
-            }
-
-            single<DrivebaseContext>("move back from spike") {
-                forward(MoveBackFromSpike)
-                Thread.sleep(500)
-            }
-
-            single<DrivebaseContext>("turn towards backboard") {
-                turn(TurnDegreesTowardBackboard)
-            }
-
-            single<DrivebaseContext>("go to backboard") {
-                forward(GoToBackboard)
-            }
-
-            single<DrivebaseContext>("align with backboard") {
-                strafe(StrafeIntoBackboardPosition)
-            }
-
-            single("elevator") {
-                elevatorSubsystem.configureElevatorManually(ElevateElevatorAtBackboard)
-            }
-
-            single<DrivebaseContext>("meow") {
-                PIDToDistance(12.0)
-            }
-
-            single("drop shi") {
-                Thread.sleep(350L)
-                clawSubsystem.updateClawState(
-                    ExtendableClaw.ClawStateUpdate.Both,
-                    ExtendableClaw.ClawState.Open
-                )
-                Thread.sleep(1000L)
-                clawSubsystem.updateClawState(
-                    ExtendableClaw.ClawStateUpdate.Both,
-                    ExtendableClaw.ClawState.Closed
-                )
-            }
-
-            single("drop shi2") {
-                elevatorSubsystem.configureElevatorManually(0.0)
-            }
-
-            single<DrivebaseContext>("meow") {
-                forward(BackUpFromBackboard)
-            }
-
-            single<DrivebaseContext>("Straf") {
-                strafe(StrafeIntoParkingZone)
-            }*/
         }
 }

@@ -13,7 +13,7 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
  * @since 10/23/2023
  */
 @Disabled
-@Autonomous(name = "Red | Left", preselectTeleOp = Global.RobotCentricTeleOpName)
+@Autonomous(name = "Red | Left", group = "Red", preselectTeleOp = Global.RobotCentricTeleOpName)
 class AutoPipelineRedLeft : AbstractAutoPipeline()
 {
     override fun getTeamColor() = TeamColor.Red

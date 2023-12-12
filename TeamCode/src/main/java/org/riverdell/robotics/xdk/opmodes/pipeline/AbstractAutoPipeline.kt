@@ -6,6 +6,7 @@ import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.DistanceSensor
 import com.qualcomm.robotcore.hardware.HardwareDevice
@@ -48,7 +49,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
     lateinit var imu: IMU
 
-    internal val visionPipeline by lazy {
+    private val visionPipeline by lazy {
         VisionPipeline(
             webcam = hardware("webcam1"),
             teamColor = getTeamColor()
@@ -214,9 +215,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
         fun turn(degrees: Double) = rotationPID(
             setPoint = degrees,
-            setMotorPowers = {
-                this@AbstractAutoPipeline.setTurnPower(-it)
-            }
+            setMotorPowers = this@AbstractAutoPipeline::setTurnPower
         )
 
         private fun shortestAngleDistance(target: Double, current: Double): Double
@@ -241,18 +240,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
                     imu.getRobotAngularVelocity(AngleUnit.DEGREES)
                         .zRotationRate.toDouble()
                 },
-            currentPositionBlock = {
-                val imuResult = imu.robotYawPitchRollAngles
-                val currentYaw = imuResult.getYaw(AngleUnit.DEGREES)
-
-                if (currentYaw < 0)
-                {
-                    360 + currentYaw
-                } else
-                {
-                    currentYaw
-                }
-            },
+            currentPositionBlock = imu::normalizedYaw,
             setMotorPowers = setMotorPowers
         )
 
@@ -263,7 +251,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             controller = buildPIDControllerMovement(setPoint = setPoint),
             currentPositionBlock = {
                 drivebaseMotors
-                    .map { it.currentPosition.absoluteValue }
+                    .map(DcMotor::getCurrentPosition)
                     .average()
             },
             setMotorPowers = setMotorPowers
@@ -289,6 +277,8 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             stopAndResetMotors()
             runMotors()
 
+            imu.resetYaw()
+
             val startTime = System.currentTimeMillis()
 
             while (opModeIsActive())
@@ -302,17 +292,17 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
                     break
                 }
 
-                /*if (System.currentTimeMillis() - startTime > 3000L)
+                if (System.currentTimeMillis() - startTime > 3000L)
                 {
                     break
-                }*/
+                }
 
                 val millisDiff = System.currentTimeMillis() - startTime
                 val rampUp = (millisDiff / AutoPipelineUtilities.RAMP_UP_SPEED)
                     .coerceIn(0.0, 1.0)
 
                 val pid = controller.calculate(realCurrentPosition)
-                val finalPower = (rampUp * -pid).coerceIn(-0.5..0.5)
+                val finalPower = pid.coerceIn(-0.5..0.5)
                 setMotorPowers(finalPower)
 
                 multipleTelemetry.update()
@@ -577,7 +567,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
     }
 
     fun runMotors() = configureMotorsToDo {
-        it.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        it.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }
 
     fun setPower(power: Double) = configureMotorsToDo {

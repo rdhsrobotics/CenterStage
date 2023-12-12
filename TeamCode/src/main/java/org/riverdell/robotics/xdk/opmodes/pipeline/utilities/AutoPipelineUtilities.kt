@@ -17,11 +17,11 @@ object AutoPipelineUtilities
     @JvmField var PID_DISTANCE_TOLERANCE = 10
     @JvmField var PID_DISTANCE_MIN_VELOCITY = 15.0
 
-    @JvmField var PID_ROTATION_KP = 0.45
-    @JvmField var PID_ROTATION_KI = 0.0001
-    @JvmField var PID_ROTATION_KD = 0.75
-    @JvmField var PID_ROTATION_TOLERANCE = 1
-    @JvmField var PID_ROTATION_MIN_VELOCITY = 5.0
+    @JvmField var PID_ROTATION_KP = 0.06
+    @JvmField var PID_ROTATION_KI = 0.0
+    @JvmField var PID_ROTATION_KD = 0.25
+    @JvmField var PID_ROTATION_TOLERANCE = 2
+    @JvmField var PID_ROTATION_MIN_VELOCITY = 25.0
 
     @JvmField var RAMP_UP_SPEED = 2000.0
 

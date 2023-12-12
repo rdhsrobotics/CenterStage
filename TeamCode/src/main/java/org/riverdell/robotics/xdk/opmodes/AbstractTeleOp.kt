@@ -1,13 +1,19 @@
 package org.riverdell.robotics.xdk.opmodes
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.Gamepad
+import com.qualcomm.robotcore.hardware.IMU
 import io.liftgate.robotics.mono.Mono.commands
 import io.liftgate.robotics.mono.gamepad.ButtonType
 import io.liftgate.robotics.mono.gamepad.GamepadCommands
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import io.liftgate.robotics.mono.subsystem.System
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
+import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
+import org.riverdell.robotics.xdk.opmodes.pipeline.hardware
+import org.riverdell.robotics.xdk.opmodes.pipeline.normalizedYaw
 import org.riverdell.robotics.xdk.opmodes.pipeline.scheduleAsyncExecution
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher
 import org.riverdell.robotics.xdk.opmodes.subsystem.Drivebase
@@ -71,12 +77,32 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             ExtendableClaw.ExtenderState.Deposit
         )
 
+        val imu = hardware<IMU>("imu")
+        imu.initialize(
+            IMU.Parameters(
+                RevHubOrientationOnRobot(
+                    RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
+                    RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
+                )
+            )
+        )
+        imu.resetYaw()
         while (opModeIsActive())
         {
             val multiplier = 0.6 + gamepad1.right_trigger * 0.4
             driveRobot(drivebase, driverOp, multiplier)
 
-            telemetry.addData("current ", elevator.backingHangMotor.currentPosition)
+            val imuRaw = imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
+
+            fun normalize(imuAngle: Double) = if (imuAngle < 0.0) 360 + imuAngle else imuAngle
+
+            telemetry.addData(
+                "kys", normalize(imuRaw)
+            )
+
+            telemetry.addData(
+                "IMU Raw", imuRaw
+            )
             telemetry.update()
 
             if (!bundleExecutionInProgress)

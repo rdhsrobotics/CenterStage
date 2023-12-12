@@ -13,7 +13,7 @@ class V2ControlTestAutoStrafe : AbstractAutoPipeline()
 {
     override fun getTeamColor() = TeamColor.Red
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono.buildExecutionGroup {
-        single<DrivebaseContext>("strafe") {
+        single("strafe") {
             v2().strafe(500.0)
         }
     }

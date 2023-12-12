@@ -17,6 +17,7 @@ import org.riverdell.robotics.xdk.opmodes.pipeline.blue.BlueLeft.StrafeIntoParki
 import org.riverdell.robotics.xdk.opmodes.pipeline.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.pipeline.detection.TeamColor
+import org.riverdell.robotics.xdk.opmodes.pipeline.red.RedRight
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 
 /**
@@ -37,66 +38,60 @@ object BlueLeft
     @JvmField var StrafeIntoParkingZone = -975.0
 }
 
-@Autonomous(name = "Blue | Left", preselectTeleOp = Global.RobotCentricTeleOpName)
-class AutoPipelineBlueLeft : AbstractAutoPipeline()
+@Autonomous(name = "Blue | Left", group = "Blue  ", preselectTeleOp = Global.RobotCentricTeleOpName)
+class  t4AutoPipelineBlueLeft : AbstractAutoPipeline()
 {
     override fun getTeamColor() = TeamColor.Blue
 
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
-            // TODO: turn on at first
-            single<DrivebaseContext>("move pixel to spike") {
-                forward(MovePixelToSpike)
+            single("move forward") {
+                clawSubsystem.toggleExtender(
+                    ExtendableClaw.ExtenderState.Intake
+                )
+                if (tapeSide == TapeSide.Middle)
+                {
+                    v2().move(-RedRight.MoveForwardToTape + 30)
+                } else
+                {
+                    v2().move(-RedRight.MoveForwardToTape + 100)
+                }
+            }
+            var deg: Double = 0.0
+
+            if (tapeSide == TapeSide.Left)
+            {
+                single("turn 20 deg") {
+                    v2().turn(25.0)
+                    deg = 25.0
+                }
+            } else if (tapeSide == TapeSide.Right)
+            {
+                single("turn 20 deg") {
+                    v2().turn(-65.0)
+                    deg = -65.0
+                    v2().move(-50.0)
+                }
             }
 
-            single<DrivebaseContext>("move back from spike") {
-                forward(MoveBackFromSpike)
-                Thread.sleep(500)
-            }
-
-            single<DrivebaseContext>("turn towards backboard") {
-                turn(TurnDegreesTowardBackboard)
-            }
-
-            single<DrivebaseContext>("go to backboard") {
-                forward(GoToBackboard)
-            }
-
-            single<DrivebaseContext>("align with backboard") {
-                strafe(StrafeIntoBackboardPosition)
-            }
-
-            single("elevator") {
-                elevatorSubsystem.configureElevatorManually(ElevateElevatorAtBackboard)
-            }
-
-            single<DrivebaseContext>("meow") {
-                PIDToDistance(12.0)
-            }
-
-            single("drop shi") {
-                Thread.sleep(350L)
+            single("open left claw") {
                 clawSubsystem.updateClawState(
-                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawStateUpdate.Left,
                     ExtendableClaw.ClawState.Open
                 )
-                Thread.sleep(1000L)
-                clawSubsystem.updateClawState(
-                    ExtendableClaw.ClawStateUpdate.Both,
-                    ExtendableClaw.ClawState.Closed
-                )
+                Thread.sleep(350L)
+                clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
             }
 
-            single("drop shi2") {
-                elevatorSubsystem.configureElevatorManually(0.0)
-            }
-
-            single<DrivebaseContext>("meow") {
-                forward(BackUpFromBackboard)
-            }
-
-            single<DrivebaseContext>("Straf") {
-                strafe(StrafeIntoParkingZone)
+            single("move back") {
+                if (deg != 0.0)
+                {
+                    v2().move(150.0)
+                    v2().turn(-deg)
+                }
+                v2().move(-RedRight.MoveBackFromTape)
+                v2().turn(90.0)
+                v2().move(-600.0)
             }
         }
 }
