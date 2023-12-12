@@ -4,8 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.Servo
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
-import io.liftgate.robotics.mono.subsystem.Subsystem
-import org.riverdell.robotics.xdk.opmodes.pipeline.hardware
+import org.riverdell.robotics.xdk.opmodes.autonomous.hardware
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ClawExpansionConstants
 
 class AirplaneLauncher(private val opMode: LinearOpMode) : AbstractSubsystem()

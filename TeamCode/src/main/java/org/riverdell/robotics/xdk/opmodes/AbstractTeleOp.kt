@@ -11,10 +11,8 @@ import io.liftgate.robotics.mono.gamepad.GamepadCommands
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import io.liftgate.robotics.mono.subsystem.System
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.robotcore.external.navigation.UnnormalizedAngleUnit
-import org.riverdell.robotics.xdk.opmodes.pipeline.hardware
-import org.riverdell.robotics.xdk.opmodes.pipeline.normalizedYaw
-import org.riverdell.robotics.xdk.opmodes.pipeline.scheduleAsyncExecution
+import org.riverdell.robotics.xdk.opmodes.autonomous.hardware
+import org.riverdell.robotics.xdk.opmodes.autonomous.scheduleAsyncExecution
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher
 import org.riverdell.robotics.xdk.opmodes.subsystem.Drivebase
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator

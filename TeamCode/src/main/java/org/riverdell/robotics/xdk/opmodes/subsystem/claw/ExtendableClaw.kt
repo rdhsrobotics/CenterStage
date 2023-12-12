@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.Servo
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
-import org.riverdell.robotics.xdk.opmodes.pipeline.hardware
+import org.riverdell.robotics.xdk.opmodes.autonomous.hardware
 
 class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
