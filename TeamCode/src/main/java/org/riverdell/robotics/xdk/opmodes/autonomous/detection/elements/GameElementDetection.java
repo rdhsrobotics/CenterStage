@@ -159,7 +159,7 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
         for (final TapeSide detectionZone : DETECTION_ZONES) {
             detectionCenters.put(
                     detectionZone,
-                    findLargestBlob(
+                    findBlobCenter(
                             mask,
                             Objects.requireNonNull(
                                     detectionRegions.get(detectionZone)
@@ -171,24 +171,25 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
 
     @NotNull
     @Contract("_, _ -> new")
-    private Point findLargestBlob(
+    private Point findBlobCenter(
             final @NotNull Mat mask,
             final @NotNull Rect rect
     ) {
-        final Mat roi = new Mat(mask, rect);
+        final Mat regionOfInterest = new Mat(mask, rect);
         final List<MatOfPoint> contours = new ArrayList<>();
         final Mat hierarchy = new Mat();
 
         Imgproc.findContours(
-                roi, contours, hierarchy,
+                regionOfInterest, contours, hierarchy,
                 Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE
         );
 
-        final Point blobCenter = new Point();
+        final Point centerOfBlob = new Point();
 
         if (!contours.isEmpty()) {
             double maxArea = -1;
             int maxAreaIdx = -1;
+
             for (int i = 0; i < contours.size(); i++) {
                 double area = Imgproc.contourArea(contours.get(i));
                 if (area > maxArea) {
@@ -199,12 +200,12 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
 
             if (maxAreaIdx != -1) {
                 final Moments moments = Imgproc.moments(contours.get(maxAreaIdx));
-                blobCenter.x = (int) (moments.get_m10() / moments.get_m00()) + rect.x;
-                blobCenter.y = (int) (moments.get_m01() / moments.get_m00()) + rect.y;
+                centerOfBlob.x = (int) (moments.get_m10() / moments.get_m00()) + rect.x;
+                centerOfBlob.y = (int) (moments.get_m01() / moments.get_m00()) + rect.y;
             }
         }
 
-        return blobCenter;
+        return centerOfBlob;
     }
 
     private void drawRectanglesAroundBlobsAndDetect(
@@ -250,9 +251,9 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
                     center.y + RECTANGLE_SIZE / 2
             );
 
-            double rectangleArea = (max.x - min.x) * (max.y - min.y);
+            final double rectangleArea = (max.x - min.x) * (max.y - min.y);
             final Mat matColorOverlap = mask.submat(regionBlob);
-            double percentage = Core.countNonZero(matColorOverlap);
+            final double percentage = Core.countNonZero(matColorOverlap);
 
             if ((percentage / rectangleArea) > (teamColor == TeamColor.Blue ? PERCENTAGE_REQUIRED_BLUE : PERCENTAGE_REQUIRED_RED)) {
                 if ((percentage / rectangleArea) > percentageColorMatch) {
