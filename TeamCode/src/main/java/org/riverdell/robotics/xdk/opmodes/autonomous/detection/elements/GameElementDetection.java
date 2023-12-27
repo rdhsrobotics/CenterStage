@@ -3,6 +3,8 @@ package org.riverdell.robotics.xdk.opmodes.autonomous.detection.elements;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
+import androidx.annotation.NonNull;
+
 import com.acmerobotics.dashboard.config.Config;
 
 import org.firstinspires.ftc.robotcore.external.function.Consumer;
@@ -35,11 +37,6 @@ import java.util.concurrent.atomic.AtomicReference;
 @Config
 public class GameElementDetection implements CameraStreamSource, VisionProcessor {
 
-    private final TeamColor teamColor;
-
-    private final Mat hsvMat = new Mat();
-    private final Mat mask = new Mat();
-
     public static double RECTANGLE_SIZE = 100;
 
     public static double Y_OFFSET_TOP = 0.4;
@@ -69,13 +66,12 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
 
     private double percentageColorMatch = -1.0;
 
-    @NotNull
-    public TapeSide currentTapeSide = TapeSide.Right;
+    @NotNull private TapeSide currentTapeSide = TapeSide.Right;
+    @Nullable private TapeSide prominentTapeSide = null;
 
-    @Nullable
-    private TapeSide prominentTapeSide = null;
+    @NotNull private final TeamColor teamColor;
 
-    public GameElementDetection(final TeamColor teamColor) {
+    public GameElementDetection(final @NonNull TeamColor teamColor) {
         this.teamColor = teamColor;
     }
 
@@ -88,6 +84,9 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
 
     @Override
     public Object processFrame(Mat input, long captureTimeNanos) {
+        final Mat hsvMat = new Mat();
+        final Mat mask = new Mat();
+
         Imgproc.cvtColor(input, hsvMat, Imgproc.COLOR_RGB2HSV);
 
         Core.inRange(
@@ -98,7 +97,7 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
         );
 
         drawTapeRegionBlobs(mask);
-        drawRectanglesAroundBlobsAndDetect(input);
+        drawRectanglesAroundBlobsAndDetect(mask, input);
 
         detectionRegions.forEach((side, region) -> {
             Imgproc.rectangle(input, region, new Scalar(0, 0, 0));
@@ -209,13 +208,14 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
     }
 
     private void drawRectanglesAroundBlobsAndDetect(
+            final @NotNull Mat mask,
             final @NotNull Mat input
     ) {
         this.prominentTapeSide = null;
 
         for (final TapeSide detectionZone : DETECTION_ZONES) {
             drawRectangleAndDetermineProminentZone(
-                    input,
+                    mask, input,
                     Objects.requireNonNull(
                             detectionCenters.get(detectionZone)
                     ),
@@ -237,6 +237,7 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
     }
 
     private void drawRectangleAndDetermineProminentZone(
+            @NotNull Mat mask,
             @NotNull Mat frame,
             @NotNull Point center,
             @NotNull TapeSide tapeSide,
