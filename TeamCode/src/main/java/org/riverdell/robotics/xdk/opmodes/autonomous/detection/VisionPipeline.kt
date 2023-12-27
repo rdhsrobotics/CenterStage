@@ -4,7 +4,7 @@ import android.util.Size
 import com.acmerobotics.dashboard.FtcDashboard
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.vision.VisionPortal
-import org.riverdell.robotics.xdk.opmodes.autonomous.detection.prop.PropPipelineV2
+import org.riverdell.robotics.xdk.opmodes.autonomous.detection.elements.GameElementDetection
 
 class VisionPipeline(
     private val teamColor: TeamColor,
@@ -13,7 +13,7 @@ class VisionPipeline(
 {
     private var portal: VisionPortal? = null
     val propPipeline by lazy {
-        PropPipelineV2(teamColor)
+        GameElementDetection(teamColor)
     }
 
     fun getTapeSide() = propPipeline.tapeSide

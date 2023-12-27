@@ -1,4 +1,4 @@
-package org.riverdell.robotics.xdk.opmodes.autonomous.detection.prop;
+package org.riverdell.robotics.xdk.opmodes.autonomous.detection.elements;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -33,7 +33,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Config
-public class PropPipelineV2 implements CameraStreamSource, VisionProcessor {
+public class GameElementDetection implements CameraStreamSource, VisionProcessor {
 
     private final TeamColor teamColor;
 
@@ -75,7 +75,7 @@ public class PropPipelineV2 implements CameraStreamSource, VisionProcessor {
     @Nullable
     private TapeSide prominentTapeSide = null;
 
-    public PropPipelineV2(final TeamColor teamColor) {
+    public GameElementDetection(final TeamColor teamColor) {
         this.teamColor = teamColor;
     }
 
