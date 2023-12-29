@@ -27,6 +27,7 @@ import org.riverdell.robotics.xdk.opmodes.autonomous.utilities.DegreeUtilities
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
+import kotlin.concurrent.thread
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
@@ -134,10 +135,6 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         val tapeSide = visionPipeline.getTapeSide()
         this.imu.resetYaw()
 
-/*        multipleTelemetry.clear()
-        multipleTelemetry.addLine("Started! Executing the Mono execution group now with ${tapeSide.name}.")
-        multipleTelemetry.update()*/
-
         val executionGroup = buildExecutionGroup(tapeSide)
         executionGroup.providesContext { _ ->
             DrivebaseContext(
@@ -145,7 +142,16 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             )
         }
 
+        val thread = thread {
+            while (true) {
+                // TODO: test lol
+                clawSubsystem.extenderPeriodic()
+                Thread.sleep(10L)
+            }
+        }
+
         executionGroup.executeBlocking()
+        thread.interrupt()
 
         stopAndResetMotors()
         terminateAllMotors()

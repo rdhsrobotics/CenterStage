@@ -1,13 +1,27 @@
 package org.riverdell.robotics.xdk.opmodes.subsystem.claw
 
+import com.arcrobotics.ftclib.util.Timing.Timer
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.Servo
+import com.qualcomm.robotcore.util.ElapsedTime
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import org.riverdell.robotics.xdk.opmodes.autonomous.hardware
+import org.riverdell.robotics.xdk.opmodes.subsystem.motionprofile.AsymmetricMotionProfile
+import org.riverdell.robotics.xdk.opmodes.subsystem.motionprofile.ProfileConstraints
+import kotlin.math.abs
+import kotlin.properties.Delegates
 
 class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
+    companion object
+    {
+        @JvmStatic
+        var maxExtenderAddition = 0.0
+        @JvmStatic
+        var clawRangeExpansion = 0.0
+    }
+
     private val backingExtender by lazy {
         opMode.hardware<Servo>("extender")
     }
@@ -19,9 +33,6 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
     val backingClawOpenerLeft by lazy {
         opMode.hardware<Servo>("clawLeft")
     }
-
-    private var maxExtenderAddition = 0.0
-    private var clawRangeExpansion = 0.0
 
     override fun composeStageContext() = object : StageContext
     {
@@ -50,23 +61,68 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         })
     }
 
-    enum class ExtenderState
+    enum class ExtenderState(val targetPosition: () -> Double)
     {
-        PreLoad, Intake, Intermediate, Deposit
+        PreLoad({
+            ClawExpansionConstants.PRELOAD_EXTENDER_POSITION
+        }),
+        Intake({
+            ClawExpansionConstants.MAX_EXTENDER_POSITION + maxExtenderAddition
+        }),
+        Intermediate({
+            ClawExpansionConstants.INTERMEDIATE_EXTENDER_POSITION
+        }),
+        Deposit({
+            ClawExpansionConstants.MIN_EXTENDER_POSITION
+        })
     }
 
-    var extenderState = ExtenderState.PreLoad
+    private val extenderProfileConstraints = ProfileConstraints(0.01, 0.05, 0.05)
+    private var motionProfile: AsymmetricMotionProfile? = null
+    private var timer = ElapsedTime()
+
+    var extenderState by Delegates.observable(ExtenderState.PreLoad) { _, _, new ->
+        timer = ElapsedTime()
+        motionProfile = AsymmetricMotionProfile(
+            backingExtender.position,
+            new.targetPosition(),
+            extenderProfileConstraints
+        )
+    }
 
     private var rightClawState = ClawState.Closed
     private var leftClawState = ClawState.Closed
 
     override fun doInitialize()
     {
+        maxExtenderAddition = 0.0
+        clawRangeExpansion = 0.0
+        backingExtender.position = ClawExpansionConstants
+            .PRELOAD_EXTENDER_POSITION
+
         toggleExtender(ExtenderState.PreLoad)
         updateClawState(
             ClawStateUpdate.Both,
             ClawState.Closed
         )
+    }
+
+    fun extenderPeriodic()
+    {
+        if (motionProfile != null)
+        {
+            val diffs = abs(
+                backingExtender.position - motionProfile!!.finalPosition
+            )
+
+            if (diffs < 0.01)
+            {
+                return
+            }
+
+            val position = motionProfile!!.calculate(timer.time())
+            backingExtender.position = position.x
+        }
     }
 
     fun incrementClawAddition()
@@ -101,43 +157,14 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         if (state != null)
         {
             extenderState = state
-            backingExtender.position = when (extenderState)
-            {
-                ExtenderState.PreLoad -> ClawExpansionConstants.PRELOAD_EXTENDER_POSITION
-                ExtenderState.Deposit -> ClawExpansionConstants.MIN_EXTENDER_POSITION
-                ExtenderState.Intermediate -> ClawExpansionConstants.INTERMEDIATE_EXTENDER_POSITION
-                ExtenderState.Intake -> ClawExpansionConstants.MAX_EXTENDER_POSITION + maxExtenderAddition
-            }
-
             return
         }
 
         extenderState = when (extenderState)
         {
-            ExtenderState.Deposit ->
-            {
-                backingExtender.position = ClawExpansionConstants.MAX_EXTENDER_POSITION + maxExtenderAddition
-                ExtenderState.Intake
-            }
-            else ->
-            {
-                backingExtender.position = ClawExpansionConstants.MIN_EXTENDER_POSITION
-                ExtenderState.Deposit
-            }
-        }
-
-        extenderState = if (extenderState == ExtenderState.Deposit)
-        {
-            backingExtender.position = ClawExpansionConstants.MAX_EXTENDER_POSITION + maxExtenderAddition
-            ExtenderState.Intake
-        } else if (extenderState == ExtenderState.Intermediate)
-        {
-            backingExtender.position = ClawExpansionConstants.INTERMEDIATE_EXTENDER_POSITION
-            ExtenderState.Deposit
-        } else
-        {
-            backingExtender.position = ClawExpansionConstants.MIN_EXTENDER_POSITION
-            ExtenderState.Deposit
+            ExtenderState.Deposit -> ExtenderState.Intake
+            ExtenderState.Intermediate -> ExtenderState.Deposit
+            else -> ExtenderState.Deposit
         }
     }
 

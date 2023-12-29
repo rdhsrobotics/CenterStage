@@ -33,18 +33,14 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
 
     override fun doInitialize()
     {
-        listOf(backingMotor).forEach {
+        listOf(backingMotor, backingHangMotor).forEach {
             it.direction = DcMotorSimple.Direction.REVERSE
             it.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
             it.stopAndResetEncoder()
-            it.mode = DcMotor.RunMode.RUN_USING_ENCODER
         }
 
-        backingHangMotor.direction = DcMotorSimple.Direction.REVERSE
-        backingHangMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-
-        backingHangMotor.stopAndResetEncoder()
+        backingMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
         backingHangMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     }
 

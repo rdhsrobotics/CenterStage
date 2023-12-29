@@ -90,19 +90,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             val multiplier = 0.6 + gamepad1.right_trigger * 0.4
             driveRobot(drivebase, driverOp, multiplier)
 
-            val imuRaw = imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
-
-            fun normalize(imuAngle: Double) = if (imuAngle < 0.0) 360 + imuAngle else imuAngle
-
-            telemetry.addData(
-                "kys", normalize(imuRaw)
-            )
-
-            telemetry.addData(
-                "IMU Raw", imuRaw
-            )
-            telemetry.update()
-
+            extendableClaw.extenderPeriodic()
             if (!bundleExecutionInProgress)
             {
                 elevator.configureElevator(gamepad2.right_stick_y.toDouble())
