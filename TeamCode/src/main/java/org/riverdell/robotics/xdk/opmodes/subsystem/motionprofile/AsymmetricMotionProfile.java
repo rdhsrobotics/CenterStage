@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
 
+// thx cookie bots
 public class AsymmetricMotionProfile {
     public double initialPosition;
     public double finalPosition;
