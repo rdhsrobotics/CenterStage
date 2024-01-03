@@ -144,35 +144,35 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             }
             .whenPressedOnce()
 
-       /* // extender expansion ranges
+        /* // extender expansion ranges
 
 
-        // claw expansion ranges
-        gp1Commands
-            .where(ButtonType.PlayStationTouchpad)
-            .onlyWhenNot { bundleExecutionInProgress }
-            .onlyWhen { !gamepad1.touchpad_finger_2 && gamepad1.touchpad_finger_1_x <= 0.0 }
-            .triggers {
-                extendableClaw.decrementClawAddition()
-                extendableClaw.updateClawState(
-                    ExtendableClaw.ClawStateUpdate.Both,
-                    ExtendableClaw.ClawState.Closed
-                )
-            }
-            .whenPressedOnce()
+         // claw expansion ranges
+         gp1Commands
+             .where(ButtonType.PlayStationTouchpad)
+             .onlyWhenNot { bundleExecutionInProgress }
+             .onlyWhen { !gamepad1.touchpad_finger_2 && gamepad1.touchpad_finger_1_x <= 0.0 }
+             .triggers {
+                 extendableClaw.decrementClawAddition()
+                 extendableClaw.updateClawState(
+                     ExtendableClaw.ClawStateUpdate.Both,
+                     ExtendableClaw.ClawState.Closed
+                 )
+             }
+             .whenPressedOnce()
 
-        gp1Commands
-            .where(ButtonType.PlayStationTouchpad)
-            .onlyWhenNot { bundleExecutionInProgress }
-            .onlyWhen { !gamepad1.touchpad_finger_2 && gamepad1.touchpad_finger_1_x >= 0.0 }
-            .triggers {
-                extendableClaw.incrementClawAddition()
-                extendableClaw.updateClawState(
-                    ExtendableClaw.ClawStateUpdate.Both,
-                    ExtendableClaw.ClawState.Closed
-                )
-            }
-            .whenPressedOnce()*/
+         gp1Commands
+             .where(ButtonType.PlayStationTouchpad)
+             .onlyWhenNot { bundleExecutionInProgress }
+             .onlyWhen { !gamepad1.touchpad_finger_2 && gamepad1.touchpad_finger_1_x >= 0.0 }
+             .triggers {
+                 extendableClaw.incrementClawAddition()
+                 extendableClaw.updateClawState(
+                     ExtendableClaw.ClawStateUpdate.Both,
+                     ExtendableClaw.ClawState.Closed
+                 )
+             }
+             .whenPressedOnce()*/
 
         // going underneath stage door. drive should be able to take over:
         gp1Commands
@@ -312,48 +312,50 @@ abstract class AbstractTeleOp : LinearOpMode(), System
 
         fun GamepadCommands.ButtonMappingBuilder.depositPresetReleaseOnElevatorHeight(position: Int)
         {
-            triggers {
-                if (bundleExecutionInProgress)
-                {
-                    return@triggers
+            onlyWhen { elevator.backingMotor.currentPosition == 0 }
+                .triggers {
+                    if (bundleExecutionInProgress)
+                    {
+                        return@triggers
+                    }
+
+                    bundleExecutionInProgress = true
+                    elevator.configureElevatorManuallyRaw(position)
                 }
+                .andIsHeldUntilReleasedWhere {
+                    if (!bundleExecutionInProgress)
+                    {
+                        return@andIsHeldUntilReleasedWhere
+                    }
 
-                bundleExecutionInProgress = true
-                elevator.configureElevatorManuallyRaw(position)
-            }.andIsHeldUntilReleasedWhere {
-                if (!bundleExecutionInProgress)
-                {
-                    return@andIsHeldUntilReleasedWhere
+                    val applyUpdatesTo = when (true)
+                    {
+                        gamepad2.left_bumper -> ExtendableClaw.ClawStateUpdate.Left
+                        gamepad2.right_bumper -> ExtendableClaw.ClawStateUpdate.Right
+                        (gamepad2.right_bumper && gamepad2.left_bumper) -> ExtendableClaw.ClawStateUpdate.Both
+                        else -> ExtendableClaw.ClawStateUpdate.Both
+                    }
+
+                    if (gamepad2.right_trigger <= 0.5)
+                    {
+                        extendableClaw.updateClawState(
+                            applyUpdatesTo,
+                            ExtendableClaw.ClawState.Open
+                        )
+                    }
+
+                    scheduleAsyncExecution(350L) {
+                        elevator.configureElevatorManuallyRaw(0)
+
+                        extendableClaw.updateClawState(
+                            applyUpdatesTo,
+                            ExtendableClaw.ClawState.Closed
+                        )
+
+                        Thread.sleep(500L)
+                        bundleExecutionInProgress = false
+                    }
                 }
-
-                val applyUpdatesTo = when (true)
-                {
-                    gamepad2.left_bumper -> ExtendableClaw.ClawStateUpdate.Left
-                    gamepad2.right_bumper -> ExtendableClaw.ClawStateUpdate.Right
-                    (gamepad2.right_bumper && gamepad2.left_bumper) -> ExtendableClaw.ClawStateUpdate.Both
-                    else -> ExtendableClaw.ClawStateUpdate.Both
-                }
-
-                if (gamepad2.right_trigger <= 0.5)
-                {
-                    extendableClaw.updateClawState(
-                        applyUpdatesTo,
-                        ExtendableClaw.ClawState.Open
-                    )
-                }
-
-                scheduleAsyncExecution(350L) {
-                    elevator.configureElevatorManuallyRaw(0)
-
-                    extendableClaw.updateClawState(
-                        applyUpdatesTo,
-                        ExtendableClaw.ClawState.Closed
-                    )
-
-                    Thread.sleep(500L)
-                    bundleExecutionInProgress = false
-                }
-            }
         }
 
         gp2Commands
@@ -362,10 +364,15 @@ abstract class AbstractTeleOp : LinearOpMode(), System
 
         gp2Commands
             .where(ButtonType.DPadUp)
+            .depositPresetReleaseOnElevatorHeight(-850)
+
+        gp2Commands
+            .where(ButtonType.DPadRight)
             .depositPresetReleaseOnElevatorHeight(-1130)
 
         gp2Commands
             .where(ButtonType.DPadDown)
+            .onlyWhen { !bundleExecutionInProgress }
             .triggers {
                 elevator.configureElevatorManually(0.0)
             }
