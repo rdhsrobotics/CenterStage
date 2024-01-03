@@ -67,6 +67,8 @@ abstract class AbstractTeleOp : LinearOpMode(), System
         }
 
         telemetry.update()
+        gp1Commands.doButtonUpdatesManually()
+        gp2Commands.doButtonUpdatesManually()
 
         initializeAll()
         waitForStart()
@@ -99,7 +101,11 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 elevator.configureElevator(gamepad2.right_stick_y.toDouble())
             }
 
+            gp1Commands.run()
+            gp2Commands.run()
+
             extendableClaw.extenderPeriodic(telemetry)
+
             if (extendableClaw.extenderState == ExtendableClaw.ExtenderState.Intake)
             {
                 // physical feedback towards the driver when driving with the extender down
