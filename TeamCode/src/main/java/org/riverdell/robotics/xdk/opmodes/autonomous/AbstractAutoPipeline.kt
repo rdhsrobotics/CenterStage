@@ -145,7 +145,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         val thread = thread {
             while (true) {
                 // TODO: test lol
-                clawSubsystem.extenderPeriodic()
+//                clawSubsystem.extenderPeriodic(telemetry)
                 Thread.sleep(10L)
             }
         }

@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.ElapsedTime
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
+import io.liftgate.robotics.mono.subsystem.System
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.riverdell.robotics.xdk.opmodes.autonomous.hardware
 import org.riverdell.robotics.xdk.opmodes.subsystem.motionprofile.AsymmetricMotionProfile
 import org.riverdell.robotics.xdk.opmodes.subsystem.motionprofile.ProfileConstraints
@@ -77,18 +79,10 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         })
     }
 
-    private val extenderProfileConstraints = ProfileConstraints(0.01, 0.05, 0.05)
     private var motionProfile: AsymmetricMotionProfile? = null
     private var timer = ElapsedTime()
 
-    var extenderState by Delegates.observable(ExtenderState.PreLoad) { _, _, new ->
-        timer = ElapsedTime()
-        motionProfile = AsymmetricMotionProfile(
-            backingExtender.position,
-            new.targetPosition(),
-            extenderProfileConstraints
-        )
-    }
+    var extenderState = ExtenderState.PreLoad
 
     private var rightClawState = ClawState.Closed
     private var leftClawState = ClawState.Closed
@@ -107,22 +101,25 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         )
     }
 
-    fun extenderPeriodic()
+    fun extenderPeriodic(telemetry: Telemetry)
     {
         if (motionProfile != null)
         {
-            val diffs = abs(
-                backingExtender.position - motionProfile!!.finalPosition
-            )
+            val position = motionProfile!!.calculate(timer.time())
+            backingExtender.position = position.x
 
-            if (diffs < 0.01)
+            if (backingExtender.position == motionProfile!!.finalPosition)
             {
+                motionProfile = null
                 return
             }
 
-            val position = motionProfile!!.calculate(timer.time())
-            backingExtender.position = position.x
+            telemetry.addLine("Position: ${position.x}")
+        } else
+        {
+            telemetry.addLine("Motion profile is null ${java.lang.System.currentTimeMillis()}")
         }
+        telemetry.update()
     }
 
     fun incrementClawAddition()
@@ -154,18 +151,27 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
     @JvmOverloads
     fun toggleExtender(state: ExtenderState? = null)
     {
-        if (state != null)
-        {
-            extenderState = state
-            return
-        }
+        extenderState = state
+            ?: when (extenderState)
+            {
+                ExtenderState.Deposit -> ExtenderState.Intake
+                ExtenderState.Intermediate -> ExtenderState.Deposit
+                else -> ExtenderState.Deposit
+            }
 
-        extenderState = when (extenderState)
-        {
-            ExtenderState.Deposit -> ExtenderState.Intake
-            ExtenderState.Intermediate -> ExtenderState.Deposit
-            else -> ExtenderState.Deposit
-        }
+        timer = ElapsedTime()
+        motionProfile = AsymmetricMotionProfile(
+            backingExtender.position,
+            extenderState.targetPosition(),
+            ProfileConstraints(ClawExpansionConstants.CLAW_MOTION_PROFILE_VELOCITY,
+                ClawExpansionConstants.CLAW_MOTION_PROFILE_ACCEL,
+                ClawExpansionConstants.CLAW_MOTION_PROFILE_DECEL)
+        )
+
+        opMode.telemetry.addLine("Target: ${extenderState.targetPosition()}")
+        opMode.telemetry.addLine("Current: ${backingExtender.position}")
+        opMode.telemetry.addLine("State: ${extenderState.name}")
+        opMode.telemetry.update()
     }
 
     enum class ClawStateUpdate(
