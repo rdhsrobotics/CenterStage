@@ -19,6 +19,7 @@ import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher
 import org.riverdell.robotics.xdk.opmodes.subsystem.Drivebase
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
+import kotlin.math.abs
 
 /**
  * Configures Mono gamepad commands and FTCLib
@@ -89,7 +90,6 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             )
         )
         imu.resetYaw()
-        val dcMotors = hardwareMap.getAll(DcMotorEx::class.java)
 
         while (opModeIsActive())
         {
@@ -104,6 +104,10 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 elevator.configureElevator(gamepad2.right_stick_y.toDouble())
             }
 
+            telemetry.addData("Current", elevator.backingMotor.currentPosition)
+            telemetry.addData("Target", elevator.backingMotor.targetPosition)
+            telemetry.addData("Diff", elevator.backingMotor.targetPosition - elevator.backingMotor.currentPosition)
+            telemetry.update()
             extendableClaw.periodic()
 
             if (extendableClaw.extenderState == ExtendableClaw.ExtenderState.Intake)
@@ -318,8 +322,8 @@ abstract class AbstractTeleOp : LinearOpMode(), System
 
         fun GamepadCommands.ButtonMappingBuilder.depositPresetReleaseOnElevatorHeight(position: Int)
         {
-            onlyWhen { elevator.backingMotor.currentPosition == 0 }
-                .triggers {
+
+                triggers {
                     if (bundleExecutionInProgress)
                     {
                         return@triggers
@@ -331,6 +335,18 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 .andIsHeldUntilReleasedWhere {
                     if (!bundleExecutionInProgress)
                     {
+                        return@andIsHeldUntilReleasedWhere
+                    }
+
+                    // premature release
+                    if (abs(elevator.backingMotor.currentPosition - position) > 35)
+                    {
+                        scheduleAsyncExecution(50L) {
+                            elevator.configureElevatorManuallyRaw(0)
+
+                            Thread.sleep(1000L)
+                            bundleExecutionInProgress = false
+                        }
                         return@andIsHeldUntilReleasedWhere
                     }
 
@@ -358,7 +374,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                             ExtendableClaw.ClawState.Closed
                         )
 
-                        Thread.sleep(500L)
+                        Thread.sleep(1000L)
                         bundleExecutionInProgress = false
                     }
                 }
