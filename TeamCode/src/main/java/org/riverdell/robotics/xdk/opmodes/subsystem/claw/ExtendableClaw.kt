@@ -1,18 +1,12 @@
 package org.riverdell.robotics.xdk.opmodes.subsystem.claw
 
-import com.arcrobotics.ftclib.util.Timing.Timer
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.Servo
-import com.qualcomm.robotcore.util.ElapsedTime
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
-import io.liftgate.robotics.mono.subsystem.System
-import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.riverdell.robotics.xdk.opmodes.autonomous.hardware
-import org.riverdell.robotics.xdk.opmodes.subsystem.motionprofile.AsymmetricMotionProfile
+import org.riverdell.robotics.xdk.opmodes.subsystem.motionprofile.wrappers.MotionProfiledServo
 import org.riverdell.robotics.xdk.opmodes.subsystem.motionprofile.ProfileConstraints
-import kotlin.math.abs
-import kotlin.properties.Delegates
 
 class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
@@ -25,15 +19,38 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
     }
 
     private val backingExtender by lazy {
-        opMode.hardware<Servo>("extender")
+        MotionProfiledServo(
+            servo = opMode.hardware<Servo>("extender"),
+            constraints = {
+                ProfileConstraints(
+                    ClawExpansionConstants.CLAW_MOTION_PROFILE_VELOCITY,
+                    ClawExpansionConstants.CLAW_MOTION_PROFILE_ACCEL,
+                    ClawExpansionConstants.CLAW_MOTION_PROFILE_DECEL
+                )
+            }
+        )
+    }
+
+    private val clawFingerMPConstraints = {
+        ProfileConstraints(
+            ClawExpansionConstants.CLAW_FINGER_PROFILE_VELOCITY,
+            ClawExpansionConstants.CLAW_FINGER_PROFILE_ACCEL,
+            ClawExpansionConstants.CLAW_FINGER_PROFILE_DECEL
+        )
     }
 
     val backingClawOpenerRight by lazy {
-        opMode.hardware<Servo>("clawRight")
+        MotionProfiledServo(
+            servo = opMode.hardware<Servo>("clawRight"),
+            constraints = clawFingerMPConstraints
+        )
     }
 
     val backingClawOpenerLeft by lazy {
-        opMode.hardware<Servo>("clawLeft")
+        MotionProfiledServo(
+            servo = opMode.hardware<Servo>("clawLeft"),
+            constraints = clawFingerMPConstraints
+        )
     }
 
     override fun composeStageContext() = object : StageContext
@@ -41,7 +58,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         override fun isCompleted() = true
     }
 
-    enum class ClawType(val servo: (ExtendableClaw) -> Servo)
+    enum class ClawType(val servo: (ExtendableClaw) -> MotionProfiledServo)
     {
         Left({ it.backingClawOpenerLeft }),
         Right({ it.backingClawOpenerRight })
@@ -79,9 +96,6 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         })
     }
 
-    private var motionProfile: AsymmetricMotionProfile? = null
-    private var timer = ElapsedTime()
-
     var extenderState = ExtenderState.PreLoad
 
     private var rightClawState = ClawState.Closed
@@ -91,8 +105,6 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
     {
         maxExtenderAddition = 0.0
         clawRangeExpansion = 0.0
-        backingExtender.position = ClawExpansionConstants
-            .PRELOAD_EXTENDER_POSITION
 
         toggleExtender(ExtenderState.PreLoad)
         updateClawState(
@@ -101,25 +113,11 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         )
     }
 
-    fun extenderPeriodic(telemetry: Telemetry)
+    fun periodic()
     {
-        if (motionProfile != null)
-        {
-            val position = motionProfile!!.calculate(timer.time())
-            backingExtender.position = position.x
-
-            if (backingExtender.position == motionProfile!!.finalPosition)
-            {
-                motionProfile = null
-                return
-            }
-
-            telemetry.addLine("Position: ${position.x}")
-        } else
-        {
-            telemetry.addLine("Motion profile is null ${java.lang.System.currentTimeMillis()}")
-        }
-        telemetry.update()
+        backingExtender.runPeriodic()
+        backingClawOpenerRight.runPeriodic()
+        backingClawOpenerLeft.runPeriodic()
     }
 
     fun incrementClawAddition()
@@ -159,19 +157,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
                 else -> ExtenderState.Deposit
             }
 
-        timer = ElapsedTime()
-        motionProfile = AsymmetricMotionProfile(
-            backingExtender.position,
-            extenderState.targetPosition(),
-            ProfileConstraints(ClawExpansionConstants.CLAW_MOTION_PROFILE_VELOCITY,
-                ClawExpansionConstants.CLAW_MOTION_PROFILE_ACCEL,
-                ClawExpansionConstants.CLAW_MOTION_PROFILE_DECEL)
-        )
-
-        opMode.telemetry.addLine("Target: ${extenderState.targetPosition()}")
-        opMode.telemetry.addLine("Current: ${backingExtender.position}")
-        opMode.telemetry.addLine("State: ${extenderState.name}")
-        opMode.telemetry.update()
+        backingExtender.setMotionProfileTarget(extenderState.targetPosition())
     }
 
     enum class ClawStateUpdate(
@@ -197,7 +183,15 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         val servo = effectiveOn.clawType().servo(this)
         val position = state.calculatePosition(effectiveOn.clawType())
 
-        servo.position = if (effectiveOn == ClawStateUpdate.Left)
+        if (effectiveOn == ClawStateUpdate.Right)
+        {
+            this.rightClawState = state
+        } else
+        {
+            this.leftClawState = state
+        }
+
+        servo.setMotionProfileTarget(if (effectiveOn == ClawStateUpdate.Left)
         {
             if (state == ClawState.Closed)
                 position - clawRangeExpansion else
@@ -207,15 +201,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
             if (state == ClawState.Closed)
                 position + clawRangeExpansion else
                 position - clawRangeExpansion
-        }
-
-        if (effectiveOn == ClawStateUpdate.Right)
-        {
-            this.rightClawState = state
-        } else
-        {
-            this.leftClawState = state
-        }
+        })
     }
 
     override fun isCompleted() = true

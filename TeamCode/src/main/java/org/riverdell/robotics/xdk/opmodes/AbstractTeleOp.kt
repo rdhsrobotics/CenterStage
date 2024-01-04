@@ -1,7 +1,5 @@
 package org.riverdell.robotics.xdk.opmodes
 
-import com.acmerobotics.dashboard.FtcDashboard
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -12,8 +10,6 @@ import io.liftgate.robotics.mono.gamepad.ButtonType
 import io.liftgate.robotics.mono.gamepad.GamepadCommands
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import io.liftgate.robotics.mono.subsystem.System
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit
 import org.riverdell.robotics.xdk.opmodes.autonomous.hardware
 import org.riverdell.robotics.xdk.opmodes.autonomous.scheduleAsyncExecution
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher
@@ -104,7 +100,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 elevator.configureElevator(gamepad2.right_stick_y.toDouble())
             }
 
-            extendableClaw.extenderPeriodic(telemetry)
+            extendableClaw.periodic(telemetry)
 
             if (extendableClaw.extenderState == ExtendableClaw.ExtenderState.Intake)
             {
