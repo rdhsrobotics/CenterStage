@@ -107,7 +107,7 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
                 input.width(), input.height(), Bitmap.Config.RGB_565
         );
 
-        Utils.matToBitmap(mask, bitmap);
+        Utils.matToBitmap(input, bitmap);
         this.lastFrame.set(bitmap);
 
         return input;

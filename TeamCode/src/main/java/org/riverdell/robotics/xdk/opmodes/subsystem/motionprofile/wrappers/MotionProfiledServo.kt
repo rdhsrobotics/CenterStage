@@ -39,4 +39,15 @@ class MotionProfiledServo(
             motionProfile = null
         }
     }
+
+    fun cancelMotionProfile()
+    {
+        motionProfile = null
+        timer = ElapsedTime()
+    }
+
+    fun setTarget(targetPosition: Double)
+    {
+        servo.position = targetPosition
+    }
 }

@@ -1,8 +1,10 @@
 package org.riverdell.robotics.xdk.opmodes
 
+import com.acmerobotics.dashboard.FtcDashboard
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Gamepad
 import com.qualcomm.robotcore.hardware.IMU
 import io.liftgate.robotics.mono.Mono.commands
@@ -10,6 +12,7 @@ import io.liftgate.robotics.mono.gamepad.ButtonType
 import io.liftgate.robotics.mono.gamepad.GamepadCommands
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import io.liftgate.robotics.mono.subsystem.System
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit
 import org.riverdell.robotics.xdk.opmodes.autonomous.hardware
 import org.riverdell.robotics.xdk.opmodes.autonomous.scheduleAsyncExecution
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher
@@ -86,6 +89,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             )
         )
         imu.resetYaw()
+        val dcMotors = hardwareMap.getAll(DcMotorEx::class.java)
 
         while (opModeIsActive())
         {
@@ -100,7 +104,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 elevator.configureElevator(gamepad2.right_stick_y.toDouble())
             }
 
-            extendableClaw.periodic(telemetry)
+            extendableClaw.periodic()
 
             if (extendableClaw.extenderState == ExtendableClaw.ExtenderState.Intake)
             {

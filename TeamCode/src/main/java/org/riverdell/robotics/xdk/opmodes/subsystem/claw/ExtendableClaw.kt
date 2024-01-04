@@ -106,7 +106,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         maxExtenderAddition = 0.0
         clawRangeExpansion = 0.0
 
-        toggleExtender(ExtenderState.PreLoad)
+        toggleExtender(ExtenderState.PreLoad, force = true)
         updateClawState(
             ClawStateUpdate.Both,
             ClawState.Closed
@@ -147,7 +147,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
     }
 
     @JvmOverloads
-    fun toggleExtender(state: ExtenderState? = null)
+    fun toggleExtender(state: ExtenderState? = null, force: Boolean = false)
     {
         extenderState = state
             ?: when (extenderState)
@@ -156,6 +156,13 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
                 ExtenderState.Intermediate -> ExtenderState.Deposit
                 else -> ExtenderState.Deposit
             }
+
+        if (force)
+        {
+            backingExtender.cancelMotionProfile()
+            backingExtender.setTarget(extenderState.targetPosition())
+            return
+        }
 
         backingExtender.setMotionProfileTarget(extenderState.targetPosition())
     }

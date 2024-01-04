@@ -78,7 +78,7 @@ class Drivebase(private val opMode: LinearOpMode) : AbstractSubsystem()
 
         backingDriveBase.driveFieldCentric(
             -driverOp.leftX * scaleFactor,
-            driverOp.leftY * scaleFactor,
+            -driverOp.leftY * scaleFactor,
             driverOp.rightX * scaleFactor,
             heading,
             true
