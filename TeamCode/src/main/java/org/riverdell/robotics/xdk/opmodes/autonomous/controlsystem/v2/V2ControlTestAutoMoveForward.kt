@@ -13,12 +13,12 @@ class V2ControlTestAutoMoveForward : AbstractAutoPipeline()
     override fun getTeamColor() = TeamColor.Red
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono.buildExecutionGroup {
         single("move forward") {
-            v2().move(4 * -500.0)
+            move(4 * -500.0)
             Thread.sleep(10000L)
         }
 
         /*single<DrivebaseContext>("move backward") {
-            v2().move(-500.0)
+            move(-500.0)
         }*/
     }
 }

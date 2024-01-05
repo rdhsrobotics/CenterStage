@@ -3,12 +3,21 @@ package org.riverdell.robotics.xdk.opmodes.autonomous.blue
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import io.liftgate.robotics.mono.Mono
+import io.liftgate.robotics.mono.pipeline.consecutive
+import io.liftgate.robotics.mono.pipeline.simultaneous
 import io.liftgate.robotics.mono.pipeline.single
 import org.riverdell.robotics.xdk.opmodes.Global
 import org.riverdell.robotics.xdk.opmodes.autonomous.AbstractAutoPipeline
 import org.riverdell.robotics.xdk.opmodes.autonomous.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.autonomous.detection.TeamColor
-import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight
+import org.riverdell.robotics.xdk.opmodes.autonomous.blue.BlueLeft.GoToParkingZone
+import org.riverdell.robotics.xdk.opmodes.autonomous.blue.BlueLeft.MoveBackFromTape
+import org.riverdell.robotics.xdk.opmodes.autonomous.blue.BlueLeft.MoveForwardToTape
+import org.riverdell.robotics.xdk.opmodes.autonomous.blue.BlueLeft.MoveSlightlyIntoBackboard
+import org.riverdell.robotics.xdk.opmodes.autonomous.blue.BlueLeft.MoveTowardsBackboard
+import org.riverdell.robotics.xdk.opmodes.autonomous.blue.BlueLeft.StrafeIntoPosition
+import org.riverdell.robotics.xdk.opmodes.autonomous.blue.BlueLeft.TurnTowardsBackboard
+import org.riverdell.robotics.xdk.opmodes.autonomous.blue.BlueLeft.ZElevatorDropExpectedHeight
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 
 /**
@@ -18,71 +27,154 @@ import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 @Config
 object BlueLeft
 {
-    @JvmField var MovePixelToSpike = 790.0
-    @JvmField var MoveBackFromSpike = -300.0
-    @JvmField var TurnDegreesTowardBackboard = 90.0
-    @JvmField var GoToBackboard = 700.0
-    @JvmField var StrafeIntoBackboardPosition = 650.0
-    @JvmField var ElevateElevatorAtBackboard = 0.4
-    @JvmField var BackUpFromBackboard = -150.0
-    // elevator
-    @JvmField var StrafeIntoParkingZone = -975.0
+    @JvmField var MoveForwardToTape = 925.0
+    @JvmField var MoveBackFromTape = -725.0
+    @JvmField var TurnTowardsBackboard = 90.0
+    @JvmField var MoveTowardsBackboard = 1025.0
+    @JvmField var StrafeIntoPosition = 1000.0
+    @JvmField var MoveSlightlyIntoBackboard = 100.0
+    @JvmField var GoToParkingZone = 300.0
+
+    @JvmField var ZElevatorDropExpectedHeight = 0.5
+    @JvmField var ZTapeLeftTurnAmount = 55.0
+    @JvmField var ZTapeRightTurnAmount = -55.0
 }
 
-@Autonomous(name = "Blue | Left", group = "Blue  ", preselectTeleOp = Global.RobotCentricTeleOpName)
-class  t4AutoPipelineBlueLeft : AbstractAutoPipeline()
+@Autonomous(name = "Blue | Player 1", group = "Blue", preselectTeleOp = Global.RobotCentricTeleOpName)
+class AutoPipelineBlueLeft : AbstractAutoPipeline()
 {
-    override fun getTeamColor() = TeamColor.Blue
+    fun getTapeSideTurnPosition(tapeSide: TapeSide) = when (tapeSide)
+    {
+        TapeSide.Middle -> 0.0
+        TapeSide.Left -> BlueLeft.ZTapeLeftTurnAmount
+        TapeSide.Right -> BlueLeft.ZTapeRightTurnAmount
+    }
 
+    override fun getTeamColor() = TeamColor.Red
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
-            single("move forward") {
-                clawSubsystem.toggleExtender(
-                    ExtendableClaw.ExtenderState.Intake
+            simultaneous("move into tape") {
+                single("Forward to tape") {
+                    move(-MoveForwardToTape)
+                }
+
+                single("intermed") {
+                    clawSubsystem.toggleExtender(
+                        ExtendableClaw.ExtenderState.Intermediate
+                    )
+                }
+            }
+
+            single("turn if required") {
+                val turnPosition = getTapeSideTurnPosition(tapeSide)
+                if (turnPosition == 0.0)
+                {
+                    return@single
+                }
+
+                turn(turnPosition)
+            }
+
+            single("drop shit") {
+                clawSubsystem.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Right,
+                    ExtendableClaw.ClawState.Open
                 )
-                if (tapeSide == TapeSide.Middle)
-                {
-                    v2().move(-RedRight.MoveForwardToTape + 30)
-                } else
-                {
-                    v2().move(-RedRight.MoveForwardToTape + 100)
-                }
-            }
-            var deg: Double = 0.0
 
-            if (tapeSide == TapeSide.Left)
-            {
-                single("turn 20 deg") {
-                    v2().turn(25.0)
-                    deg = 25.0
-                }
-            } else if (tapeSide == TapeSide.Right)
-            {
-                single("turn 20 deg") {
-                    v2().turn(-65.0)
-                    deg = -65.0
-                    v2().move(-50.0)
-                }
+                Thread.sleep(100L)
+
+                clawSubsystem.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Right,
+                    ExtendableClaw.ClawState.Closed
+                )
             }
 
-            single("open left claw") {
+            single("turn back if required") {
+                val turnPosition = getTapeSideTurnPosition(tapeSide)
+                if (turnPosition == 0.0)
+                {
+                    return@single
+                }
+
+                turn(0.0)
+            }
+
+            simultaneous("move back from tape") {
+                single("move back") {
+                    move(-MoveBackFromTape)
+                }
+
+                single("af") {
+                    clawSubsystem.toggleExtender(
+                        ExtendableClaw.ExtenderState.Deposit
+                    )
+                }
+            }
+
+            single("turn lol") {
+                turn(TurnTowardsBackboard)
+            }
+
+            single("move towards backboard") {
+                move(MoveTowardsBackboard)
+            }
+
+            simultaneous("strafe into drop position") {
+                consecutive("strafe") {
+                    single("strafe into position") {
+                        strafe(-StrafeIntoPosition)
+                    }
+
+                    single("sync into heading") {
+                        turn(TurnTowardsBackboard)
+                    }
+                }
+
+                single("heighten elevator") {
+                    elevatorSubsystem.configureElevatorManually(ZElevatorDropExpectedHeight)
+                }
+            }
+
+            single("move slightly into backboard") {
+                move(-MoveSlightlyIntoBackboard)
+            }
+
+            single("drop pixel lol") {
                 clawSubsystem.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Left,
                     ExtendableClaw.ClawState.Open
                 )
-                Thread.sleep(350L)
-                clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
+
+                Thread.sleep(100L)
             }
 
-            single("move back") {
-                if (deg != 0.0)
-                {
-                    v2().move(150.0)
-                    v2().turn(-deg)
+            simultaneous("reset elevator stuff") {
+                single("move back from into backboard") {
+                    move(MoveSlightlyIntoBackboard)
                 }
-                v2().move(-RedRight.MoveBackFromTape)
-                v2().turn(90.0)
-                v2().move(-600.0)
+
+                single("right claw reset") {
+                    clawSubsystem.updateClawState(
+                        ExtendableClaw.ClawStateUpdate.Left,
+                        ExtendableClaw.ClawState.Closed
+                    )
+                }
+
+                single("elevator retraction") {
+                    elevatorSubsystem.configureElevatorManually(0.0)
+                }
+            }
+
+            single("strafe back to before") {
+                move(StrafeIntoPosition)
+            }
+
+            single("correct heading again") {
+                turn(TurnTowardsBackboard)
+            }
+
+            single("move forward into parking zone") {
+                move(GoToParkingZone)
             }
         }
 }

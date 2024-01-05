@@ -13,7 +13,7 @@ class V2ControlTestAutoMoveBackwards : AbstractAutoPipeline()
     override fun getTeamColor() = TeamColor.Red
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono.buildExecutionGroup {
         single("move backwards") {
-            v2().move(-500.0)
+            move(-500.0)
         }
     }
 }

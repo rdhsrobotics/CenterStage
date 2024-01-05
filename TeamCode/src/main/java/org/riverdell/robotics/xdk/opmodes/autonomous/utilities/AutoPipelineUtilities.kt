@@ -10,6 +10,7 @@ object AutoPipelineUtilities
     @JvmField var PID_MOVEMENT_KD = 0.03
     @JvmField var PID_MOVEMENT_TOLERANCE = 10
     @JvmField var PID_MOVEMENT_MIN_VELOCITY = 15.0
+    @JvmField var PID_MOVEMENT_TURN_CORRECTION_FACTOR = 0.1
 
     @JvmField var PID_DISTANCE_KP = 0.03
     @JvmField var PID_DISTANCE_KI = 0.00001

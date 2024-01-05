@@ -13,7 +13,7 @@ class V2ControlTestAutoTurn : AbstractAutoPipeline()
     override fun getTeamColor() = TeamColor.Red
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono.buildExecutionGroup {
         single("strafe") {
-            v2().turn(90.0)
+            turn(90.0)
         }
     }
 }

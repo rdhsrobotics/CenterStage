@@ -42,7 +42,7 @@ object RedLeft
     @JvmField var ZTapeRightTurnAmount = -55.0
 }
 
-@Autonomous(name = "Red | Left", group = "Left", preselectTeleOp = Global.RobotCentricTeleOpName)
+@Autonomous(name = "Blue | Player 2", group = "Red", preselectTeleOp = Global.RobotCentricTeleOpName)
 class AutoPipelineRedLeft : AbstractAutoPipeline()
 {
     private fun getTapeSideTurnPosition(tapeSide: TapeSide) = when (tapeSide)
@@ -57,7 +57,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
         .buildExecutionGroup {
             simultaneous("move into tape") {
                 single("Forward to tape") {
-                    v2().move(-MoveForwardToTape)
+                    move(-MoveForwardToTape)
                 }
 
                 single("intermed") {
@@ -74,7 +74,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
                     return@single
                 }
 
-                v2().turn(turnPosition)
+                turn(turnPosition)
             }
 
             single("drop shit") {
@@ -98,12 +98,12 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
                     return@single
                 }
 
-                v2().turn(0.0)
+                turn(0.0)
             }
 
             simultaneous("move back from tape") {
                 single("move back") {
-                    v2().move(-MoveBackFromTape)
+                    move(-MoveBackFromTape)
                 }
 
                 single("af") {
@@ -114,21 +114,21 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
             }
 
             single("turn lol") {
-                v2().turn(TurnTowardsBackboard)
+                turn(TurnTowardsBackboard)
             }
 
             single("move towards backboard") {
-                v2().move(MoveTowardsBackboard)
+                move(MoveTowardsBackboard)
             }
 
             simultaneous("strafe into drop position") {
                 consecutive("strafe") {
                     single("strafe into position") {
-                        v2().strafe(-StrafeIntoPosition)
+                        strafe(-StrafeIntoPosition)
                     }
 
                     single("sync into heading") {
-                        v2().turn(TurnTowardsBackboard)
+                        turn(TurnTowardsBackboard)
                     }
                 }
 
@@ -138,7 +138,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
             }
 
             single("move slightly into backboard") {
-                v2().move(-MoveSlightlyIntoBackboard)
+                move(-MoveSlightlyIntoBackboard)
             }
 
             single("drop pixel lol") {
@@ -152,7 +152,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
 
             simultaneous("reset elevator stuff") {
                 single("move back from into backboard") {
-                    v2().move(MoveSlightlyIntoBackboard)
+                    move(MoveSlightlyIntoBackboard)
                 }
 
                 single("right claw reset") {
@@ -168,15 +168,15 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
             }
 
             single("strafe back to before") {
-                v2().move(StrafeIntoPosition)
+                move(StrafeIntoPosition)
             }
 
             single("correct heading again") {
-                v2().turn(TurnTowardsBackboard)
+                turn(TurnTowardsBackboard)
             }
 
             single("move forward into parking zone") {
-                v2().move(GoToParkingZone)
+                move(GoToParkingZone)
             }
         }
 }

@@ -10,7 +10,9 @@ class PIDController(
     val setPoint: Double,
     private val setPointTolerance: Int,
     private val minimumVelocity: Double,
-    private val telemetry: Telemetry
+    private val telemetry: Telemetry,
+    val maintainHeading: Boolean = false,
+    val maintainHeadingValue: Double = 0.0,
 )
 {
     private var integral = 0.0
@@ -18,6 +20,8 @@ class PIDController(
     private var totalError = 0.0
     private var previousValue: Double? = null
     private var velocity = 0.0
+
+    var currentRobotHeading = 0.0
 
     private var customErrorCalculator: ((current: Double) -> Double)? = null
     private var customVelocityCalculator: (() -> Double)? = null
@@ -28,7 +32,7 @@ class PIDController(
     fun customVelocityCalculator(block: () -> Double) =
         apply { customVelocityCalculator = block }
 
-    fun calculate(currentValue: Double): Double
+    fun calculate(currentValue: Double, heading: Double): Double
     {
         val error = customErrorCalculator?.invoke(currentValue)
             ?: (setPoint - currentValue)
@@ -53,6 +57,8 @@ class PIDController(
         velocity = customVelocityCalculator?.invoke()
             ?: (prevValue - currentValue)
         previousValue = currentValue
+
+        currentRobotHeading = heading
 
         return output
     }

@@ -14,7 +14,7 @@ class V2ControlTestAutoMoveDistance : AbstractAutoPipeline()
     override fun getTeamColor() = TeamColor.Red
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono.buildExecutionGroup {
         single<DrivebaseContext>("strafe") {
-            v2().moveUntilDistanceReached(12.0)
+            moveUntilDistanceReached(12.0)
         }
     }
 }
