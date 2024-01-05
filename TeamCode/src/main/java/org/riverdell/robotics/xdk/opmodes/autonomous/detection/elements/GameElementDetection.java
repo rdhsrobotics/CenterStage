@@ -119,21 +119,21 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
             int topOffset
     ) {
         detectionRegions.put(
-                TapeSide.Left,
+                TapeSide.Middle,
                 new Rect(
-                        0,
-                        topOffset,
                         mask.cols() / 3,
+                        topOffset,
+                        3 * mask.cols() / 3,
                         bottomOffset
                 )
         );
 
         detectionRegions.put(
-                TapeSide.Middle,
+                TapeSide.Left,
                 new Rect(
                         mask.cols() / 3,
                         topOffset,
-                        2 * mask.cols() / 3,
+                        mask.cols() / 3,
                         bottomOffset
                 )
         );

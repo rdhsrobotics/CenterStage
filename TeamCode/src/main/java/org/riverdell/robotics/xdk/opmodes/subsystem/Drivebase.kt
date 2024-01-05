@@ -65,8 +65,8 @@ class Drivebase(private val opMode: LinearOpMode) : AbstractSubsystem()
     fun driveRobotCentric(driverOp: GamepadEx, scaleFactor: Double)
     {
         backingDriveBase.driveRobotCentric(
-            -driverOp.leftX * scaleFactor,
-            -driverOp.leftY * scaleFactor,
+            driverOp.leftX * scaleFactor,
+            driverOp.leftY * scaleFactor,
             driverOp.rightX * min(0.7, scaleFactor),
             true
         )

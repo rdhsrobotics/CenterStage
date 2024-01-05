@@ -20,14 +20,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
 import org.riverdell.robotics.xdk.opmodes.autonomous.contexts.DrivebaseContext
 import org.riverdell.robotics.xdk.opmodes.autonomous.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.autonomous.detection.TeamColor
-import org.riverdell.robotics.xdk.opmodes.autonomous.detection.VisionPipeline
 import org.riverdell.robotics.xdk.opmodes.autonomous.controlsystem.PIDController
 import org.riverdell.robotics.xdk.opmodes.autonomous.utilities.AutoPipelineUtilities
 import org.riverdell.robotics.xdk.opmodes.autonomous.utilities.DegreeUtilities
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
-import kotlin.concurrent.thread
+import java.util.concurrent.TimeUnit
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
@@ -49,12 +48,12 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
     lateinit var imu: IMU
 
-    private val visionPipeline by lazy {
+    /*private val visionPipeline by lazy {
         VisionPipeline(
             webcam = hardware("webcam1"),
             teamColor = getTeamColor()
         )
-    }
+    }*/
 
     val multipleTelemetry by lazy {
         MultipleTelemetry(
@@ -87,7 +86,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
         kotlin.runCatching {
             frontDistanceSensor
-            visionPipeline.start()
+//            visionPipeline.start()
         }
 
         // keep all log entries
@@ -113,13 +112,16 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         multipleTelemetry.addLine("Waiting for start. Started detection...")
         multipleTelemetry.update()
 
-        this.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
+        this.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.PreLoad)
 
         initializeAll()
+
         while (opModeInInit())
         {
+            clawSubsystem.periodic()
+
             multipleTelemetry.addLine("Auto in initialized")
-            multipleTelemetry.addData("Tape side", visionPipeline.getTapeSide())
+//            multipleTelemetry.addData("Tape side", visionPipeline.getTapeSide())
 
             multipleTelemetry.addLine("=== PID Tuning Graph Outputs ===")
             multipleTelemetry.addData("Error", 0.0)
@@ -132,32 +134,37 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
         waitForStart()
 
-        val tapeSide = visionPipeline.getTapeSide()
+        val future = Mono.EXECUTION.scheduleAtFixedRate({
+            if (!opModeIsActive())
+            {
+                return@scheduleAtFixedRate
+            }
+
+            runCatching {
+                clawSubsystem.periodic()
+            }.onFailure {
+                it.printStackTrace()
+            }
+        }, 0L, 10L, TimeUnit.MILLISECONDS)
+
+//        val tapeSide = visionPipeline.getTapeSide()
         this.imu.resetYaw()
 
-        val executionGroup = buildExecutionGroup(tapeSide)
+        val executionGroup = buildExecutionGroup(TapeSide.Middle)
         executionGroup.providesContext { _ ->
             DrivebaseContext(
                 listOf(frontRight, frontLeft, backRight, backLeft), this
             )
         }
 
-        val thread = thread {
-            while (true) {
-                // TODO: test lol
-//                clawSubsystem.extenderPeriodic(telemetry)
-                Thread.sleep(10L)
-            }
-        }
-
         executionGroup.executeBlocking()
-        thread.interrupt()
+        future.cancel(true)
 
         stopAndResetMotors()
         terminateAllMotors()
 
         kotlin.runCatching {
-            visionPipeline.stop()
+//            visionPipeline.stop()
         }
         disposeOfAll()
 
@@ -215,7 +222,8 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
         fun strafe(ticks: Double) = movementPID(
             setPoint = ticks,
-            setMotorPowers = this@AbstractAutoPipeline::setStrafePower
+            setMotorPowers = this@AbstractAutoPipeline::setStrafePower,
+            relativeCurrentPosition = true
         )
 
         fun turn(degrees: Double) = rotationPID(
@@ -251,12 +259,15 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
         private fun movementPID(
             setPoint: Double,
-            setMotorPowers: (Double) -> Unit
+            setMotorPowers: (Double) -> Unit,
+            relativeCurrentPosition: Boolean = true
         ) = driveBasePID(
             controller = buildPIDControllerMovement(setPoint = setPoint),
             currentPositionBlock = {
-                drivebaseMotors
-                    .map(DcMotor::getCurrentPosition)
+                (if (relativeCurrentPosition) setPoint.sign.toInt() else 1) * drivebaseMotors
+                    .map {
+                        it.currentPosition.absoluteValue
+                    }
                     .average()
             },
             setMotorPowers = setMotorPowers
@@ -282,7 +293,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             stopAndResetMotors()
             runMotors()
 
-            imu.resetYaw()
+//            imu.resetYaw()
 
             val startTime = System.currentTimeMillis()
 
@@ -307,8 +318,8 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
                     .coerceIn(0.0, 1.0)
 
                 val pid = controller.calculate(realCurrentPosition)
-                val finalPower = pid.coerceIn(-0.5..0.5)
-                setMotorPowers(finalPower)
+                val finalPower = pid.coerceIn(-0.7..0.7)
+                setMotorPowers(rampUp * finalPower)
 
                 multipleTelemetry.update()
             }
