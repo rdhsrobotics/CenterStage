@@ -48,7 +48,7 @@ object RedLeft
 }
 
 @Autonomous(
-    name = "Blue | Player 2",
+    name = "Red | Player 2",
     group = "Red",
     preselectTeleOp = Global.RobotCentricTeleOpName
 )

@@ -43,7 +43,7 @@ object RedRight
     @JvmField var ZTapeRightTurnAmount = -55.0
 }
 
-@Autonomous(name = "Blue | Player 1", group = "Red", preselectTeleOp = Global.RobotCentricTeleOpName)
+@Autonomous(name = "Red | Player 1", group = "Red", preselectTeleOp = Global.RobotCentricTeleOpName)
 class AutoPipelineRedRight : AbstractAutoPipeline()
 {
     fun getTapeSideTurnPosition(tapeSide: TapeSide) = when (tapeSide)

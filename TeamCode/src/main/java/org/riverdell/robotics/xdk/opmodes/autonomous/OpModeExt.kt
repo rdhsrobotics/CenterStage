@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.IMU
 import io.liftgate.robotics.mono.Mono
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
+import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 
 /**
@@ -13,7 +14,9 @@ import java.util.concurrent.TimeUnit
  * @author Subham
  * @since 10/23/2023
  */
-inline fun <reified T : HardwareDevice> LinearOpMode.hardware(id: String) = hardwareMap.get(id) as T
+inline fun <reified T : HardwareDevice> LinearOpMode.hardware(id: String) = runCatching {
+    hardwareMap.get(id) as T
+}.getOrNull() ?: throw IllegalStateException("$id is null")
 
 fun IMU.normalizedYaw(): Double
 {

@@ -181,7 +181,9 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
     }
 
     // get all lynx modules so we can reset their caches later on
-    private val drivebaseMotors = listOf(frontLeft, frontRight, backLeft, backRight)
+    private val drivebaseMotors by lazy {
+        listOf(frontLeft, frontRight, backLeft, backRight)
+    }
 
     private fun buildPIDControllerMovement(setPoint: Double, maintainHeading: Boolean) = PIDController(
         kP = AutoPipelineUtilities.PID_MOVEMENT_KP,
