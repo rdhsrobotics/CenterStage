@@ -18,7 +18,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         var clawRangeExpansion = 0.0
     }
 
-    private val backingExtender by lazy {
+    val backingExtender by lazy {
         MotionProfiledServo(
             servo = opMode.hardware<Servo>("extender"),
             constraints = {

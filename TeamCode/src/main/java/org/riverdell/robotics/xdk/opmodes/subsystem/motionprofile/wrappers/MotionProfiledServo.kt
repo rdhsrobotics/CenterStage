@@ -46,6 +46,8 @@ class MotionProfiledServo(
         timer = ElapsedTime()
     }
 
+    fun isTargetMotionActive() = motionProfile != null
+
     fun setTarget(targetPosition: Double)
     {
         servo.position = targetPosition

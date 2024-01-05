@@ -8,6 +8,9 @@ import io.liftgate.robotics.mono.pipeline.simultaneous
 import io.liftgate.robotics.mono.pipeline.single
 import org.riverdell.robotics.xdk.opmodes.Global
 import org.riverdell.robotics.xdk.opmodes.autonomous.AbstractAutoPipeline
+import org.riverdell.robotics.xdk.opmodes.autonomous.contexts.ExtenderContext
+import org.riverdell.robotics.xdk.opmodes.autonomous.contexts.LeftClawFinger
+import org.riverdell.robotics.xdk.opmodes.autonomous.contexts.RightClawFinger
 import org.riverdell.robotics.xdk.opmodes.autonomous.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.autonomous.detection.TeamColor
 import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.GoToParkingZone
@@ -58,7 +61,7 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
                     move(-MoveForwardToTape)
                 }
 
-                single("intermed") {
+                single<ExtenderContext>("intermed") {
                     clawSubsystem.toggleExtender(
                         ExtendableClaw.ExtenderState.Intermediate
                     )
@@ -75,28 +78,30 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
                 turn(turnPosition)
             }
 
-            single("drop shit") {
+            single<RightClawFinger>("drop shit") {
                 clawSubsystem.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Right,
                     ExtendableClaw.ClawState.Open
                 )
-
-                Thread.sleep(100L)
-
-                clawSubsystem.updateClawState(
-                    ExtendableClaw.ClawStateUpdate.Right,
-                    ExtendableClaw.ClawState.Closed
-                )
             }
 
-            single("turn back if required") {
-                val turnPosition = getTapeSideTurnPosition(tapeSide)
-                if (turnPosition == 0.0)
-                {
-                    return@single
+            simultaneous("turn back if required and do something else") {
+                single<RightClawFinger>("close lol") {
+                    clawSubsystem.updateClawState(
+                        ExtendableClaw.ClawStateUpdate.Right,
+                        ExtendableClaw.ClawState.Closed
+                    )
                 }
 
-                turn(0.0)
+                single("turn back if required") {
+                    val turnPosition = getTapeSideTurnPosition(tapeSide)
+                    if (turnPosition == 0.0)
+                    {
+                        return@single
+                    }
+
+                    turn(0.0)
+                }
             }
 
             simultaneous("move back from tape") {
@@ -139,13 +144,11 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
                 move(-MoveSlightlyIntoBackboard)
             }
 
-            single("drop pixel lol") {
+            single<LeftClawFinger>("drop pixel lol") {
                 clawSubsystem.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Left,
                     ExtendableClaw.ClawState.Open
                 )
-
-                Thread.sleep(100L)
             }
 
             simultaneous("reset elevator stuff") {
@@ -153,7 +156,7 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
                     move(MoveSlightlyIntoBackboard)
                 }
 
-                single("right claw reset") {
+                single<LeftClawFinger>("right claw reset") {
                     clawSubsystem.updateClawState(
                         ExtendableClaw.ClawStateUpdate.Left,
                         ExtendableClaw.ClawState.Closed

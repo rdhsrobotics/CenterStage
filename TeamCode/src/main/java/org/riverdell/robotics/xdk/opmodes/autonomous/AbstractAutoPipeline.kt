@@ -12,17 +12,18 @@ import com.qualcomm.robotcore.hardware.IMU
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import io.liftgate.robotics.mono.subsystem.Subsystem
-import org.firstinspires.ftc.robotcore.external.Telemetry.Line
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
-import org.riverdell.robotics.xdk.opmodes.autonomous.contexts.DrivebaseContext
+import org.riverdell.robotics.xdk.opmodes.autonomous.contexts.BothClawFinger
+import org.riverdell.robotics.xdk.opmodes.autonomous.contexts.ClawSubsystemContext
+import org.riverdell.robotics.xdk.opmodes.autonomous.contexts.ExtenderContext
+import org.riverdell.robotics.xdk.opmodes.autonomous.contexts.LeftClawFinger
+import org.riverdell.robotics.xdk.opmodes.autonomous.contexts.RightClawFinger
 import org.riverdell.robotics.xdk.opmodes.autonomous.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.autonomous.detection.TeamColor
 import org.riverdell.robotics.xdk.opmodes.autonomous.controlsystem.PIDController
 import org.riverdell.robotics.xdk.opmodes.autonomous.detection.VisionPipeline
 import org.riverdell.robotics.xdk.opmodes.autonomous.utilities.AutoPipelineUtilities
-import org.riverdell.robotics.xdk.opmodes.autonomous.utilities.DegreeUtilities
 import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
@@ -139,9 +140,19 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
         val executionGroup = buildExecutionGroup(tapeSide)
         executionGroup.providesContext { _ ->
-            DrivebaseContext(
-                listOf(frontRight, frontLeft, backRight, backLeft), this
-            )
+            RightClawFinger(claw = clawSubsystem)
+        }
+
+        executionGroup.providesContext { _ ->
+            LeftClawFinger(claw = clawSubsystem)
+        }
+
+        executionGroup.providesContext { _ ->
+            BothClawFinger(claw = clawSubsystem)
+        }
+
+        executionGroup.providesContext { _ ->
+            ExtenderContext(claw = clawSubsystem)
         }
 
         runRepeating(50L) {
