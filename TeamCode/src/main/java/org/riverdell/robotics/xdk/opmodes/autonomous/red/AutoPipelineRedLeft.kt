@@ -60,7 +60,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
                     move(-MoveForwardToTape)
                 }
 
-                single("intermed") {
+                single("go to intermediate") {
                     clawSubsystem.toggleExtender(
                         ExtendableClaw.ExtenderState.Intermediate
                     )
@@ -77,7 +77,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
                 turn(turnPosition)
             }
 
-            single("drop shit") {
+            single("drop right pixel") {
                 clawSubsystem.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Right,
                     ExtendableClaw.ClawState.Open
@@ -106,14 +106,14 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
                     move(-MoveBackFromTape)
                 }
 
-                single("af") {
+                single("set extener to deposit") {
                     clawSubsystem.toggleExtender(
                         ExtendableClaw.ExtenderState.Deposit
                     )
                 }
             }
 
-            single("turn lol") {
+            single("turn towards the backboard") {
                 turn(TurnTowardsBackboard)
             }
 
@@ -141,7 +141,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
                 move(-MoveSlightlyIntoBackboard)
             }
 
-            single("drop pixel lol") {
+            single("deposit last pixel") {
                 clawSubsystem.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Left,
                     ExtendableClaw.ClawState.Open
