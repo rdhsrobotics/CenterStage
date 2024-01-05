@@ -30,3 +30,5 @@ fun IMU.normalizedYaw(): Double
 }
 
 fun scheduleAsyncExecution(inMillis: Long, block: () -> Unit) = Mono.EXECUTION.schedule(block, inMillis, TimeUnit.MILLISECONDS)
+fun runRepeating(everyMillis: Long, block: () -> Unit) =
+    Mono.EXECUTION.scheduleAtFixedRate(block, 0L, everyMillis, TimeUnit.MILLISECONDS)

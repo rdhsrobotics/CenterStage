@@ -3,13 +3,21 @@ package org.riverdell.robotics.xdk.opmodes.autonomous.red
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import io.liftgate.robotics.mono.Mono
+import io.liftgate.robotics.mono.pipeline.consecutive
+import io.liftgate.robotics.mono.pipeline.simultaneous
 import io.liftgate.robotics.mono.pipeline.single
 import org.riverdell.robotics.xdk.opmodes.Global
 import org.riverdell.robotics.xdk.opmodes.autonomous.AbstractAutoPipeline
 import org.riverdell.robotics.xdk.opmodes.autonomous.detection.TapeSide
 import org.riverdell.robotics.xdk.opmodes.autonomous.detection.TeamColor
+import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.GoToParkingZone
 import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.MoveBackFromTape
 import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.MoveForwardToTape
+import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.MoveSlightlyIntoBackboard
+import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.MoveTowardsBackboard
+import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.StrafeIntoPosition
+import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.TurnTowardsBackboard
+import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.ZElevatorDropExpectedHeight
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 
 /**
@@ -19,46 +27,154 @@ import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 @Config
 object RedRight
 {
-    /*@JvmField var MovePixelToSpike = 825.0
-    @JvmField var MoveBackFromSpike = -300.0
-    @JvmField var TurnDegreesTowardBackboard = -90.0
-    @JvmField var GoToBackboard = 700.0
-    @JvmField var StrafeIntoBackboardPosition = -650.0
-    @JvmField var ElevateElevatorAtBackboard = 0.4
-    @JvmField var BackUpFromBackboard = -150.0
-    // elevator
-    @JvmField var StrafeIntoParkingZone = 975.0*/
-    @JvmField var MoveForwardToTape = 550.0
-    @JvmField var MoveBackFromTape = -200.0
+    @JvmField var MoveForwardToTape = 925.0
+    @JvmField var MoveBackFromTape = -725.0
+    @JvmField var TurnTowardsBackboard = -90.0
+    @JvmField var MoveTowardsBackboard = 1025.0
+    @JvmField var StrafeIntoPosition = -1000.0
+    @JvmField var MoveSlightlyIntoBackboard = 100.0
+    @JvmField var GoToParkingZone = 300.0
+
+    @JvmField var ZElevatorDropExpectedHeight = 0.5
+    @JvmField var ZTapeLeftTurnAmount = 55.0
+    @JvmField var ZTapeRightTurnAmount = -55.0
 }
 
 @Autonomous(name = "Red | Right", group = "Red", preselectTeleOp = Global.RobotCentricTeleOpName)
 class AutoPipelineRedRight : AbstractAutoPipeline()
 {
-    init
+    fun getTapeSideTurnPosition(tapeSide: TapeSide) = when (tapeSide)
     {
-        monoShouldDoLogging = false
+        TapeSide.Middle -> 0.0
+        TapeSide.Left -> RedRight.ZTapeLeftTurnAmount
+        TapeSide.Right -> RedRight.ZTapeRightTurnAmount
     }
 
     override fun getTeamColor() = TeamColor.Red
-
-    override fun buildExecutionGroup(_tapeSide: TapeSide) = Mono
+    override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
-            val tapeSide = TapeSide.Middle
-            single("forward") {
-                v2().move(-925.0)
-                Thread.sleep(500L)
-                v2().move(725.0)
-                Thread.sleep(500L)
-                v2().turn(-90.0)
-                Thread.sleep(500L)
+            simultaneous("move into tape") {
+                single("Forward to tape") {
+                    v2().move(-MoveForwardToTape)
+                }
 
-                v2().move(-1025.0)
+                single("intermed") {
+                    clawSubsystem.toggleExtender(
+                        ExtendableClaw.ExtenderState.Intermediate
+                    )
+                }
+            }
+
+            single("turn if required") {
+                val turnPosition = getTapeSideTurnPosition(tapeSide)
+                if (turnPosition == 0.0)
+                {
+                    return@single
+                }
+
+                v2().turn(turnPosition)
+            }
+
+            single("drop shit") {
+                clawSubsystem.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Right,
+                    ExtendableClaw.ClawState.Open
+                )
+
                 Thread.sleep(100L)
-                v2().strafe(1000.0)
-                Thread.sleep(125L)
 
-                v2().turn(-90.0)
+                clawSubsystem.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Right,
+                    ExtendableClaw.ClawState.Closed
+                )
+            }
+
+            single("turn back if required") {
+                val turnPosition = getTapeSideTurnPosition(tapeSide)
+                if (turnPosition == 0.0)
+                {
+                    return@single
+                }
+
+                v2().turn(0.0)
+            }
+
+            simultaneous("move back from tape") {
+                single("move back") {
+                    v2().move(-MoveBackFromTape)
+                }
+
+                single("af") {
+                    clawSubsystem.toggleExtender(
+                        ExtendableClaw.ExtenderState.Deposit
+                    )
+                }
+            }
+
+            single("turn lol") {
+                v2().turn(TurnTowardsBackboard)
+            }
+
+            single("move towards backboard") {
+                v2().move(MoveTowardsBackboard)
+            }
+
+            simultaneous("strafe into drop position") {
+                consecutive("strafe") {
+                    single("strafe into position") {
+                        v2().strafe(-StrafeIntoPosition)
+                    }
+
+                    single("sync into heading") {
+                        v2().turn(TurnTowardsBackboard)
+                    }
+                }
+
+                single("heighten elevator") {
+                    elevatorSubsystem.configureElevatorManually(ZElevatorDropExpectedHeight)
+                }
+            }
+
+            single("move slightly into backboard") {
+                v2().move(-MoveSlightlyIntoBackboard)
+            }
+
+            single("drop pixel lol") {
+                clawSubsystem.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Left,
+                    ExtendableClaw.ClawState.Open
+                )
+
+                Thread.sleep(100L)
+            }
+
+            simultaneous("reset elevator stuff") {
+                single("move back from into backboard") {
+                    v2().move(MoveSlightlyIntoBackboard)
+                }
+
+                single("right claw reset") {
+                    clawSubsystem.updateClawState(
+                        ExtendableClaw.ClawStateUpdate.Left,
+                        ExtendableClaw.ClawState.Closed
+                    )
+                }
+
+                single("elevator retraction") {
+                    elevatorSubsystem.configureElevatorManually(0.0)
+                }
+            }
+
+            single("strafe back to before") {
+                v2().move(StrafeIntoPosition)
+            }
+
+            single("correct heading again") {
+                v2().turn(TurnTowardsBackboard)
+            }
+
+            single("move forward into parking zone") {
+                v2().move(GoToParkingZone)
             }
         }
 }
