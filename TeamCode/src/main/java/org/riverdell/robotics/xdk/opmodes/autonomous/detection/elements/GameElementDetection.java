@@ -39,11 +39,13 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
 
     public static double RECTANGLE_SIZE = 100;
 
-    public static double Y_OFFSET_TOP = 0.4;
+    public static double Y_OFFSET_TOP = 0.2;
     public static double Y_OFFSET_BOTTOM = 0.6;
 
     public static double PERCENTAGE_REQUIRED_RED = 0.20;
     public static double PERCENTAGE_REQUIRED_BLUE = 0.50;
+
+    public static int CAM_VIEW = 0;
 
     public static final TapeSide FALLBACK_DETECTION = TapeSide.Right;
     public static final TapeSide[] DETECTION_ZONES = new TapeSide[]{
@@ -51,8 +53,13 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
             TapeSide.Middle
     };
 
-    private final Scalar lowerRedBound = new Scalar(150, 100, 100);
-    private final Scalar upperRedBound = new Scalar(255, 255, 255);
+    public static int LR_B = 0;
+    public static int LR_G = 130;
+    public static int LR_R = 150;
+
+    public static int UR_B = 10;
+    public static int UR_G = 255;
+    public static int UR_R = 255;
 
     private final Scalar lowerBlueBound = new Scalar(90, 100, 100);
     private final Scalar upperBlueBound = new Scalar(130, 255, 255);
@@ -89,12 +96,16 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
 
         Imgproc.cvtColor(input, hsvMat, Imgproc.COLOR_RGB2HSV);
 
-        Core.inRange(
-                hsvMat,
-                teamColor == TeamColor.Red ? lowerRedBound : lowerBlueBound,
-                teamColor == TeamColor.Red ? upperRedBound : upperBlueBound,
-                mask
-        );
+        if (teamColor == TeamColor.Red) {
+            Core.inRange(
+                    hsvMat,
+                    new Scalar(LR_B, LR_G, LR_R),
+                    new Scalar(UR_B, UR_G, UR_R),
+                    mask
+            );
+        } else {
+            Core.inRange(hsvMat, lowerBlueBound, upperBlueBound, mask);
+        }
 
         drawTapeRegionBlobs(mask);
         drawRectanglesAroundBlobsAndDetect(mask, input);
@@ -107,7 +118,7 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
                 input.width(), input.height(), Bitmap.Config.RGB_565
         );
 
-        Utils.matToBitmap(input, bitmap);
+        Utils.matToBitmap(CAM_VIEW == 1 ? input : mask, bitmap);
         this.lastFrame.set(bitmap);
 
         return input;
@@ -121,9 +132,9 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
         detectionRegions.put(
                 TapeSide.Middle,
                 new Rect(
-                        mask.cols() / 3,
+                        1,
                         topOffset,
-                        3 * mask.cols() / 3,
+                        (int) ((.75 * mask.cols()) - 1),
                         bottomOffset
                 )
         );
@@ -131,9 +142,9 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
         detectionRegions.put(
                 TapeSide.Left,
                 new Rect(
-                        mask.cols() / 3,
+                        (int) ((.75 * mask.cols())),
                         topOffset,
-                        mask.cols() / 3,
+                        (int) ((0.25 * mask.cols()) - 1),
                         bottomOffset
                 )
         );

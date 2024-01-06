@@ -18,6 +18,7 @@ import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.MoveBackFromTa
 import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.MoveForwardToTape
 import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.MoveSlightlyIntoBackboard
 import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.MoveTowardsBackboard
+import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.StrafeIntoParkingZone
 import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.StrafeIntoPosition
 import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.TurnTowardsBackboard
 import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight.ZElevatorDropExpectedHeight
@@ -33,10 +34,11 @@ object RedRight
     @JvmField var MoveForwardToTape = 925.0
     @JvmField var MoveBackFromTape = -725.0
     @JvmField var TurnTowardsBackboard = -90.0
-    @JvmField var MoveTowardsBackboard = 1025.0
+    @JvmField var MoveTowardsBackboard = -1025.0
     @JvmField var StrafeIntoPosition = -1000.0
-    @JvmField var MoveSlightlyIntoBackboard = 100.0
-    @JvmField var GoToParkingZone = 300.0
+    @JvmField var MoveSlightlyIntoBackboard = 250.0
+    @JvmField var StrafeIntoParkingZone = -1125.0
+    @JvmField var GoToParkingZone = -400.0
 
     @JvmField var ZElevatorDropExpectedHeight = 0.5
     @JvmField var ZTapeLeftTurnAmount = 55.0
@@ -61,7 +63,7 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
                     move(-MoveForwardToTape)
                 }
 
-                single<ExtenderContext>("intermed") {
+                single("intermed") {
                     clawSubsystem.toggleExtender(
                         ExtendableClaw.ExtenderState.Intermediate
                     )
@@ -78,15 +80,26 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
                 turn(turnPosition)
             }
 
-            single<RightClawFinger>("drop shit") {
+            single("drop shit") {
+                clawSubsystem.toggleExtender(
+                    ExtendableClaw.ExtenderState.Intake
+                )
+
+                Thread.sleep(75L)
                 clawSubsystem.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Right,
                     ExtendableClaw.ClawState.Open
                 )
+
+                Thread.sleep(125L)
+
+                clawSubsystem.toggleExtender(
+                    ExtendableClaw.ExtenderState.Deposit
+                )
             }
 
             simultaneous("turn back if required and do something else") {
-                single<RightClawFinger>("close lol") {
+                single("close lol") {
                     clawSubsystem.updateClawState(
                         ExtendableClaw.ClawStateUpdate.Right,
                         ExtendableClaw.ClawState.Closed
@@ -104,7 +117,7 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
                 }
             }
 
-            simultaneous("move back from tape") {
+            /*simultaneous("move back from tape") {
                 single("move back") {
                     move(-MoveBackFromTape)
                 }
@@ -144,11 +157,13 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
                 move(-MoveSlightlyIntoBackboard)
             }
 
-            single<LeftClawFinger>("drop pixel lol") {
+            single("drop pixel lol") {
                 clawSubsystem.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Left,
                     ExtendableClaw.ClawState.Open
                 )
+
+                Thread.sleep(500L)
             }
 
             simultaneous("reset elevator stuff") {
@@ -156,7 +171,7 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
                     move(MoveSlightlyIntoBackboard)
                 }
 
-                single<LeftClawFinger>("right claw reset") {
+                single("right claw reset") {
                     clawSubsystem.updateClawState(
                         ExtendableClaw.ClawStateUpdate.Left,
                         ExtendableClaw.ClawState.Closed
@@ -169,7 +184,7 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
             }
 
             single("strafe back to before") {
-                move(StrafeIntoPosition)
+                strafe(StrafeIntoParkingZone)
             }
 
             single("correct heading again") {
@@ -178,6 +193,6 @@ class AutoPipelineRedRight : AbstractAutoPipeline()
 
             single("move forward into parking zone") {
                 move(GoToParkingZone)
-            }
+            }*/
         }
 }

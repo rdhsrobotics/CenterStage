@@ -69,7 +69,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
                     move(-RedLeft.MoveForwardToTape)
                 }
 
-                single<ExtenderContext>("intermed") {
+                single("intermed") {
                     clawSubsystem.toggleExtender(
                         ExtendableClaw.ExtenderState.Intermediate
                     )
@@ -86,7 +86,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
                 turn(turnPosition)
             }
 
-            single<RightClawFinger>("drop shit") {
+            single("drop shit") {
                 clawSubsystem.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Right,
                     ExtendableClaw.ClawState.Open
@@ -94,7 +94,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
             }
 
             simultaneous("turn back if required and do something else") {
-                single<RightClawFinger>("close lol") {
+                single("close lol") {
                     clawSubsystem.updateClawState(
                         ExtendableClaw.ClawStateUpdate.Right,
                         ExtendableClaw.ClawState.Closed
@@ -152,7 +152,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
                 move(-RedLeft.MoveSlightlyIntoBackboard)
             }
 
-            single<LeftClawFinger>("drop pixel lol") {
+            single("drop pixel lol") {
                 clawSubsystem.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Left,
                     ExtendableClaw.ClawState.Open
@@ -164,7 +164,7 @@ class AutoPipelineRedLeft : AbstractAutoPipeline()
                     move(RedLeft.MoveSlightlyIntoBackboard)
                 }
 
-                single<LeftClawFinger>("right claw reset") {
+                single("right claw reset") {
                     clawSubsystem.updateClawState(
                         ExtendableClaw.ClawStateUpdate.Left,
                         ExtendableClaw.ClawState.Closed

@@ -178,7 +178,8 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         })
     }
 
-    fun updateClawState(effectiveOn: ClawStateUpdate, state: ClawState)
+    @JvmOverloads
+    fun updateClawState(effectiveOn: ClawStateUpdate, state: ClawState, force: Boolean = false)
     {
         if (effectiveOn == ClawStateUpdate.Both)
         {
@@ -198,7 +199,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
             this.leftClawState = state
         }
 
-        servo.setMotionProfileTarget(if (effectiveOn == ClawStateUpdate.Left)
+        val targetPosition = if (effectiveOn == ClawStateUpdate.Left)
         {
             if (state == ClawState.Closed)
                 position - clawRangeExpansion else
@@ -208,7 +209,15 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
             if (state == ClawState.Closed)
                 position + clawRangeExpansion else
                 position - clawRangeExpansion
-        })
+        }
+
+        if (force)
+        {
+            servo.setTarget(targetPosition)
+            return
+        }
+
+        servo.setMotionProfileTarget(targetPosition)
     }
 
     override fun isCompleted() = true

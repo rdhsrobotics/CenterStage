@@ -86,10 +86,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             )
         )
 
-        kotlin.runCatching {
-            frontDistanceSensor
-            visionPipeline.start()
-        }
+        visionPipeline.start()
 
         // keep all log entries
         if (monoShouldDoLogging)
@@ -102,11 +99,13 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
         frontLeft.direction = DcMotorSimple.Direction.REVERSE
         frontLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+
         frontRight.direction = DcMotorSimple.Direction.FORWARD
         frontRight.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         backLeft.direction = DcMotorSimple.Direction.REVERSE
         backLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+
         backRight.direction = DcMotorSimple.Direction.FORWARD
 
         stopAndResetMotors()
@@ -115,14 +114,26 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         multipleTelemetry.update()
 
         initializeAll()
-        this.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.PreLoad)
 
+        this.clawSubsystem.toggleExtender(
+            ExtendableClaw.ExtenderState.PreLoad,
+            force = true
+        )
+
+        this.clawSubsystem.updateClawState(
+            ExtendableClaw.ClawStateUpdate.Both,
+            ExtendableClaw.ClawState.Closed,
+            force = true
+        )
+
+        var i = 0
         while (opModeInInit())
         {
             clawSubsystem.periodic()
 
             multipleTelemetry.addLine("Auto in initialized")
             multipleTelemetry.addData("Tape side", visionPipeline.getTapeSide())
+            multipleTelemetry.addData("Iteration", i++)
 
             multipleTelemetry.addLine("=== PID Tuning Graph Outputs ===")
             multipleTelemetry.addData("Error", 0.0)
@@ -139,7 +150,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         this.imu.resetYaw()
 
         val executionGroup = buildExecutionGroup(tapeSide)
-        executionGroup.providesContext { _ ->
+        /*executionGroup.providesContext { _ ->
             RightClawFinger(claw = clawSubsystem)
         }
 
@@ -153,7 +164,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
         executionGroup.providesContext { _ ->
             ExtenderContext(claw = clawSubsystem)
-        }
+        }*/
 
         runRepeating(50L) {
             try
@@ -180,179 +191,189 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         Mono.logSink = { }
     }
 
-    // get all lynx modules so we can reset their caches later on
-    private val drivebaseMotors by lazy {
-        listOf(frontLeft, frontRight, backLeft, backRight)
-    }
+    val v2 by lazy(::V2)
 
-    private fun buildPIDControllerMovement(setPoint: Double, maintainHeading: Boolean) = PIDController(
-        kP = AutoPipelineUtilities.PID_MOVEMENT_KP,
-        kD = AutoPipelineUtilities.PID_MOVEMENT_KD,
-        kI = AutoPipelineUtilities.PID_MOVEMENT_KI,
-        setPoint = setPoint,
-        setPointTolerance = AutoPipelineUtilities.PID_MOVEMENT_TOLERANCE,
-        minimumVelocity = AutoPipelineUtilities.PID_MOVEMENT_MIN_VELOCITY,
-        telemetry = multipleTelemetry,
-        maintainHeading = maintainHeading,
-        maintainHeadingValue = imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
-    )
+    fun move(ticks: Double) = v2.move(-ticks)
+    fun turn(ticks: Double) = v2.turn(ticks)
+    fun strafe(ticks: Double) = v2.strafe(-ticks)
 
-    private fun buildPIDControllerRotation(setPoint: Double) = PIDController(
-        kP = AutoPipelineUtilities.PID_ROTATION_KP,
-        kD = AutoPipelineUtilities.PID_ROTATION_KD,
-        kI = AutoPipelineUtilities.PID_ROTATION_KI,
-        setPoint = setPoint,
-        setPointTolerance = AutoPipelineUtilities.PID_ROTATION_TOLERANCE,
-        minimumVelocity = AutoPipelineUtilities.PID_ROTATION_MIN_VELOCITY,
-        telemetry = multipleTelemetry
-    )
-
-    private fun buildPIDControllerDistance(setPoint: Double) = PIDController(
-        kP = AutoPipelineUtilities.PID_DISTANCE_KP,
-        kD = AutoPipelineUtilities.PID_DISTANCE_KD,
-        kI = AutoPipelineUtilities.PID_DISTANCE_KI,
-        setPoint = setPoint,
-        setPointTolerance = AutoPipelineUtilities.PID_DISTANCE_TOLERANCE,
-        minimumVelocity = AutoPipelineUtilities.PID_DISTANCE_MIN_VELOCITY,
-        telemetry = multipleTelemetry
-    )
-
-    fun move(ticks: Double) = movementPID(
-        setPoint = ticks,
-        setMotorPowers = { left, right ->
-            setRelativePowers(left, right)
-        }
-    )
-
-    fun moveUntilDistanceReached(distance: Double) = movementDistancePID(
-        setPoint = distance,
-        setMotorPowers = this@AbstractAutoPipeline::setPower
-    )
-
-    fun strafe(ticks: Double) = movementPID(
-        setPoint = ticks,
-        setMotorPowers = { left, right ->
-            setRelativeStrafePower(left, right)
-        },
-        requiresRelativeSign = true
-    )
-
-    fun turn(degrees: Double) = rotationPID(
-        setPoint = degrees,
-        setMotorPowers = this@AbstractAutoPipeline::setTurnPower
-    )
-
-    private fun shortestAngleDistance(target: Double, current: Double): Double
+    inner class V2
     {
-        val diff = target - current
+        // get all lynx modules so we can reset their caches later on
+        private val drivebaseMotors by lazy {
+            listOf(frontLeft, frontRight, backLeft, backRight)
+        }
 
-        return if (diff.absoluteValue <= 180)
-            diff
-        else
-            360 - diff.absoluteValue
-    }
+        private fun buildPIDControllerMovement(setPoint: Double, maintainHeading: Boolean) = PIDController(
+            kP = AutoPipelineUtilities.PID_MOVEMENT_KP,
+            kD = AutoPipelineUtilities.PID_MOVEMENT_KD,
+            kI = AutoPipelineUtilities.PID_MOVEMENT_KI,
+            setPoint = setPoint,
+            setPointTolerance = AutoPipelineUtilities.PID_MOVEMENT_TOLERANCE,
+            minimumVelocity = AutoPipelineUtilities.PID_MOVEMENT_MIN_VELOCITY,
+            telemetry = multipleTelemetry,
+            maintainHeading = maintainHeading,
+            maintainHeadingValue = imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
+        )
 
-    private fun rotationPID(
-        setPoint: Double,
-        setMotorPowers: (Double) -> Unit
-    ) = driveBasePID(
-        controller = buildPIDControllerRotation(setPoint = setPoint)
-            .customErrorCalculator {
-                shortestAngleDistance(setPoint, it)
+        private fun buildPIDControllerRotation(setPoint: Double) = PIDController(
+            kP = AutoPipelineUtilities.PID_ROTATION_KP,
+            kD = AutoPipelineUtilities.PID_ROTATION_KD,
+            kI = AutoPipelineUtilities.PID_ROTATION_KI,
+            setPoint = setPoint,
+            setPointTolerance = AutoPipelineUtilities.PID_ROTATION_TOLERANCE,
+            minimumVelocity = AutoPipelineUtilities.PID_ROTATION_MIN_VELOCITY,
+            telemetry = multipleTelemetry
+        )
+
+        private fun buildPIDControllerDistance(setPoint: Double) = PIDController(
+            kP = AutoPipelineUtilities.PID_DISTANCE_KP,
+            kD = AutoPipelineUtilities.PID_DISTANCE_KD,
+            kI = AutoPipelineUtilities.PID_DISTANCE_KI,
+            setPoint = setPoint,
+            setPointTolerance = AutoPipelineUtilities.PID_DISTANCE_TOLERANCE,
+            minimumVelocity = AutoPipelineUtilities.PID_DISTANCE_MIN_VELOCITY,
+            telemetry = multipleTelemetry
+        )
+
+        fun move(ticks: Double) = movementPID(
+            setPoint = ticks,
+            setMotorPowers = { left, right ->
+                setRelativePowers(left, right)
             }
-            .customVelocityCalculator {
-                imu.getRobotAngularVelocity(AngleUnit.DEGREES)
-                    .zRotationRate.toDouble()
+        )
+
+        fun moveUntilDistanceReached(distance: Double) = movementDistancePID(
+            setPoint = distance,
+            setMotorPowers = this@AbstractAutoPipeline::setPower
+        )
+
+        fun strafe(ticks: Double) = movementPID(
+            setPoint = ticks,
+            setMotorPowers = { left, right ->
+                setRelativeStrafePower(left, right)
             },
-        currentPositionBlock = imu::normalizedYaw,
-        setMotorPowers = { _, power ->
-            setMotorPowers(power)
-        }
-    )
+            requiresRelativeSign = true,
+            maintainHeading = false
+        )
 
-    private fun movementPID(
-        setPoint: Double,
-        setMotorPowers: (Double, Double) -> Unit,
-        requiresRelativeSign: Boolean = true,
-        maintainHeading: Boolean = true
-    ) = driveBasePID(
-        controller = buildPIDControllerMovement(setPoint = setPoint, maintainHeading = maintainHeading),
-        currentPositionBlock = {
-            (if (requiresRelativeSign) setPoint.sign.toInt() else 1) * drivebaseMotors
-                .map {
-                    it.currentPosition.absoluteValue
-                }
-                .average()
-        },
-        setMotorPowers = { controller, positionOutput ->
-            if (!controller.maintainHeading)
-            {
-                setMotorPowers(positionOutput, positionOutput)
-                return@driveBasePID
-            }
+        fun turn(degrees: Double) = rotationPID(
+            setPoint = degrees,
+            setMotorPowers = this@AbstractAutoPipeline::setTurnPower
+        )
 
-            val headingError = controller.maintainHeadingValue - controller.currentRobotHeading
-            val turnCorrectionFactor = AutoPipelineUtilities.PID_MOVEMENT_TURN_CORRECTION_FACTOR * headingError
-
-            val leftMotorPower = positionOutput + turnCorrectionFactor
-            val rightMotorPower = positionOutput - turnCorrectionFactor
-
-            setMotorPowers(leftMotorPower, rightMotorPower)
-        }
-    )
-
-    private fun movementDistancePID(
-        setPoint: Double,
-        setMotorPowers: (Double) -> Unit
-    ) = driveBasePID(
-        controller = buildPIDControllerDistance(setPoint = setPoint),
-        currentPositionBlock = {
-            frontDistanceSensor.getDistance(DistanceUnit.CM)
-        },
-        setMotorPowers = { _, positionOutput ->
-            setMotorPowers(positionOutput)
-        }
-    )
-
-    private fun driveBasePID(
-        controller: PIDController,
-        currentPositionBlock: () -> Double,
-        setMotorPowers: (PIDController, Double) -> Unit
-    )
-    {
-        stopAndResetMotors()
-        runMotors()
-
-        val startTime = System.currentTimeMillis()
-        while (opModeIsActive())
+        private fun shortestAngleDistance(target: Double, current: Double): Double
         {
-            // clear cached motor positions
-            val realCurrentPosition = currentPositionBlock()
-            val imuHeading = imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
+            val diff = target - current
 
-            if (controller.atSetPoint(realCurrentPosition))
-            {
-                break
-            }
-
-            if (System.currentTimeMillis() - startTime > 3000L)
-            {
-                break
-            }
-
-            val millisDiff = System.currentTimeMillis() - startTime
-            val rampUp = (millisDiff / AutoPipelineUtilities.RAMP_UP_SPEED)
-                .coerceIn(0.0, 1.0)
-
-            val pid = controller.calculate(realCurrentPosition, imuHeading)
-            val finalPower = pid.coerceIn(-0.7..0.7)
-            setMotorPowers(controller, rampUp * finalPower)
-
-            multipleTelemetry.update()
+            return if (diff.absoluteValue <= 180)
+                diff
+            else
+                360 - diff.absoluteValue
         }
 
-        stopAndResetMotors()
-        lockUntilMotorsFree()
+        private fun rotationPID(
+            setPoint: Double,
+            setMotorPowers: (Double) -> Unit
+        ) = driveBasePID(
+            controller = buildPIDControllerRotation(setPoint = setPoint)
+                .customErrorCalculator {
+                    shortestAngleDistance(setPoint, it)
+                }
+                .customVelocityCalculator {
+                    imu.getRobotAngularVelocity(AngleUnit.DEGREES)
+                        .zRotationRate.toDouble()
+                },
+            currentPositionBlock = imu::normalizedYaw,
+            setMotorPowers = { _, power ->
+                setMotorPowers(power)
+            }
+        )
+
+        private fun movementPID(
+            setPoint: Double,
+            setMotorPowers: (Double, Double) -> Unit,
+            requiresRelativeSign: Boolean = true,
+            maintainHeading: Boolean = true
+        ) = driveBasePID(
+            controller = buildPIDControllerMovement(setPoint = setPoint, maintainHeading = maintainHeading),
+            currentPositionBlock = {
+                (if (requiresRelativeSign) setPoint.sign.toInt() else 1) * drivebaseMotors
+                    .map {
+                        it.currentPosition.absoluteValue
+                    }
+                    .average()
+            },
+            setMotorPowers = { controller, positionOutput ->
+                if (!controller.maintainHeading)
+                {
+                    setMotorPowers(positionOutput, positionOutput)
+                    return@driveBasePID
+                }
+
+                val headingError = controller.maintainHeadingValue - controller.currentRobotHeading
+                val turnCorrectionFactor = AutoPipelineUtilities.PID_MOVEMENT_TURN_CORRECTION_FACTOR * headingError
+
+                val leftMotorPower = positionOutput + turnCorrectionFactor
+                val rightMotorPower = positionOutput - turnCorrectionFactor
+
+                setMotorPowers(leftMotorPower, rightMotorPower)
+            }
+        )
+
+        private fun movementDistancePID(
+            setPoint: Double,
+            setMotorPowers: (Double) -> Unit
+        ) = driveBasePID(
+            controller = buildPIDControllerDistance(setPoint = setPoint),
+            currentPositionBlock = {
+                frontDistanceSensor.getDistance(DistanceUnit.CM)
+            },
+            setMotorPowers = { _, positionOutput ->
+                setMotorPowers(positionOutput)
+            }
+        )
+
+        private fun driveBasePID(
+            controller: PIDController,
+            currentPositionBlock: () -> Double,
+            setMotorPowers: (PIDController, Double) -> Unit
+        )
+        {
+            stopAndResetMotors()
+            runMotors()
+
+            val startTime = System.currentTimeMillis()
+            while (opModeIsActive())
+            {
+                // clear cached motor positions
+                val realCurrentPosition = currentPositionBlock()
+                val imuHeading = imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
+
+                if (controller.atSetPoint(realCurrentPosition))
+                {
+                    break
+                }
+
+                if (System.currentTimeMillis() - startTime > 3000L)
+                {
+                    break
+                }
+
+                val millisDiff = System.currentTimeMillis() - startTime
+                val rampUp = (millisDiff / AutoPipelineUtilities.RAMP_UP_SPEED)
+                    .coerceIn(0.0, 1.0)
+
+                val pid = controller.calculate(realCurrentPosition, imuHeading)
+                val finalPower = pid.coerceIn(-1.0..1.0)
+                setMotorPowers(controller, rampUp * finalPower)
+
+                multipleTelemetry.update()
+            }
+
+            stopAndResetMotors()
+            lockUntilMotorsFree()
+        }
     }
 
     private fun lockUntilMotorsFree(maximumTimeMillis: Long = 1500L)
