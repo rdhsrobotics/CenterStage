@@ -21,6 +21,7 @@ class MotionProfiledServo(
             target,
             constraints()
         )
+        timer = ElapsedTime()
     }
 
     fun runPeriodic()
@@ -31,10 +32,10 @@ class MotionProfiledServo(
             return
         }
 
-        if (timer == null)
+        /*if (timer == null)
         {
             timer = ElapsedTime()
-        }
+        }*/
 
         val position = motionProfile!!.calculate(timer!!.time())
         servo.position = position.x

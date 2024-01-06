@@ -115,17 +115,6 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
         initializeAll()
 
-        this.clawSubsystem.toggleExtender(
-            ExtendableClaw.ExtenderState.PreLoad,
-            force = true
-        )
-
-        this.clawSubsystem.updateClawState(
-            ExtendableClaw.ClawStateUpdate.Both,
-            ExtendableClaw.ClawState.Closed,
-            force = true
-        )
-
         var i = 0
         while (opModeInInit())
         {

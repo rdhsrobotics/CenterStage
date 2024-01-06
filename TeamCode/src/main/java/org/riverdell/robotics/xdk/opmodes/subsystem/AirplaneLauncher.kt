@@ -21,12 +21,12 @@ class AirplaneLauncher(private val opMode: LinearOpMode) : AbstractSubsystem()
 
     fun launch()
     {
-        backingServo.position = ClawExpansionConstants.MAX_PLANE_POSITION
+//        backingServo.position = ClawExpansionConstants.MAX_PLANE_POSITION
     }
 
     fun reset()
     {
-        backingServo.position = ClawExpansionConstants.DEFAULT_PLANE_POSITION
+//        backingServo.position = ClawExpansionConstants.DEFAULT_PLANE_POSITION
     }
 
     override fun doInitialize() = reset()

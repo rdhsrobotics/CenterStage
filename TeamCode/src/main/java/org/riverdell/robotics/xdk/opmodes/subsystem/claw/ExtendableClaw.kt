@@ -106,10 +106,15 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         maxExtenderAddition = 0.0
         clawRangeExpansion = 0.0
 
-        toggleExtender(ExtenderState.PreLoad, force = true)
+        toggleExtender(
+            ExtenderState.PreLoad,
+            force = true
+        )
+
         updateClawState(
             ClawStateUpdate.Both,
-            ClawState.Closed
+            ClawState.Closed,
+            force = true
         )
     }
 
@@ -146,21 +151,25 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         toggleExtender(extenderState)
     }
 
-    @JvmOverloads
     fun toggleExtender(state: ExtenderState? = null, force: Boolean = false)
     {
+        val previousState = extenderState
         extenderState = state
-            ?: when (extenderState)
+            ?: when (previousState)
             {
                 ExtenderState.Deposit -> ExtenderState.Intake
                 ExtenderState.Intermediate -> ExtenderState.Deposit
                 else -> ExtenderState.Deposit
             }
 
+        println("State: $state, force: $force")
+        println("Ext: $extenderState, ${extenderState.targetPosition()}")
         if (force)
         {
+            println("Setting extender target")
             backingExtender.cancelMotionProfile()
             backingExtender.setTarget(extenderState.targetPosition())
+            println(extenderState.targetPosition())
             return
         }
 
@@ -178,13 +187,12 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         })
     }
 
-    @JvmOverloads
-    fun updateClawState(effectiveOn: ClawStateUpdate, state: ClawState, force: Boolean = false)
+    fun updateClawState(effectiveOn: ClawStateUpdate, state: ClawState, force: Boolean = true)
     {
         if (effectiveOn == ClawStateUpdate.Both)
         {
-            updateClawState(ClawStateUpdate.Right, state)
-            updateClawState(ClawStateUpdate.Left, state)
+            updateClawState(ClawStateUpdate.Right, state, force)
+            updateClawState(ClawStateUpdate.Left, state, force)
             return
         }
 
@@ -211,13 +219,17 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
                 position - clawRangeExpansion
         }
 
+        println("Value of force: $force")
+
         if (force)
         {
+            servo.cancelMotionProfile()
             servo.setTarget(targetPosition)
             return
         }
 
         servo.setMotionProfileTarget(targetPosition)
+        println("Set motion profile target of servo")
     }
 
     override fun isCompleted() = true
