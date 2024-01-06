@@ -28,6 +28,7 @@ import org.riverdell.robotics.xdk.opmodes.subsystem.AirplaneLauncher
 import org.riverdell.robotics.xdk.opmodes.subsystem.Elevator
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 import java.lang.Exception
+import java.util.concurrent.Future
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
@@ -155,15 +156,13 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             ExtenderContext(claw = clawSubsystem)
         }*/
 
-        runRepeating(50L) {
-            try
+        scheduleAsyncExecution(50L) {
+            if (!opModeIsActive() && !opModeInInit())
             {
-                clawSubsystem.periodic()
-                Mono.logSink("Updated periodic")
-            } catch (exception: Exception)
-            {
-                exception.printStackTrace()
+                return@scheduleAsyncExecution
             }
+
+            clawSubsystem.periodic()
         }.apply {
             executionGroup.executeBlocking()
             cancel(true)
