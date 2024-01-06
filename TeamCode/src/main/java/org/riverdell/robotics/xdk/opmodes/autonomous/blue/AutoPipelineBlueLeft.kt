@@ -13,6 +13,7 @@ import org.riverdell.robotics.xdk.opmodes.autonomous.detection.TeamColor
 import org.riverdell.robotics.xdk.opmodes.autonomous.contexts.ExtenderContext
 import org.riverdell.robotics.xdk.opmodes.autonomous.contexts.LeftClawFinger
 import org.riverdell.robotics.xdk.opmodes.autonomous.contexts.RightClawFinger
+import org.riverdell.robotics.xdk.opmodes.autonomous.red.RedRight
 import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 
 /**
@@ -27,22 +28,24 @@ object BlueLeft
     @JvmField
     var MoveBackFromTape = -725.0
     @JvmField
-    var TurnTowardsBackboard = 90.0
+    var TurnTowardsBackboard = -90.0
     @JvmField
-    var MoveTowardsBackboard = 1025.0
+    var MoveTowardsBackboard = 3 * 1025.0
     @JvmField
-    var StrafeIntoPosition = 1000.0
+    var StrafeIntoPosition = -1000.0
     @JvmField
     var MoveSlightlyIntoBackboard = 100.0
     @JvmField
-    var GoToParkingZone = 300.0
+    var GoToParkingZone = 250.0
+
+    @JvmField var StrafeIntoParkingZone = 1125.0
 
     @JvmField
     var ZElevatorDropExpectedHeight = 0.5
     @JvmField
-    var ZTapeLeftTurnAmount = 55.0
+    var ZTapeLeftTurnAmount = -55.0
     @JvmField
-    var ZTapeRightTurnAmount = -55.0
+    var ZTapeRightTurnAmount = 65.0
 }
 
 @Autonomous(
@@ -69,15 +72,23 @@ class AutoPipelineBlueLeft : AbstractAutoPipeline()
 
                 single("intermed") {
                     clawSubsystem.toggleExtender(
-                        ExtendableClaw.ExtenderState.Intermediate
+                        ExtendableClaw.ExtenderState.Intake,
+                        force = true
                     )
+                    Thread.sleep(125L)
                 }
             }
 
             single("turn if required") {
                 val turnPosition = getTapeSideTurnPosition(tapeSide)
+                if (tapeSide == TapeSide.Left)
+                {
+                    move(125.0)
+                }
+
                 if (turnPosition == 0.0)
                 {
+                    move(100.0)
                     return@single
                 }
 
@@ -88,6 +99,13 @@ class AutoPipelineBlueLeft : AbstractAutoPipeline()
                 clawSubsystem.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Right,
                     ExtendableClaw.ClawState.Open
+                )
+
+                Thread.sleep(400)
+
+                clawSubsystem.toggleExtender(
+                    ExtendableClaw.ExtenderState.Deposit,
+                    force = true
                 )
             }
 
@@ -117,7 +135,8 @@ class AutoPipelineBlueLeft : AbstractAutoPipeline()
 
                 single("af") {
                     clawSubsystem.toggleExtender(
-                        ExtendableClaw.ExtenderState.Deposit
+                        ExtendableClaw.ExtenderState.Deposit,
+                        force = true
                     )
                 }
             }
@@ -155,11 +174,17 @@ class AutoPipelineBlueLeft : AbstractAutoPipeline()
                     ExtendableClaw.ClawStateUpdate.Left,
                     ExtendableClaw.ClawState.Open
                 )
+
+                Thread.sleep(500L)
             }
 
-            simultaneous("reset elevator stuff") {
-                single("move back from into backboard") {
-                    move(BlueLeft.MoveSlightlyIntoBackboard)
+            single("move back from into backboard") {
+                move(BlueLeft.MoveSlightlyIntoBackboard)
+            }
+
+            simultaneous("update elevator and return") {
+                single("elevator retraction") {
+                    elevatorSubsystem.configureElevatorManually(0.0)
                 }
 
                 single("right claw reset") {
@@ -169,14 +194,11 @@ class AutoPipelineBlueLeft : AbstractAutoPipeline()
                     )
                 }
 
-                single("elevator retraction") {
-                    elevatorSubsystem.configureElevatorManually(0.0)
+                single("strafe back to before") {
+                    strafe(BlueLeft.StrafeIntoParkingZone)
                 }
             }
 
-            single("strafe back to before") {
-                move(BlueLeft.StrafeIntoPosition)
-            }
 
             single("correct heading again") {
                 turn(BlueLeft.TurnTowardsBackboard)

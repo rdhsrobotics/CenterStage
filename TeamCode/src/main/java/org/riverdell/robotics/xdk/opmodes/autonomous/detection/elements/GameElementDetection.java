@@ -42,7 +42,7 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
     public static double Y_OFFSET_TOP = 0.2;
     public static double Y_OFFSET_BOTTOM = 0.6;
 
-    public static double PERCENTAGE_REQUIRED_RED = 0.20;
+    public static double PERCENTAGE_REQUIRED_RED = 0.4;
     public static double PERCENTAGE_REQUIRED_BLUE = 0.50;
 
     public static int CAM_VIEW = 0;
@@ -53,11 +53,11 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
             TapeSide.Middle
     };
 
-    public static int LR_B = 0;
+    public static int LR_B = 150;
     public static int LR_G = 130;
     public static int LR_R = 150;
 
-    public static int UR_B = 10;
+    public static int UR_B = 255;
     public static int UR_G = 255;
     public static int UR_R = 255;
 

@@ -130,7 +130,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
     private fun buildCommands()
     {
         gp1Commands
-            .where(ButtonType.PlayStationLogo)
+            .where(ButtonType.PlayStationSquare)
             .triggers {
                 paperPlaneLauncher.launch()
             }

@@ -239,7 +239,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         fun strafe(ticks: Double) = movementPID(
             setPoint = ticks,
             setMotorPowers = { left, right ->
-                setRelativeStrafePower(left, right)
+                setRelativeStrafePower(0.7 * left, 0.7 * right)
             },
             requiresRelativeSign = true,
             maintainHeading = false

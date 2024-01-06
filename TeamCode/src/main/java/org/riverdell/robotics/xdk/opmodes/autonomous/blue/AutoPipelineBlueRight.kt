@@ -22,27 +22,18 @@ import org.riverdell.robotics.xdk.opmodes.subsystem.claw.ExtendableClaw
 @Config
 object BlueRight
 {
-    @JvmField
-    var MoveForwardToTape = 925.0
-    @JvmField
-    var MoveBackFromTape = -725.0
-    @JvmField
-    var TurnTowardsBackboard = 90.0
-    @JvmField
-    var MoveTowardsBackboard = 4 * 1025.0
-    @JvmField
-    var StrafeIntoPosition = 1000.0
-    @JvmField
-    var MoveSlightlyIntoBackboard = 100.0
-    @JvmField
-    var GoToParkingZone = 300.0
+    @JvmField var MoveForwardToTape = 925.0
+    @JvmField var MoveBackFromTape = -725.0
+    @JvmField var TurnTowardsBackboard = 90.0
+    @JvmField var MoveTowardsBackboard = 1025.0
+    @JvmField var StrafeIntoPosition = 1000.0
+    @JvmField var MoveSlightlyIntoBackboard = 200.0
+    @JvmField var StrafeIntoParkingZone = -1125.0
+    @JvmField var GoToParkingZone = -250.0
 
-    @JvmField
-    var ZElevatorDropExpectedHeight = 0.5
-    @JvmField
-    var ZTapeLeftTurnAmount = 55.0
-    @JvmField
-    var ZTapeRightTurnAmount = -55.0
+    @JvmField var ZElevatorDropExpectedHeight = 0.5
+    @JvmField var ZTapeLeftTurnAmount = 65.0
+    @JvmField var ZTapeRightTurnAmount = -5.0
 }
 
 @Autonomous(
@@ -141,7 +132,7 @@ class AutoPipelineBlueRight : AbstractAutoPipeline()
                     }
                 }
 
-                single("heighten elevator") {
+                single("raise elevator") {
                     elevatorSubsystem.configureElevatorManually(BlueRight.ZElevatorDropExpectedHeight)
                 }
             }
