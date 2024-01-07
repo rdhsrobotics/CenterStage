@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.IMU
 import io.liftgate.robotics.mono.Mono
+import io.liftgate.robotics.mono.pipeline.ExecutionGroup
 import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
@@ -25,7 +26,10 @@ import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
-abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.subsystem.System
+abstract class AbstractAutoPipeline(
+    private val teamColor: TeamColor,
+    internal val blockExecutionGroup: ExecutionGroup.(AbstractAutoPipeline, TapeSide) -> Unit
+) : LinearOpMode(), io.liftgate.robotics.mono.subsystem.System
 {
     override val subsystems = mutableSetOf<Subsystem>()
 
@@ -48,7 +52,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
     private val visionPipeline by lazy {
         VisionPipeline(
             webcam = hardware("webcam1"),
-            teamColor = getTeamColor()
+            teamColor = teamColor
         )
     }
 
@@ -58,9 +62,6 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             FtcDashboard.getInstance().telemetry
         )
     }
-
-    abstract fun getTeamColor(): TeamColor
-    abstract fun buildExecutionGroup(tapeSide: TapeSide): RootExecutionGroup
 
     override fun runOpMode()
     {
@@ -129,11 +130,10 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         }
 
         waitForStart()
-
         val tapeSide = visionPipeline.getTapeSide()
-        this.imu.resetYaw()
 
-        val executionGroup = buildExecutionGroup(tapeSide)
+        this.imu.resetYaw()
+        val executionGroup = Mono.buildExecutionGroup { blockExecutionGroup(this@AbstractAutoPipeline, tapeSide) }
         /*executionGroup.providesContext { _ ->
             RightClawFinger(claw = clawSubsystem)
         }
