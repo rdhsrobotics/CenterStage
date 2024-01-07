@@ -13,6 +13,7 @@
   - [PID Base](https://github.com/rdhsrobotics/ftc-rc-2024/blob/master/TeamCode/src/main/java/org/riverdell/robotics/xdk/opmodes/autonomous/controlsystem/PIDController.kt)
   - **Implementations:**
     - Each implementation contains two classes inside. The file starts with a configuration class with the name of the implementation. This is followed by the LinearOpMode with the state machine implementation.
+    - [Shared Execution Group Stages](https://github.com/rdhsrobotics/ftc-rc-2024/blob/master/TeamCode/src/main/java/org/robotics/robotics/xdk/teamcode/autonomous/shared/EGroupGlobal.kt)
     - [Blue](https://github.com/rdhsrobotics/ftc-rc-2024/tree/master/TeamCode/src/main/java/org/riverdell/robotics/xdk/opmodes/autonomous/blue)
     - [Red](https://github.com/rdhsrobotics/ftc-rc-2024/tree/master/TeamCode/src/main/java/org/riverdell/robotics/xdk/opmodes/autonomous/red)
 
