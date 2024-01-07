@@ -19,11 +19,17 @@ class AirplaneLauncher(private val opMode: LinearOpMode) : AbstractSubsystem()
         override fun dispose() = reset()
     }
 
+    /**
+     * Launches the airplane.
+     */
     fun launch()
     {
         backingServo.position = ClawExpansionConstants.MAX_PLANE_POSITION
     }
 
+    /**
+     * Arms the airplane servo.
+     */
     fun reset()
     {
         backingServo.position = ClawExpansionConstants.DEFAULT_PLANE_POSITION

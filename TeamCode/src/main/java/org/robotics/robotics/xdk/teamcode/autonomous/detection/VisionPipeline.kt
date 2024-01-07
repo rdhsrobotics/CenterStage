@@ -6,6 +6,10 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.vision.VisionPortal
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.elements.GameElementDetection
 
+/**
+ * Manages and configures all [VisionPortal] processors
+ * for an op mode.
+ */
 class VisionPipeline(
     private val teamColor: TeamColor,
     private val webcam: WebcamName
@@ -18,6 +22,10 @@ class VisionPipeline(
 
     fun getTapeSide() = propPipeline.tapeSide
 
+    /**
+     * Starts the vision portal with the option of
+     * pushing the camera stream to FTCDashboard.
+     */
     @JvmOverloads
     fun start(dashboard: Boolean = false)
     {

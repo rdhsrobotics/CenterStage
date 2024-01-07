@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>AbstractAutoPipeline</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            TeamCode
+                    </a>
+            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":TeamCode:dokkaHtml/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="TeamCode::org.robotics.robotics.xdk.teamcode.autonomous/AbstractAutoPipeline///PointingToDeclaration//-274895556">
+  <div class="breadcrumbs"><a href="../../../index.html">TeamCode</a><span class="delimiter">/</span><a href="../index.html">org.robotics.robotics.xdk.teamcode.autonomous</a><span class="delimiter">/</span><span class="current">AbstractAutoPipeline</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Abstract</span><wbr></wbr><span>Auto</span><wbr></wbr><span><span>Pipeline</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword">class </span><a href="index.html">AbstractAutoPipeline</a> : <span data-unresolved-link="com.qualcomm.robotcore.eventloop.opmode/LinearOpMode///PointingToDeclaration/">LinearOpMode</span>, <span data-unresolved-link="io.liftgate.robotics.mono.subsystem/System///PointingToDeclaration/">System</span></div><h4 class="">Inheritors</h4><div class="table"><div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.blue/-auto-pipeline-blue-left/index.html">AutoPipelineBlueLeft</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.blue/-auto-pipeline-blue-right/index.html">AutoPipelineBlueRight</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.v2/-v2-control-test-auto-move-backwards/index.html">V2ControlTestAutoMoveBackwards</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.v2/-v2-control-test-auto-move-distance/index.html">V2ControlTestAutoMoveDistance</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.v2/-v2-control-test-auto-move-forward/index.html">V2ControlTestAutoMoveForward</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.v2/-v2-control-test-auto-strafe/index.html">V2ControlTestAutoStrafe</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.v2/-v2-control-test-auto-turn/index.html">V2ControlTestAutoTurn</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.red/-auto-pipeline-red-left/index.html">AutoPipelineRedLeft</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.red/-auto-pipeline-red-right/index.html">AutoPipelineRedRight</a></div></span></div><div></div></div></div><div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release"><div class="main-subrow keyValue "><div class=""><span class="inline-flex"><div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.testing/-isolated-auto-testing/index.html">IsolatedAutoTesting</a></div></span></div><div></div></div></div></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button><button class="section-tab" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION,EXTENSION_PROPERTY,EXTENSION_FUNCTION">Members &amp; Extensions</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-11845278%2FConstructors%2F-274895556" anchor-label="AbstractAutoPipeline" id="-11845278%2FConstructors%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-abstract-auto-pipeline.html"><span>Abstract</span><wbr></wbr><span>Auto</span><wbr></wbr><span><span>Pipeline</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-11845278%2FConstructors%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="-1712996658%2FClasslikes%2F-274895556" anchor-label="V2" id="-1712996658%2FClasslikes%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-v2/index.html"><span><span>V2</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1712996658%2FClasslikes%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">inner </span><span class="token keyword">class </span><a href="-v2/index.html">V2</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="1533398127%2FProperties%2F-274895556" anchor-label="gamepad1" id="1533398127%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1533398127%2FProperties%2F-274895556"><span><span>gamepad1</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1533398127%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1533398127%2FProperties%2F-274895556">gamepad1</a><span class="token operator">: </span><span data-unresolved-link="com.qualcomm.robotcore.hardware/Gamepad///PointingToDeclaration/">Gamepad</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1564417934%2FProperties%2F-274895556" anchor-label="gamepad2" id="1564417934%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1564417934%2FProperties%2F-274895556"><span><span>gamepad2</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1564417934%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1564417934%2FProperties%2F-274895556">gamepad2</a><span class="token operator">: </span><span data-unresolved-link="com.qualcomm.robotcore.hardware/Gamepad///PointingToDeclaration/">Gamepad</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1397214969%2FProperties%2F-274895556" anchor-label="hardwareMap" id="-1397214969%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-1397214969%2FProperties%2F-274895556"><span>hardware</span><wbr></wbr><span><span>Map</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1397214969%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-1397214969%2FProperties%2F-274895556">hardwareMap</a><span class="token operator">: </span><span data-unresolved-link="com.qualcomm.robotcore.hardware/HardwareMap///PointingToDeclaration/">HardwareMap</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1892877380%2FProperties%2F-274895556" anchor-label="isStarted" id="1892877380%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1892877380%2FProperties%2F-274895556"><span>is</span><wbr></wbr><span><span>Started</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1892877380%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1892877380%2FProperties%2F-274895556">isStarted</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1483349743%2FProperties%2F-274895556" anchor-label="msStuckDetectInit" id="1483349743%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1483349743%2FProperties%2F-274895556"><span>ms</span><wbr></wbr><span>Stuck</span><wbr></wbr><span>Detect</span><wbr></wbr><span><span>Init</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1483349743%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1483349743%2FProperties%2F-274895556"><strike>msStuckDetectInit</strike></a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-553001045%2FProperties%2F-274895556" anchor-label="msStuckDetectInitLoop" id="-553001045%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-553001045%2FProperties%2F-274895556"><span>ms</span><wbr></wbr><span>Stuck</span><wbr></wbr><span>Detect</span><wbr></wbr><span>Init</span><wbr></wbr><span><span>Loop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-553001045%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-553001045%2FProperties%2F-274895556"><strike>msStuckDetectInitLoop</strike></a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="363588571%2FProperties%2F-274895556" anchor-label="msStuckDetectLoop" id="363588571%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#363588571%2FProperties%2F-274895556"><span>ms</span><wbr></wbr><span>Stuck</span><wbr></wbr><span>Detect</span><wbr></wbr><span><span>Loop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="363588571%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#363588571%2FProperties%2F-274895556"><strike>msStuckDetectLoop</strike></a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="427944857%2FProperties%2F-274895556" anchor-label="msStuckDetectStart" id="427944857%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#427944857%2FProperties%2F-274895556"><span>ms</span><wbr></wbr><span>Stuck</span><wbr></wbr><span>Detect</span><wbr></wbr><span><span>Start</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="427944857%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#427944857%2FProperties%2F-274895556"><strike>msStuckDetectStart</strike></a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-409341632%2FProperties%2F-274895556" anchor-label="msStuckDetectStop" id="-409341632%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-409341632%2FProperties%2F-274895556"><span>ms</span><wbr></wbr><span>Stuck</span><wbr></wbr><span>Detect</span><wbr></wbr><span><span>Stop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-409341632%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-409341632%2FProperties%2F-274895556"><strike>msStuckDetectStop</strike></a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1991443121%2FProperties%2F-274895556" anchor-label="stopRequested" id="-1991443121%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-1991443121%2FProperties%2F-274895556"><span>stop</span><wbr></wbr><span><span>Requested</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1991443121%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">val </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-1991443121%2FProperties%2F-274895556">stopRequested</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-190137999%2FProperties%2F-274895556" anchor-label="subsystems" id="-190137999%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="subsystems.html"><span><span>subsystems</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-190137999%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">val </span><a href="subsystems.html">subsystems</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-set/index.html">MutableSet</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="io.liftgate.robotics.mono.subsystem/Subsystem///PointingToDeclaration/">Subsystem</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1097975490%2FProperties%2F-274895556" anchor-label="telemetry" id="1097975490%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1097975490%2FProperties%2F-274895556"><span><span>telemetry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1097975490%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1097975490%2FProperties%2F-274895556">telemetry</a><span class="token operator">: </span><span data-unresolved-link="org.firstinspires.ftc.robotcore.external/Telemetry///PointingToDeclaration/">Telemetry</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-591827947%2FProperties%2F-274895556" anchor-label="time" id="-591827947%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-591827947%2FProperties%2F-274895556"><span><span>time</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-591827947%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-591827947%2FProperties%2F-274895556">time</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="1091412264%2FFunctions%2F-274895556" anchor-label="bindModuleWith" id="1091412264%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.testing/-isolated-auto-testing/index.html#1091412264%2FFunctions%2F-274895556"><span>bind</span><wbr></wbr><span>Module</span><wbr></wbr><span><span>With</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1091412264%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.testing/-isolated-auto-testing/index.html#1091412264%2FFunctions%2F-274895556"><span class="token function">bindModuleWith</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span><span class="token annotation builtin">@</span><span data-unresolved-link="org.jetbrains.annotations/NotNull///PointingToDeclaration/"><span class="token annotation builtin">NotNull</span></span> </span>consumer<span class="token operator">: </span><span data-unresolved-link="io.liftgate.robotics.mono.subsystem.terminable/TerminableConsumer///PointingToDeclaration/">TerminableConsumer</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1512302779%2FFunctions%2F-274895556" anchor-label="buildExecutionGroup" id="1512302779%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="build-execution-group.html"><span>build</span><wbr></wbr><span>Execution</span><wbr></wbr><span><span>Group</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1512302779%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="build-execution-group.html"><span class="token function">buildExecutionGroup</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">tapeSide<span class="token operator">: </span><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.detection/-tape-side/index.html">TapeSide</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><span data-unresolved-link="io.liftgate.robotics.mono.pipeline/RootExecutionGroup///PointingToDeclaration/">RootExecutionGroup</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1091733938%2FFunctions%2F-274895556" anchor-label="disposeOfAll" id="-1091733938%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.testing/-isolated-auto-testing/index.html#-1091733938%2FFunctions%2F-274895556"><span>dispose</span><wbr></wbr><span>Of</span><wbr></wbr><span><span>All</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1091733938%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.testing/-isolated-auto-testing/index.html#-1091733938%2FFunctions%2F-274895556"><span class="token function">disposeOfAll</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-set/index.html">MutableSet</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="io.liftgate.robotics.mono.subsystem/Subsystem///PointingToDeclaration/">Subsystem</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="503260448%2FFunctions%2F-274895556" anchor-label="getRuntime" id="503260448%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#503260448%2FFunctions%2F-274895556"><span>get</span><wbr></wbr><span><span>Runtime</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="503260448%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#503260448%2FFunctions%2F-274895556"><span class="token function">getRuntime</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1994796411%2FFunctions%2F-274895556" anchor-label="getTeamColor" id="-1994796411%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="get-team-color.html"><span>get</span><wbr></wbr><span>Team</span><wbr></wbr><span><span>Color</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1994796411%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">abstract </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="get-team-color.html"><span class="token function">getTeamColor</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.detection/-team-color/index.html">TeamColor</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1199604718%2FFunctions%2F-274895556" anchor-label="hardware" id="-1199604718%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-togglable="EXTENSION_FUNCTION" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../hardware.html"><span><span>hardware</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1199604718%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">inline </span><span class="token keyword">fun </span><span class="token operator">&lt;</span><span class="token keyword"></span><a href="../hardware.html">T</a><span class="token operator"> : </span><span data-unresolved-link="com.qualcomm.robotcore.hardware/HardwareDevice///PointingToDeclaration/">HardwareDevice</span><span class="token operator">&gt; </span><span data-unresolved-link="com.qualcomm.robotcore.eventloop.opmode/LinearOpMode///PointingToDeclaration/">LinearOpMode</span><span class="token punctuation">.</span><a href="../hardware.html"><span class="token function">hardware</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">id<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="../hardware.html">T</a></div><div class="brief "><p class="paragraph">A little extension function to get a non-null <span data-unresolved-link="com.qualcomm.robotcore.hardware/HardwareDevice///PointingToDeclaration/">HardwareDevice</span>.</p></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-945285709%2FFunctions%2F-274895556" anchor-label="idle" id="-945285709%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-945285709%2FFunctions%2F-274895556"><span><span>idle</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-945285709%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-945285709%2FFunctions%2F-274895556"><span class="token function">idle</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1617228809%2FFunctions%2F-274895556" anchor-label="init" id="-1617228809%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-1617228809%2FFunctions%2F-274895556"><span><span>init</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1617228809%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-1617228809%2FFunctions%2F-274895556"><span class="token function">init</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-493667936%2FFunctions%2F-274895556" anchor-label="init_loop" id="-493667936%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-493667936%2FFunctions%2F-274895556"><span><span>init_loop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-493667936%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-493667936%2FFunctions%2F-274895556"><span class="token function">init_loop</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1012677936%2FFunctions%2F-274895556" anchor-label="initializeAll" id="-1012677936%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.testing/-isolated-auto-testing/index.html#-1012677936%2FFunctions%2F-274895556"><span>initialize</span><wbr></wbr><span><span>All</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1012677936%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.testing/-isolated-auto-testing/index.html#-1012677936%2FFunctions%2F-274895556"><span class="token function">initializeAll</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-mutable-set/index.html">MutableSet</a><span class="token operator">&lt;</span><span class="token keyword"></span><span data-unresolved-link="io.liftgate.robotics.mono.subsystem/Subsystem///PointingToDeclaration/">Subsystem</span><span class="token operator">&gt;</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="832637297%2FFunctions%2F-274895556" anchor-label="internalPostInitLoop" id="832637297%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#832637297%2FFunctions%2F-274895556"><span>internal</span><wbr></wbr><span>Post</span><wbr></wbr><span>Init</span><wbr></wbr><span><span>Loop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="832637297%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#832637297%2FFunctions%2F-274895556"><span class="token function"><strike>internalPostInitLoop</strike></span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-180688735%2FFunctions%2F-274895556" anchor-label="internalPostLoop" id="-180688735%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-180688735%2FFunctions%2F-274895556"><span>internal</span><wbr></wbr><span>Post</span><wbr></wbr><span><span>Loop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-180688735%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-180688735%2FFunctions%2F-274895556"><span class="token function"><strike>internalPostLoop</strike></span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="958221314%2FFunctions%2F-274895556" anchor-label="internalPreInit" id="958221314%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#958221314%2FFunctions%2F-274895556"><span>internal</span><wbr></wbr><span>Pre</span><wbr></wbr><span><span>Init</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="958221314%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#958221314%2FFunctions%2F-274895556"><span class="token function"><strike>internalPreInit</strike></span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="949931346%2FFunctions%2F-274895556" anchor-label="internalUpdateTelemetryNow" id="949931346%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#949931346%2FFunctions%2F-274895556"><span>internal</span><wbr></wbr><span>Update</span><wbr></wbr><span>Telemetry</span><wbr></wbr><span><span>Now</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="949931346%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#949931346%2FFunctions%2F-274895556"><span class="token function">internalUpdateTelemetryNow</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><span data-unresolved-link="com.qualcomm.robotcore.robocol/TelemetryMessage///PointingToDeclaration/">TelemetryMessage</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1557977315%2FFunctions%2F-274895556" anchor-label="loop" id="1557977315%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1557977315%2FFunctions%2F-274895556"><span><span>loop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1557977315%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1557977315%2FFunctions%2F-274895556"><span class="token function">loop</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="59540896%2FFunctions%2F-274895556" anchor-label="move" id="59540896%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="move.html"><span><span>move</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="59540896%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="move.html"><span class="token function">move</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ticks<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1015161614%2FFunctions%2F-274895556" anchor-label="opModeInInit" id="1015161614%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1015161614%2FFunctions%2F-274895556"><span>op</span><wbr></wbr><span>Mode</span><wbr></wbr><span>In</span><wbr></wbr><span><span>Init</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1015161614%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1015161614%2FFunctions%2F-274895556"><span class="token function">opModeInInit</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-911330061%2FFunctions%2F-274895556" anchor-label="opModeIsActive" id="-911330061%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-911330061%2FFunctions%2F-274895556"><span>op</span><wbr></wbr><span>Mode</span><wbr></wbr><span>Is</span><wbr></wbr><span><span>Active</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-911330061%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-911330061%2FFunctions%2F-274895556"><span class="token function">opModeIsActive</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1973601324%2FFunctions%2F-274895556" anchor-label="register" id="-1973601324%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.testing/-isolated-auto-testing/index.html#-1973601324%2FFunctions%2F-274895556"><span><span>register</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1973601324%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.testing/-isolated-auto-testing/index.html#-1973601324%2FFunctions%2F-274895556"><span class="token function">register</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">vararg </span>subsystem<span class="token operator">: </span><span data-unresolved-link="io.liftgate.robotics.mono.subsystem/Subsystem///PointingToDeclaration/">Subsystem</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-765560122%2FFunctions%2F-274895556" anchor-label="requestOpModeStop" id="-765560122%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-765560122%2FFunctions%2F-274895556"><span>request</span><wbr></wbr><span>Op</span><wbr></wbr><span>Mode</span><wbr></wbr><span><span>Stop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-765560122%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-765560122%2FFunctions%2F-274895556"><span class="token function">requestOpModeStop</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1757147609%2FFunctions%2F-274895556" anchor-label="resetRuntime" id="1757147609%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1757147609%2FFunctions%2F-274895556"><span>reset</span><wbr></wbr><span><span>Runtime</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1757147609%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1757147609%2FFunctions%2F-274895556"><span class="token function">resetRuntime</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2000240906%2FFunctions%2F-274895556" anchor-label="runOpMode" id="-2000240906%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="run-op-mode.html"><span>run</span><wbr></wbr><span>Op</span><wbr></wbr><span><span>Mode</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2000240906%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="run-op-mode.html"><span class="token function">runOpMode</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1456822251%2FFunctions%2F-274895556" anchor-label="setup" id="-1456822251%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.testing/-isolated-auto-testing/index.html#-1456822251%2FFunctions%2F-274895556"><span><span>setup</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1456822251%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.autonomous.testing/-isolated-auto-testing/index.html#-1456822251%2FFunctions%2F-274895556"><span class="token function">setup</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">consumer<span class="token operator">: </span><span data-unresolved-link="io.liftgate.robotics.mono.subsystem.terminable/TerminableConsumer///PointingToDeclaration/">TerminableConsumer</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1955259651%2FFunctions%2F-274895556" anchor-label="sleep" id="-1955259651%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-1955259651%2FFunctions%2F-274895556"><span><span>sleep</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1955259651%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-1955259651%2FFunctions%2F-274895556"><span class="token function">sleep</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-long/index.html">Long</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1200709743%2FFunctions%2F-274895556" anchor-label="start" id="-1200709743%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-1200709743%2FFunctions%2F-274895556"><span><span>start</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1200709743%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-1200709743%2FFunctions%2F-274895556"><span class="token function">start</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="841039173%2FFunctions%2F-274895556" anchor-label="stop" id="841039173%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#841039173%2FFunctions%2F-274895556"><span><span>stop</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="841039173%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">override </span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#841039173%2FFunctions%2F-274895556"><span class="token function">stop</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="28299870%2FFunctions%2F-274895556" anchor-label="strafe" id="28299870%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="strafe.html"><span><span>strafe</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="28299870%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="strafe.html"><span class="token function">strafe</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ticks<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-167858447%2FFunctions%2F-274895556" anchor-label="terminateOpModeNow" id="-167858447%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-167858447%2FFunctions%2F-274895556"><span>terminate</span><wbr></wbr><span>Op</span><wbr></wbr><span>Mode</span><wbr></wbr><span><span>Now</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-167858447%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#-167858447%2FFunctions%2F-274895556"><span class="token function">terminateOpModeNow</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="933423436%2FFunctions%2F-274895556" anchor-label="turn" id="933423436%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="turn.html"><span><span>turn</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="933423436%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="turn.html"><span class="token function">turn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">ticks<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1080474565%2FFunctions%2F-274895556" anchor-label="updateTelemetry" id="1080474565%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1080474565%2FFunctions%2F-274895556"><span>update</span><wbr></wbr><span><span>Telemetry</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1080474565%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#1080474565%2FFunctions%2F-274895556"><span class="token function">updateTelemetry</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">p0<span class="token operator">: </span><span data-unresolved-link="org.firstinspires.ftc.robotcore.external/Telemetry///PointingToDeclaration/">Telemetry</span></span></span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="246695705%2FFunctions%2F-274895556" anchor-label="waitForStart" id="246695705%2FFunctions%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#246695705%2FFunctions%2F-274895556"><span>wait</span><wbr></wbr><span>For</span><wbr></wbr><span><span>Start</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="246695705%2FFunctions%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="../../org.robotics.robotics.xdk.teamcode.mono/-mono-test-e-group-autonomous/index.html#246695705%2FFunctions%2F-274895556"><span class="token function">waitForStart</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -180,11 +180,13 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
 
     inner class V2
     {
-        // get all lynx modules so we can reset their caches later on
         private val drivebaseMotors by lazy {
             listOf(frontLeft, frontRight, backLeft, backRight)
         }
 
+        /**
+         * Creates a PID controller with the given constants for basic movement.
+         */
         private fun buildPIDControllerMovement(setPoint: Double, maintainHeading: Boolean) = PIDController(
             kP = AutoPipelineUtilities.PID_MOVEMENT_KP,
             kD = AutoPipelineUtilities.PID_MOVEMENT_KD,
@@ -197,6 +199,9 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             maintainHeadingValue = imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
         )
 
+        /**
+         * Creates a PID controller with the given constants for robot rotation.
+         */
         private fun buildPIDControllerRotation(setPoint: Double) = PIDController(
             kP = AutoPipelineUtilities.PID_ROTATION_KP,
             kD = AutoPipelineUtilities.PID_ROTATION_KD,
@@ -207,6 +212,9 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             telemetry = multipleTelemetry
         )
 
+        /**
+         * Creates a PID controller with the given constants for PID with distance sensor.
+         */
         private fun buildPIDControllerDistance(setPoint: Double) = PIDController(
             kP = AutoPipelineUtilities.PID_DISTANCE_KP,
             kD = AutoPipelineUtilities.PID_DISTANCE_KD,
@@ -217,6 +225,10 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             telemetry = multipleTelemetry
         )
 
+        /**
+         * Moves forward/backward with a value of [ticks] using the movement
+         * PID. Uses the IMU for automatic heading correction.
+         */
         fun move(ticks: Double) = movementPID(
             setPoint = ticks,
             setMotorPowers = { left, right ->
@@ -229,6 +241,10 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             setMotorPowers = this@AbstractAutoPipeline::setPower
         )
 
+        /**
+         * Moves left/right with a value of [ticks] using the movement
+         * PID.
+         */
         fun strafe(ticks: Double) = movementPID(
             setPoint = ticks,
             setMotorPowers = { left, right ->
@@ -238,11 +254,19 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
             maintainHeading = false
         )
 
+        /**
+         * Rotates the robot to [degrees] degrees relative to the heading at start
+         * using the rotation PID.
+         */
         fun turn(degrees: Double) = rotationPID(
             setPoint = degrees,
             setMotorPowers = this@AbstractAutoPipeline::setTurnPower
         )
 
+        /**
+         * Gets the shortest angle required to turn
+         * to meet a given target [target].
+         */
         private fun shortestAngleDistance(target: Double, current: Double): Double
         {
             val diff = target - current

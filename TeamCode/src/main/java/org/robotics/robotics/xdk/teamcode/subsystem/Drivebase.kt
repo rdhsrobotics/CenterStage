@@ -83,6 +83,9 @@ class Drivebase(private val opMode: LinearOpMode) : AbstractSubsystem()
         )
     }
 
+    /**
+     * Initializes both the IMU and all drivebase motors.
+     */
     override fun doInitialize()
     {
         imu.initialize(

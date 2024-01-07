@@ -10,13 +10,18 @@ import org.robotics.robotics.xdk.teamcode.autonomous.hardware
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * A subsystem implementation for all of our elevators.
+ *
+ * @author Subham
+ */
 class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
     val backingMotor by lazy {
         opMode.hardware<DcMotorEx>("elevator")
     }
 
-    val backingHangMotor by lazy {
+    private val backingHangMotor by lazy {
         opMode.hardware<DcMotorEx>("hang")
     }
 
@@ -31,6 +36,9 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
         backingHangMotor.stopAndResetEncoder()
     }
 
+    /**
+     * Initializes and configures the elevator hardware.
+     */
     override fun doInitialize()
     {
         listOf(backingMotor, backingHangMotor).forEach {
@@ -47,12 +55,19 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
 
     private var elevatorUpdateLock = Any()
 
+    /**
+     * Runs the hang motor at a given power without the encoder.
+     */
     fun toggleHangLift(power: Double)
     {
         backingHangMotor.power = power
         backingHangMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     }
 
+    /**
+     * Increments the target position for the claw elevator
+     * based on a given joystick value.
+     */
     fun configureElevator(stick: Double) = synchronized(elevatorUpdateLock)
     {
         val target = min(
@@ -65,6 +80,9 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
         backingMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
 
+    /**
+     * Sets the target position to a value in the [0, 1] interval.
+     */
     fun configureElevatorManually(position: Double) = synchronized(elevatorUpdateLock)
     {
         backingMotor.power = (if (position < backingMotor.targetPosition) -1 else 1) * 0.86
@@ -72,6 +90,9 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
         backingMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
 
+    /**
+     * Sets the target position to a value in the [-1130, 0] interval.
+     */
     fun configureElevatorManuallyRaw(position: Int) = synchronized(elevatorUpdateLock)
     {
         backingMotor.power = (if (position < backingMotor.targetPosition) -1 else 1) * 0.86

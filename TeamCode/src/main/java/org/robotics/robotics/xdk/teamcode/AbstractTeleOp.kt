@@ -19,8 +19,8 @@ import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 import kotlin.math.abs
 
 /**
- * Configures Mono gamepad commands and FTCLib
- * drive systems for TeleOp.
+ * A base implementation of a TeleOp. Contains lifecycles for
+ * all subsystems and Mono gamepad command implementations.
  *
  * @author Subham
  * @since 9/5/2023
@@ -124,6 +124,9 @@ abstract class AbstractTeleOp : LinearOpMode(), System
 
     private var bundleExecutionInProgress = false
 
+    /**
+     * Maps actions to gamepad buttons.
+     */
     private fun buildCommands()
     {
         gp1Commands

@@ -162,12 +162,8 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
                 else -> ExtenderState.Deposit
             }
 
-        println("State: $state, force: $force")
-        println("Ext: $extenderState, ${extenderState.targetPosition()}")
         if (force)
         {
-            println("Setting extender target")
-            backingExtender.cancelMotionProfile()
             backingExtender.setTarget(extenderState.targetPosition())
             println(extenderState.targetPosition())
             return
@@ -223,7 +219,6 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
 
         if (force)
         {
-            servo.cancelMotionProfile()
             servo.setTarget(targetPosition)
             return
         }

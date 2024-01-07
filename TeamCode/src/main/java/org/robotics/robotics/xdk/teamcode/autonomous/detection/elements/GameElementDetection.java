@@ -34,6 +34,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * An OpenCV processor which detects the game object
+ * on the spike mark.
+ *
+ * @author Subham
+ */
 @Config
 public class GameElementDetection implements CameraStreamSource, VisionProcessor {
 

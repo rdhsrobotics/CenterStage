@@ -3,6 +3,9 @@ package org.robotics.robotics.xdk.teamcode.autonomous.controlsystem
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import kotlin.math.absoluteValue
 
+/**
+ * An implementation of a PID controller.
+ */
 class PIDController(
     private val kP: Double,
     private val kI: Double,
@@ -32,6 +35,10 @@ class PIDController(
     fun customVelocityCalculator(block: () -> Double) =
         apply { customVelocityCalculator = block }
 
+    /**
+     * Calculates the current power based on the
+     * given input and robot heading.
+     */
     fun calculate(currentValue: Double, heading: Double): Double
     {
         val error = customErrorCalculator?.invoke(currentValue)

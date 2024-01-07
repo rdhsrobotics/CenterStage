@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>AutoPipelineUtilities</title>
+    <link href="../../../images/logo-icon.svg" rel="icon" type="image/svg">
+    <script>var pathToRoot = "../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async="async"></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer="defer"></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async="async"></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer="defer"></script>
+</head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+                    <a class="library-name--link" href="../../../index.html">
+                            TeamCode
+                    </a>
+            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":TeamCode:dokkaHtml/release">androidJvm</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageIds="TeamCode::org.robotics.robotics.xdk.teamcode.autonomous.utilities/AutoPipelineUtilities///PointingToDeclaration//-274895556">
+  <div class="breadcrumbs"><a href="../../../index.html">TeamCode</a><span class="delimiter">/</span><a href="../index.html">org.robotics.robotics.xdk.teamcode.autonomous.utilities</a><span class="delimiter">/</span><span class="current">AutoPipelineUtilities</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Auto</span><wbr></wbr><span>Pipeline</span><wbr></wbr><span><span>Utilities</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><span class="token keyword">object </span><a href="index.html">AutoPipelineUtilities</a></div></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-163482062%2FProperties%2F-274895556" anchor-label="MOVEMENT_MAX_ERROR" id="-163482062%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-m-o-v-e-m-e-n-t_-m-a-x_-e-r-r-o-r.html"><span><span>MOVEMENT_MAX_ERROR</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-163482062%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-m-o-v-e-m-e-n-t_-m-a-x_-e-r-r-o-r.html">MOVEMENT_MAX_ERROR</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="960361308%2FProperties%2F-274895556" anchor-label="PID_DISTANCE_KD" id="960361308%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-d-i-s-t-a-n-c-e_-k-d.html"><span><span>PID_DISTANCE_KD</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="960361308%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-d-i-s-t-a-n-c-e_-k-d.html">PID_DISTANCE_KD</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1115460343%2FProperties%2F-274895556" anchor-label="PID_DISTANCE_KI" id="1115460343%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-d-i-s-t-a-n-c-e_-k-i.html"><span><span>PID_DISTANCE_KI</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1115460343%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-d-i-s-t-a-n-c-e_-k-i.html">PID_DISTANCE_KI</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1332598992%2FProperties%2F-274895556" anchor-label="PID_DISTANCE_KP" id="1332598992%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-d-i-s-t-a-n-c-e_-k-p.html"><span><span>PID_DISTANCE_KP</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1332598992%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-d-i-s-t-a-n-c-e_-k-p.html">PID_DISTANCE_KP</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-2065939573%2FProperties%2F-274895556" anchor-label="PID_DISTANCE_MIN_VELOCITY" id="-2065939573%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-d-i-s-t-a-n-c-e_-m-i-n_-v-e-l-o-c-i-t-y.html"><span><span>PID_DISTANCE_MIN_VELOCITY</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2065939573%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-d-i-s-t-a-n-c-e_-m-i-n_-v-e-l-o-c-i-t-y.html">PID_DISTANCE_MIN_VELOCITY</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1058258280%2FProperties%2F-274895556" anchor-label="PID_DISTANCE_TOLERANCE" id="-1058258280%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-d-i-s-t-a-n-c-e_-t-o-l-e-r-a-n-c-e.html"><span><span>PID_DISTANCE_TOLERANCE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1058258280%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-d-i-s-t-a-n-c-e_-t-o-l-e-r-a-n-c-e.html">PID_DISTANCE_TOLERANCE</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="695495958%2FProperties%2F-274895556" anchor-label="PID_MOVEMENT_KD" id="695495958%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-m-o-v-e-m-e-n-t_-k-d.html"><span><span>PID_MOVEMENT_KD</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="695495958%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-m-o-v-e-m-e-n-t_-k-d.html">PID_MOVEMENT_KD</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="850594993%2FProperties%2F-274895556" anchor-label="PID_MOVEMENT_KI" id="850594993%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-m-o-v-e-m-e-n-t_-k-i.html"><span><span>PID_MOVEMENT_KI</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="850594993%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-m-o-v-e-m-e-n-t_-k-i.html">PID_MOVEMENT_KI</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1067733642%2FProperties%2F-274895556" anchor-label="PID_MOVEMENT_KP" id="1067733642%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-m-o-v-e-m-e-n-t_-k-p.html"><span><span>PID_MOVEMENT_KP</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1067733642%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-m-o-v-e-m-e-n-t_-k-p.html">PID_MOVEMENT_KP</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1882807493%2FProperties%2F-274895556" anchor-label="PID_MOVEMENT_MIN_VELOCITY" id="1882807493%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-m-o-v-e-m-e-n-t_-m-i-n_-v-e-l-o-c-i-t-y.html"><span><span>PID_MOVEMENT_MIN_VELOCITY</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1882807493%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-m-o-v-e-m-e-n-t_-m-i-n_-v-e-l-o-c-i-t-y.html">PID_MOVEMENT_MIN_VELOCITY</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="801522590%2FProperties%2F-274895556" anchor-label="PID_MOVEMENT_TOLERANCE" id="801522590%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-m-o-v-e-m-e-n-t_-t-o-l-e-r-a-n-c-e.html"><span><span>PID_MOVEMENT_TOLERANCE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="801522590%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-m-o-v-e-m-e-n-t_-t-o-l-e-r-a-n-c-e.html">PID_MOVEMENT_TOLERANCE</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1678420225%2FProperties%2F-274895556" anchor-label="PID_MOVEMENT_TURN_CORRECTION_FACTOR" id="1678420225%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-m-o-v-e-m-e-n-t_-t-u-r-n_-c-o-r-r-e-c-t-i-o-n_-f-a-c-t-o-r.html"><span><span>PID_MOVEMENT_TURN_CORRECTION_FACTOR</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1678420225%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-m-o-v-e-m-e-n-t_-t-u-r-n_-c-o-r-r-e-c-t-i-o-n_-f-a-c-t-o-r.html">PID_MOVEMENT_TURN_CORRECTION_FACTOR</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="315899749%2FProperties%2F-274895556" anchor-label="PID_ROTATION_KD" id="315899749%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-r-o-t-a-t-i-o-n_-k-d.html"><span><span>PID_ROTATION_KD</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="315899749%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-r-o-t-a-t-i-o-n_-k-d.html">PID_ROTATION_KD</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="470998784%2FProperties%2F-274895556" anchor-label="PID_ROTATION_KI" id="470998784%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-r-o-t-a-t-i-o-n_-k-i.html"><span><span>PID_ROTATION_KI</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="470998784%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-r-o-t-a-t-i-o-n_-k-i.html">PID_ROTATION_KI</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="688137433%2FProperties%2F-274895556" anchor-label="PID_ROTATION_KP" id="688137433%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-r-o-t-a-t-i-o-n_-k-p.html"><span><span>PID_ROTATION_KP</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="688137433%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-r-o-t-a-t-i-o-n_-k-p.html">PID_ROTATION_KP</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-66201516%2FProperties%2F-274895556" anchor-label="PID_ROTATION_MIN_VELOCITY" id="-66201516%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-r-o-t-a-t-i-o-n_-m-i-n_-v-e-l-o-c-i-t-y.html"><span><span>PID_ROTATION_MIN_VELOCITY</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-66201516%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-r-o-t-a-t-i-o-n_-m-i-n_-v-e-l-o-c-i-t-y.html">PID_ROTATION_MIN_VELOCITY</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1831662993%2FProperties%2F-274895556" anchor-label="PID_ROTATION_TOLERANCE" id="-1831662993%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-p-i-d_-r-o-t-a-t-i-o-n_-t-o-l-e-r-a-n-c-e.html"><span><span>PID_ROTATION_TOLERANCE</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1831662993%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-p-i-d_-r-o-t-a-t-i-o-n_-t-o-l-e-r-a-n-c-e.html">PID_ROTATION_TOLERANCE</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1379379195%2FProperties%2F-274895556" anchor-label="RAMP_UP_SPEED" id="1379379195%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-r-a-m-p_-u-p_-s-p-e-e-d.html"><span><span>RAMP_UP_SPEED</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1379379195%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-r-a-m-p_-u-p_-s-p-e-e-d.html">RAMP_UP_SPEED</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-606721463%2FProperties%2F-274895556" anchor-label="ROTATION_END_VELOCITY" id="-606721463%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-r-o-t-a-t-i-o-n_-e-n-d_-v-e-l-o-c-i-t-y.html"><span><span>ROTATION_END_VELOCITY</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-606721463%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-r-o-t-a-t-i-o-n_-e-n-d_-v-e-l-o-c-i-t-y.html"><strike>ROTATION_END_VELOCITY</strike></a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-282318363%2FProperties%2F-274895556" anchor-label="ROTATION_END_YAW" id="-282318363%2FProperties%2F-274895556" data-filterable-set=":TeamCode:dokkaHtml/release"></a>
+          <div class="table-row" data-filterable-current=":TeamCode:dokkaHtml/release" data-filterable-set=":TeamCode:dokkaHtml/release">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-r-o-t-a-t-i-o-n_-e-n-d_-y-a-w.html"><span><span>ROTATION_END_YAW</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-282318363%2FProperties%2F-274895556"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":TeamCode:dokkaHtml/release"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation builtin">@</span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-field/index.html"><span class="token annotation builtin">JvmField</span></a></div></div><span class="token keyword"></span><span class="token keyword">var </span><a href="-r-o-t-a-t-i-o-n_-e-n-d_-y-a-w.html"><strike>ROTATION_END_YAW</strike></a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a></div></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2024 Copyright</span><span
+                class="pull-right"><span>Generated by </span><a
+                href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
