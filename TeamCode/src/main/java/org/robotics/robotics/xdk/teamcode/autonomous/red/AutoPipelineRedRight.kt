@@ -14,4 +14,4 @@ import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
     group = "Red",
     preselectTeleOp = Global.RobotCentricTeleOpName
 )
-class AutoPipelineRedRight : AbstractAutoPipeline(AutonomousProfile.RedPlayer1)
+class AutoPipelineRedRight : AbstractAutoPipeline(AutonomousProfile.RedPlayer1TwoPlusZero)

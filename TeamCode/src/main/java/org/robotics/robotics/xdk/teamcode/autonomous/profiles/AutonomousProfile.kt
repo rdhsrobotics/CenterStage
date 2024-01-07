@@ -16,7 +16,7 @@ sealed class AutonomousProfile(
     val startPosition: StartPosition
 )
 {
-    fun buildExecutionGroup(): ExecutionGroup.(AbstractAutoPipeline, TapeSide) -> Unit =
+    open fun buildExecutionGroup(): ExecutionGroup.(AbstractAutoPipeline, TapeSide) -> Unit =
         { opMode, tapeSide ->
             depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
                 pipe = opMode,
@@ -35,25 +35,25 @@ sealed class AutonomousProfile(
             )
         }
 
-    data object RedPlayer1 : AutonomousProfile(
+    data object RedPlayer1TwoPlusZero : AutonomousProfile(
         teamColor = TeamColor.Red,
         relativeBackboardDirectionAtRobotStart = Direction.Right,
         startPosition = StartPosition.Close
     )
 
-    data object RedPlayer2 : AutonomousProfile(
+    data object RedPlayer2TwoPlusZero : AutonomousProfile(
         teamColor = TeamColor.Red,
         relativeBackboardDirectionAtRobotStart = Direction.Right,
         startPosition = StartPosition.Far
     )
 
-    data object BluePlayer1 : AutonomousProfile(
+    data object BluePlayer1TwoPlusZero : AutonomousProfile(
         teamColor = TeamColor.Blue,
         relativeBackboardDirectionAtRobotStart = Direction.Left,
         startPosition = StartPosition.Close
     )
 
-    data object BluePlayer2 : AutonomousProfile(
+    data object BluePlayer2TwoPlusZero : AutonomousProfile(
         teamColor = TeamColor.Blue,
         relativeBackboardDirectionAtRobotStart = Direction.Left,
         startPosition = StartPosition.Far
