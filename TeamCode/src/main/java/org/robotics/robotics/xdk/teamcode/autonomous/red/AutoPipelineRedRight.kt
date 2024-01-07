@@ -3,12 +3,7 @@ package org.robotics.robotics.xdk.teamcode.autonomous.red
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import org.robotics.robotics.xdk.teamcode.Global
 import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline
-import org.robotics.robotics.xdk.teamcode.autonomous.detection.Direction
-import org.robotics.robotics.xdk.teamcode.autonomous.detection.StartPosition
-import org.robotics.robotics.xdk.teamcode.autonomous.detection.TeamColor
-import org.robotics.robotics.xdk.teamcode.autonomous.shared.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard
-import org.robotics.robotics.xdk.teamcode.autonomous.shared.moveTowardsBackboard
-import org.robotics.robotics.xdk.teamcode.autonomous.shared.strafeIntoBackboardPositionThenDepositYellowPixelAndPark
+import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
 
 /**
  * @author Subham
@@ -19,20 +14,4 @@ import org.robotics.robotics.xdk.teamcode.autonomous.shared.strafeIntoBackboardP
     group = "Red",
     preselectTeleOp = Global.RobotCentricTeleOpName
 )
-class AutoPipelineRedRight : AbstractAutoPipeline(TeamColor.Red, { opMode, tapeSide ->
-    depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
-        pipe = opMode,
-        gameObjectTapeSide = tapeSide,
-        relativeBackboardDirectionAtRobotStart = Direction.Right
-    )
-
-    moveTowardsBackboard(
-        pipe = opMode,
-        startPosition = StartPosition.Close
-    )
-
-    strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
-        pipe = opMode,
-        relativeBackboardDirectionAtParkingZone = Direction.Left
-    )
-})
+class AutoPipelineRedRight : AbstractAutoPipeline(AutonomousProfile.RedPlayer1)

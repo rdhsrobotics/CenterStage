@@ -19,6 +19,7 @@ import org.robotics.robotics.xdk.teamcode.autonomous.detection.TapeSide
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TeamColor
 import org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.PIDController
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.VisionPipeline
+import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
 import org.robotics.robotics.xdk.teamcode.autonomous.utilities.AutoPipelineUtilities
 import org.robotics.robotics.xdk.teamcode.subsystem.AirplaneLauncher
 import org.robotics.robotics.xdk.teamcode.subsystem.Elevator
@@ -27,8 +28,9 @@ import kotlin.math.absoluteValue
 import kotlin.math.sign
 
 abstract class AbstractAutoPipeline(
-    private val teamColor: TeamColor,
-    internal val blockExecutionGroup: ExecutionGroup.(AbstractAutoPipeline, TapeSide) -> Unit
+    private val autonomousProfile: AutonomousProfile,
+    private val teamColor: TeamColor = autonomousProfile.teamColor,
+    internal val blockExecutionGroup: ExecutionGroup.(AbstractAutoPipeline, TapeSide) -> Unit = autonomousProfile.buildExecutionGroup()
 ) : LinearOpMode(), io.liftgate.robotics.mono.subsystem.System
 {
     override val subsystems = mutableSetOf<Subsystem>()
