@@ -10,6 +10,7 @@ object GlobalConstants
 
     @JvmField var FarMoveTowardsBackboard = 3 * 1025.0
     @JvmField var CloseMoveTowardsBackboard = 3 * 1025.0
+    @JvmField var TurnToSpikeMark = 55.0
 
     // Scalars
     @JvmField var ScalarMoveSlightlyIntoBackboard = 100.0

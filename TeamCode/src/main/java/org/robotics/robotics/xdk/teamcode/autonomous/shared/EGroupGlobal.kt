@@ -29,32 +29,25 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
         }
 
         single("move forward") {
-            // move forward a little bit less if we're going to place the pixel where the bar is.
             pipe.move(-GlobalConstants.MoveForwardToSpikeMark +
+                // if it's left or right, move a little bit LESS
                 if (relativeBackboardDirectionAtRobotStart.oppositeOf().matches(gameObjectTapeSide)) 100 else 0)
         }
     }
 
     single("turn towards tape if required") {
-        val rightOrientationDegrees =
-            if (relativeBackboardDirectionAtRobotStart.oppositeOf().matches(gameObjectTapeSide)) 55.0 else 65.0
-        val leftOrientationDegrees =
-            if (relativeBackboardDirectionAtRobotStart.oppositeOf().matches(gameObjectTapeSide)) 65.0 else 55.0
-
         if (gameObjectTapeSide == TapeSide.Middle)
         {
             return@single
         }
 
         pipe.turn(
-            if (gameObjectTapeSide == TapeSide.Right)
-                rightOrientationDegrees
-            else
-                -leftOrientationDegrees
+            GlobalConstants.TurnToSpikeMark *
+                if (gameObjectTapeSide == TapeSide.Right) 1.0 else -1.0
         )
     }
 
-    single("deposit pixel and return") {
+    single("deposit pixel") {
         pipe.clawSubsystem.updateClawState(
             ExtendableClaw.ClawStateUpdate.Right,
             ExtendableClaw.ClawState.Open,
@@ -63,12 +56,18 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
     }
 
     simultaneous("move back from spike mark and retract") {
-        single("move back from spike mark") {
+        single("retract extender and close claw") {
             // wait for the robot to start moving
             Thread.sleep(250L)
 
             pipe.clawSubsystem.toggleExtender(
                 ExtendableClaw.ExtenderState.Deposit,
+                force = true
+            )
+
+            pipe.clawSubsystem.updateClawState(
+                ExtendableClaw.ClawStateUpdate.Right,
+                ExtendableClaw.ClawState.Closed,
                 force = true
             )
         }
@@ -89,6 +88,7 @@ fun ExecutionGroup.moveTowardsBackboard(
 )
 {
     single("move towards backboard") {
+        // move to the backboard
         pipe.move(
             -(if (startPosition == StartPosition.Far)
                 GlobalConstants.FarMoveTowardsBackboard else
@@ -106,10 +106,13 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     relativeBackboardDirectionAtParkingZone: Direction
 )
 {
+    // opposite of where the backboard is relative to the backboard
+    // is the direction the robot should be facing
     val maintainDirection = relativeBackboardDirectionAtParkingZone.oppositeOf()
     simultaneous("strafe into drop position") {
         consecutive("strafe") {
             single("strafe into position") {
+                // strafe either left or right based on where the backboard is relative to the robot
                 pipe.strafe(
                     GlobalConstants.ScalarStrafeIntoPosition *
                         if (relativeBackboardDirectionAtParkingZone == Direction.Left) -1 else 1
@@ -117,6 +120,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
             }
 
             single("sync into heading") {
+                // again, align robot with the direction it's supposed to be in to compensate for strafe issues
                 pipe.turn(maintainDirection.heading)
             }
         }
@@ -133,13 +137,12 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     }
 
     single("deposit yellow pixel") {
+        // open the claw and wait for the pixel to drop
         pipe.clawSubsystem.updateClawState(
             ExtendableClaw.ClawStateUpdate.Left,
             ExtendableClaw.ClawState.Open,
             force = true
         )
-
-        Thread.sleep(350L)
     }
 
     single("move back from into backboard") {
@@ -152,6 +155,9 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
         }
 
         single("right claw reset") {
+            // wait to make sure the pixel has dropped
+            Thread.sleep(350L)
+
             pipe.clawSubsystem.updateClawState(
                 ExtendableClaw.ClawStateUpdate.Left,
                 ExtendableClaw.ClawState.Closed,
@@ -161,6 +167,8 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
 
         consecutive("strafe into position and realign") {
             single("strafe back to parking zone") {
+                // strafe into the parking zone with the direction based on where the backboard
+                // was relative to the robot when it was previously in parking
                 pipe.strafe(
                     -GlobalConstants.ScalarStrafeIntoParkingPosition *
                         if (relativeBackboardDirectionAtParkingZone == Direction.Left) -1 else 1
@@ -168,12 +176,14 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
             }
 
             single("realign with heading") {
+                // align back into the heading we want to maintain
                 pipe.turn(maintainDirection.heading)
             }
         }
     }
 
     single("park into position") {
+        // move into parking zone
         pipe.move(-GlobalConstants.ScalarMoveIntoParkingZone)
     }
 }
