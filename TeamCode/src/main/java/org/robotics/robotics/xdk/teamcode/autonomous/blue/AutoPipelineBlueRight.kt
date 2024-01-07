@@ -23,7 +23,7 @@ import org.robotics.robotics.xdk.teamcode.autonomous.shared.strafeIntoBackboardP
 )
 class AutoPipelineBlueRight : AbstractAutoPipeline()
 {
-    override fun getTeamColor() = TeamColor.Red
+    override fun getTeamColor() = TeamColor.Blue
     override fun buildExecutionGroup(tapeSide: TapeSide) = Mono
         .buildExecutionGroup {
             depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
