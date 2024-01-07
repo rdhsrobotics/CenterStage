@@ -183,7 +183,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         })
     }
 
-    fun updateClawState(effectiveOn: ClawStateUpdate, state: ClawState, force: Boolean = true)
+    fun updateClawState(effectiveOn: ClawStateUpdate, state: ClawState, force: Boolean = false)
     {
         if (effectiveOn == ClawStateUpdate.Both)
         {
