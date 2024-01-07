@@ -22,7 +22,8 @@ buildscript {
 // Custom definitions may go here
 plugins {
     id "io.freefair.lombok" version "8.3"
-    id "org.jetbrains.kotlin.android" version "1.9.0"
+    id "org.jetbrains.kotlin.android" version "1.9.10"
+    id 'org.jetbrains.dokka' version '1.9.10'
 }
 
 // Include common definitions from above.
