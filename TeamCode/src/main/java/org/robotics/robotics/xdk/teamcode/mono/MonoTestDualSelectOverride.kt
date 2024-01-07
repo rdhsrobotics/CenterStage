@@ -1,8 +1,10 @@
 package org.robotics.robotics.xdk.teamcode.mono
 
+import com.qualcomm.hardware.lynx.LynxDcMotorController
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import com.qualcomm.robotcore.exception.TargetPositionNotSetException
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.gamepad.ButtonType
 

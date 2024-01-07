@@ -101,10 +101,6 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 elevator.configureElevator(gamepad2.right_stick_y.toDouble())
             }
 
-            telemetry.addData("Current", elevator.backingMotor.currentPosition)
-            telemetry.addData("Target", elevator.backingMotor.targetPosition)
-            telemetry.addData("Diff", elevator.backingMotor.targetPosition - elevator.backingMotor.currentPosition)
-            telemetry.update()
             extendableClaw.periodic()
 
             if (extendableClaw.extenderState == ExtendableClaw.ExtenderState.Intake)

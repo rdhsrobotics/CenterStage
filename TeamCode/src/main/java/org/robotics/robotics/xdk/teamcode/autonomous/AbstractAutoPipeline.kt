@@ -101,6 +101,7 @@ abstract class AbstractAutoPipeline : LinearOpMode(), io.liftgate.robotics.mono.
         backLeft.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         backRight.direction = DcMotorSimple.Direction.FORWARD
+        backRight.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         stopAndResetMotors()
 
