@@ -53,11 +53,11 @@ repositories {
 
 dependencies {
     implementation 'org.ftclib.ftclib:core:2.1.1'
-    implementation "io.liftgate.robotics.mono:mono:2.7-SNAPSHOT"
+    implementation "io.liftgate.robotics.mono:mono:2.8-SNAPSHOT"
 
     implementation "com.acmerobotics.roadrunner:ftc:0.1.9"
     implementation "com.acmerobotics.dashboard:dashboard:0.4.14"
-    implementation 'org.team11260:fast-load:0.1.1'
+    implementation 'org.team11260:fast-load:0.1.2'
 
     implementation project(":FtcRobotController")
     annotationProcessor files("lib/OpModeAnnotationProcessor.jar")
