@@ -15,6 +15,10 @@ import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
+import org.robotics.robotics.xdk.teamcode.autonomous.contexts.BothClawFinger
+import org.robotics.robotics.xdk.teamcode.autonomous.contexts.ExtenderContext
+import org.robotics.robotics.xdk.teamcode.autonomous.contexts.LeftClawFinger
+import org.robotics.robotics.xdk.teamcode.autonomous.contexts.RightClawFinger
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TapeSide
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TeamColor
 import org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.PIDController
@@ -135,22 +139,28 @@ abstract class AbstractAutoPipeline(
         val tapeSide = visionPipeline.getTapeSide()
 
         this.imu.resetYaw()
-        val executionGroup = Mono.buildExecutionGroup { blockExecutionGroup(this@AbstractAutoPipeline, tapeSide) }
-        /*executionGroup.providesContext { _ ->
-            RightClawFinger(claw = clawSubsystem)
+
+        val executionGroup = Mono.buildExecutionGroup {
+            providesContext { _ ->
+                RightClawFinger(claw = clawSubsystem)
+            }
+
+            providesContext { _ ->
+                LeftClawFinger(claw = clawSubsystem)
+            }
+
+            providesContext { _ ->
+                BothClawFinger(claw = clawSubsystem)
+            }
+
+            providesContext { _ ->
+                ExtenderContext(claw = clawSubsystem)
+            }
         }
 
-        executionGroup.providesContext { _ ->
-            LeftClawFinger(claw = clawSubsystem)
+        executionGroup.apply {
+            blockExecutionGroup(this@AbstractAutoPipeline, tapeSide)
         }
-
-        executionGroup.providesContext { _ ->
-            BothClawFinger(claw = clawSubsystem)
-        }
-
-        executionGroup.providesContext { _ ->
-            ExtenderContext(claw = clawSubsystem)
-        }*/
 
         scheduleAsyncExecution(50L) {
             if (!opModeIsActive() && !opModeInInit())
