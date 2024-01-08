@@ -5,29 +5,13 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.IMU
-import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
 
 class Drivebase(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
-    val mappedMotors by lazy {
-        mutableMapOf<String, DcMotorEx>(
-            "backLeft" to opMode.hardware("backLeft"),
-            "backRight" to opMode.hardware("backRight"),
-            "frontLeft" to opMode.hardware("frontLeft"),
-            "frontRight" to opMode.hardware("frontRight")
-        )
-    }
-
-    val motors by lazy {
-        mappedMotors.values.toList()
-    }
-
     private val imu by lazy { opMode.hardware<IMU>("imu") }
 
     private val backingDriveBase by lazy {
@@ -36,29 +20,10 @@ class Drivebase(private val opMode: LinearOpMode) : AbstractSubsystem()
         val frontLeft = Motor(opMode.hardwareMap, "frontLeft")
         val frontRight = Motor(opMode.hardwareMap, "frontRight")
 
-        /*val x = MecanumDrive(frontLeft, frontRight, backLeft, backRight)
-
-        frontLeft.motor.direction = DcMotorSimple.Direction.FORWARD
-        frontRight.motor.direction = DcMotorSimple.Direction.FORWARD
-
-        backLeft.motor.direction = DcMotorSimple.Direction.FORWARD
-        backRight.motor.direction = DcMotorSimple.Direction.FORWARD
-        x*/
         MecanumDrive(frontLeft, frontRight, backLeft, backRight)
     }
 
-    override fun composeStageContext() = object : StageContext
-    {
-        override fun dispose()
-        {
-            motors.onEach {
-                it.power = 0.0
-                it.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-            }
-        }
-
-        override fun isCompleted() = motors.none { it.isBusy }
-    }
+    override fun composeStageContext() = TODO()
 
     fun driveRobotCentric(driverOp: GamepadEx, scaleFactor: Double)
     {
@@ -101,7 +66,7 @@ class Drivebase(private val opMode: LinearOpMode) : AbstractSubsystem()
         backingDriveBase
     }
 
-    override fun isCompleted() = motors.none { it.isBusy }
+    override fun isCompleted() = true
 
     override fun dispose()
     {
