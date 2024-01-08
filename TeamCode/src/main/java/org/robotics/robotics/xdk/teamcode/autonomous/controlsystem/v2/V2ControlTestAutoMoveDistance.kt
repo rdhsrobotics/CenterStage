@@ -7,14 +7,14 @@ import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline
 import org.robotics.robotics.xdk.teamcode.autonomous.contexts.ClawSubsystemContext
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TapeSide
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TeamColor
+import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
 
-@Autonomous(name = "V2 | Move Distance")
-class V2ControlTestAutoMoveDistance : AbstractAutoPipeline()
-{
-    override fun getTeamColor() = TeamColor.Red
-    override fun buildExecutionGroup(tapeSide: TapeSide) = Mono.buildExecutionGroup {
-        single<ClawSubsystemContext>("strafe") {
-//            moveUntilDistanceReached(12.0)
+@Autonomous(name = "Test | Move Distance", group = "Test")
+class V2ControlTestAutoMoveDistance : AbstractAutoPipeline(
+    AutonomousProfile.RedPlayer1TwoPlusZero,
+    blockExecutionGroup = { opMode, _ ->
+        single("move distance") {
+            opMode.V2().moveUntilDistanceReached(-500.0)
         }
     }
-}
+)

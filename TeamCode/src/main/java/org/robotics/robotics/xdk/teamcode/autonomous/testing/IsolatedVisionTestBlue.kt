@@ -8,7 +8,7 @@ import org.robotics.robotics.xdk.teamcode.autonomous.detection.TeamColor
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.VisionPipeline
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
 
-@TeleOp(name = "Test | Vision BLUE")
+@TeleOp(name = "Test | Vision BLUE", group = "Vision")
 class IsolatedVisionTestBlue : LinearOpMode()
 {
     private val pipeline by lazy {

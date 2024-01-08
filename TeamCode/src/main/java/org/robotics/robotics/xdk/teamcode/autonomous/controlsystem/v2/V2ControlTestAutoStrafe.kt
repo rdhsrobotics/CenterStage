@@ -6,14 +6,14 @@ import io.liftgate.robotics.mono.pipeline.single
 import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TapeSide
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TeamColor
+import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
 
-@Autonomous(name = "V2 | Strafe")
-class V2ControlTestAutoStrafe : AbstractAutoPipeline()
-{
-    override fun getTeamColor() = TeamColor.Red
-    override fun buildExecutionGroup(tapeSide: TapeSide) = Mono.buildExecutionGroup {
+@Autonomous(name = "Test | Strafe", group = "Test")
+class V2ControlTestAutoStrafe : AbstractAutoPipeline(
+    AutonomousProfile.RedPlayer1TwoPlusZero,
+    blockExecutionGroup = { opMode, _ ->
         single("strafe") {
-            strafe(500.0)
+            opMode.strafe(500.0)
         }
     }
-}
+)
