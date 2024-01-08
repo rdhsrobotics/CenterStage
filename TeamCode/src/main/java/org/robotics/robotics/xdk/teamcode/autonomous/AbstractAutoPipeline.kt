@@ -28,6 +28,7 @@ import org.robotics.robotics.xdk.teamcode.autonomous.utilities.AutoPipelineUtili
 import org.robotics.robotics.xdk.teamcode.subsystem.AirplaneLauncher
 import org.robotics.robotics.xdk.teamcode.subsystem.Elevator
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
+import kotlin.concurrent.thread
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
@@ -162,17 +163,14 @@ abstract class AbstractAutoPipeline(
             blockExecutionGroup(this@AbstractAutoPipeline, tapeSide)
         }
 
-        scheduleAsyncExecution(50L) {
-            if (!opModeIsActive() && !opModeInInit())
+        thread(isDaemon = true) {
+            while (!isStopRequested)
             {
-                return@scheduleAsyncExecution
+                clawSubsystem.periodic()
             }
-
-            clawSubsystem.periodic()
-        }.apply {
-            executionGroup.executeBlocking()
-            cancel(true)
         }
+
+        executionGroup.executeBlocking()
 
         stopAndResetMotors()
         terminateAllMotors()
