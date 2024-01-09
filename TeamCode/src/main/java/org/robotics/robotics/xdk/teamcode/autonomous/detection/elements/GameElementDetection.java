@@ -59,13 +59,13 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
             TapeSide.Middle
     };
 
-    public static int LR_B = 150;
-    public static int LR_G = 130;
+    public static int LR_B = 0;
+    public static int LR_G = 125;
     public static int LR_R = 150;
 
-    public static int UR_B = 255;
-    public static int UR_G = 255;
-    public static int UR_R = 255;
+    public static int UR_B = 200;
+    public static int UR_G = 200;
+    public static int UR_R = 240;
 
     private final Scalar lowerBlueBound = new Scalar(90, 100, 100);
     private final Scalar upperBlueBound = new Scalar(130, 255, 255);
