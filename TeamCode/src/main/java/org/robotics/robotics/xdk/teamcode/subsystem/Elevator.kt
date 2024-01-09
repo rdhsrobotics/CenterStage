@@ -17,23 +17,24 @@ import kotlin.math.min
  */
 class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
-    val backingMotor by lazy {
-        opMode.hardware<DcMotorEx>("elevator")
-    }
-
-    private val backingHangMotor by lazy {
-        opMode.hardware<DcMotorEx>("hang")
-    }
+    private lateinit var backingMotor: DcMotorEx
+    private lateinit var backingHangMotor: DcMotorEx
 
     override fun composeStageContext() = object : StageContext
     {
         override fun isCompleted() = !backingMotor.isBusy
     }
 
+    fun getCurrentElevatorPosition() = backingMotor.currentPosition
+    fun getTargetElevatorPosition() = backingMotor.targetPosition
+
     override fun dispose()
     {
         backingMotor.stopAndResetEncoder()
+        backingMotor.close()
+
         backingHangMotor.stopAndResetEncoder()
+        backingHangMotor.close()
     }
 
     /**
@@ -41,15 +42,18 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     override fun doInitialize()
     {
-        listOf(backingMotor, backingHangMotor).forEach {
-            it.direction = DcMotorSimple.Direction.REVERSE
-            it.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-
-            it.stopAndResetEncoder()
-        }
-
+        backingMotor = opMode.hardware<DcMotorEx>("elevator")
         backingMotor.direction = DcMotorSimple.Direction.FORWARD
+
+        backingMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        backingMotor.stopAndResetEncoder()
         backingMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
+
+        backingMotor = opMode.hardware<DcMotorEx>("hang")
+        backingHangMotor.direction = DcMotorSimple.Direction.REVERSE
+        backingHangMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+
+        backingHangMotor.stopAndResetEncoder()
         backingHangMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     }
 

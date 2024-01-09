@@ -12,15 +12,13 @@ import org.robotics.robotics.xdk.teamcode.autonomous.hardware
 @TeleOp(name = "Test | Vision RED", group = "Vision")
 class IsolatedVisionTestRed : LinearOpMode()
 {
-    private val pipeline by lazy {
-        VisionPipeline(
-            teamColor = TeamColor.Red,
-            webcam = hardware("webcam1")
-        )
-    }
-
     override fun runOpMode()
     {
+        val pipeline = VisionPipeline(
+            teamColor = TeamColor.Red,
+            opMode = this
+        )
+
         val telemetry = MultipleTelemetry(
             this.telemetry,
             FtcDashboard.getInstance().telemetry

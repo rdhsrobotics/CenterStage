@@ -77,17 +77,6 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             ExtendableClaw.ExtenderState.Deposit
         )
 
-        val imu = hardware<IMU>("imu")
-        imu.initialize(
-            IMU.Parameters(
-                RevHubOrientationOnRobot(
-                    RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
-                    RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
-                )
-            )
-        )
-        imu.resetYaw()
-
         while (opModeIsActive())
         {
             val multiplier = 0.6 + gamepad1.right_trigger * 0.4
@@ -333,7 +322,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 }
 
                 // premature release
-                if (abs(elevator.backingMotor.currentPosition - position) > 35)
+                if (abs(elevator.getCurrentElevatorPosition() - position) > 35)
                 {
                     scheduleAsyncExecution(50L) {
                         elevator.configureElevatorManuallyRaw(0)
