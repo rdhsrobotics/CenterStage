@@ -26,6 +26,7 @@ import org.robotics.robotics.xdk.teamcode.autonomous.detection.VisionPipeline
 import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
 import org.robotics.robotics.xdk.teamcode.autonomous.utilities.AutoPipelineUtilities
 import org.robotics.robotics.xdk.teamcode.subsystem.AirplaneLauncher
+import org.robotics.robotics.xdk.teamcode.subsystem.Drivebase
 import org.robotics.robotics.xdk.teamcode.subsystem.Elevator
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 import kotlin.concurrent.thread
@@ -46,15 +47,13 @@ abstract class AbstractAutoPipeline(
     private val backRight by lazy { hardware<DcMotor>("backRight") }
     private val backLeft by lazy { hardware<DcMotor>("backLeft") }
 
-    private val frontDistanceSensor by lazy { hardware<DistanceSensor>("frontSensor") }
+    private var frontDistanceSensor: DistanceSensor? = null
 
+    private val drivebase by lazy { Drivebase(this) }
     internal val elevatorSubsystem by lazy { Elevator(this) }
     internal val clawSubsystem by lazy { ExtendableClaw(this) }
 
-    internal var monoShouldDoLogging = true
-
     private val airplaneSubsystem by lazy { AirplaneLauncher(this) }
-    private lateinit var imu: IMU
 
     private val visionPipeline by lazy {
         VisionPipeline(
@@ -70,12 +69,15 @@ abstract class AbstractAutoPipeline(
         )
     }
 
+    private lateinit var imu: IMU
+
     override fun runOpMode()
     {
         register(
             clawSubsystem,
             elevatorSubsystem,
-            airplaneSubsystem
+            airplaneSubsystem,
+            drivebase
         )
 
         this.imu = hardware("imu")
@@ -88,15 +90,18 @@ abstract class AbstractAutoPipeline(
             )
         )
 
+        runCatching {
+            hardware<DistanceSensor>("frontSensor").apply {
+                frontDistanceSensor = this
+            }
+        }
+
         visionPipeline.start()
 
         // keep all log entries
-        if (monoShouldDoLogging)
-        {
-            Mono.logSink = {
-                multipleTelemetry.addLine("[Mono] $it")
-                multipleTelemetry.update()
-            }
+        Mono.logSink = {
+            multipleTelemetry.addLine("[Mono] $it")
+            multipleTelemetry.update()
         }
 
         frontLeft.direction = DcMotorSimple.Direction.REVERSE
@@ -118,6 +123,8 @@ abstract class AbstractAutoPipeline(
 
         initializeAll()
 
+        imu.resetYaw()
+
         var i = 0
         while (opModeInInit())
         {
@@ -133,13 +140,24 @@ abstract class AbstractAutoPipeline(
             multipleTelemetry.addData("Input", 0.0)
             multipleTelemetry.addData("Output", 0.0)
             multipleTelemetry.addData("Velocity", 0.0)
+
+            runCatching {
+                multipleTelemetry.addData(
+                    "IMU",
+                    imu.robotYawPitchRollAngles
+                        .getYaw(AngleUnit.DEGREES)
+                )
+            }.onFailure {
+                multipleTelemetry.addData("IMU", 0.0)
+            }
+
             multipleTelemetry.update()
         }
 
         waitForStart()
-        val tapeSide = visionPipeline.getTapeSide()
 
-        this.imu.resetYaw()
+        val tapeSide = visionPipeline.getTapeSide()
+        println("tape side: $tapeSide")
 
         val executionGroup = Mono.buildExecutionGroup {
             providesContext { _ ->
@@ -185,20 +203,19 @@ abstract class AbstractAutoPipeline(
 
     private val v2 by lazy(::V2)
 
-    fun move(ticks: Double) = v2.move(-ticks)
+    fun move(ticks: Double, heading: Double) = v2.move(-ticks, heading)
     fun turn(ticks: Double) = v2.turn(ticks)
     fun strafe(ticks: Double) = v2.strafe(-ticks)
 
     inner class V2
     {
-        private val drivebaseMotors by lazy {
-            listOf(frontLeft, frontRight, backLeft, backRight)
-        }
-
         /**
          * Creates a PID controller with the given constants for basic movement.
          */
-        private fun buildPIDControllerMovement(setPoint: Double, maintainHeading: Boolean) = PIDController(
+        private fun buildPIDControllerMovement(
+            setPoint: Double, maintainHeading: Boolean,
+            maintainHeadingValue: Double = imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
+        ) = PIDController(
             kP = AutoPipelineUtilities.PID_MOVEMENT_KP,
             kD = AutoPipelineUtilities.PID_MOVEMENT_KD,
             kI = AutoPipelineUtilities.PID_MOVEMENT_KI,
@@ -207,7 +224,7 @@ abstract class AbstractAutoPipeline(
             minimumVelocity = AutoPipelineUtilities.PID_MOVEMENT_MIN_VELOCITY,
             telemetry = multipleTelemetry,
             maintainHeading = maintainHeading,
-            maintainHeadingValue = imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
+            maintainHeadingValue = maintainHeadingValue
         )
 
         /**
@@ -240,11 +257,13 @@ abstract class AbstractAutoPipeline(
          * Moves forward/backward with a value of [ticks] using the movement
          * PID. Uses the IMU for automatic heading correction.
          */
-        fun move(ticks: Double) = movementPID(
+        fun move(ticks: Double, heading: Double) = movementPID(
             setPoint = ticks,
             setMotorPowers = { left, right ->
                 setRelativePowers(left, right)
-            }
+            },
+            maintainHeading = true,
+            maintainHeadingValue = heading
         )
 
         fun moveUntilDistanceReached(distance: Double) = movementDistancePID(
@@ -262,7 +281,8 @@ abstract class AbstractAutoPipeline(
                 setRelativeStrafePower(0.7 * left, 0.7 * right)
             },
             requiresRelativeSign = true,
-            maintainHeading = false
+            maintainHeading = false,
+            maintainHeadingValue = 0.0
         )
 
         /**
@@ -310,32 +330,41 @@ abstract class AbstractAutoPipeline(
             setPoint: Double,
             setMotorPowers: (Double, Double) -> Unit,
             requiresRelativeSign: Boolean = true,
-            maintainHeading: Boolean = true
-        ) = driveBasePID(
-            controller = buildPIDControllerMovement(setPoint = setPoint, maintainHeading = maintainHeading),
-            currentPositionBlock = {
-                (if (requiresRelativeSign) setPoint.sign.toInt() else 1) * drivebaseMotors
-                    .map {
-                        it.currentPosition.absoluteValue
-                    }
-                    .average()
-            },
-            setMotorPowers = { controller, positionOutput ->
-                if (!controller.maintainHeading)
-                {
-                    setMotorPowers(positionOutput, positionOutput)
-                    return@driveBasePID
-                }
-
-                val headingError = controller.maintainHeadingValue - controller.currentRobotHeading
-                val turnCorrectionFactor = AutoPipelineUtilities.PID_MOVEMENT_TURN_CORRECTION_FACTOR * headingError
-
-                val leftMotorPower = positionOutput + turnCorrectionFactor
-                val rightMotorPower = positionOutput - turnCorrectionFactor
-
-                setMotorPowers(leftMotorPower, rightMotorPower)
-            }
+            maintainHeading: Boolean = true,
+            maintainHeadingValue: Double
         )
+        {
+            val rotationPid = buildPIDControllerRotation(maintainHeadingValue)
+
+            return driveBasePID(
+                controller = buildPIDControllerMovement(
+                    setPoint = setPoint, maintainHeading = maintainHeading,
+                    maintainHeadingValue = maintainHeadingValue
+                ),
+                currentPositionBlock = {
+                    (if (requiresRelativeSign) setPoint.sign.toInt() else 1) * drivebase.motors
+                        .map {
+                            it.currentPosition.absoluteValue
+                        }
+                        .average()
+                },
+                setMotorPowers = { controller, positionOutput ->
+                    if (!controller.maintainHeading)
+                    {
+                        setMotorPowers(positionOutput, positionOutput)
+                        return@driveBasePID
+                    }
+
+                    val yaw = imu.robotYawPitchRollAngles.getYaw(AngleUnit.DEGREES)
+                    val turnCorrectionFactor = rotationPid.calculate(yaw, yaw)
+
+                    val leftMotorPower = positionOutput + turnCorrectionFactor
+                    val rightMotorPower = positionOutput - turnCorrectionFactor
+
+                    setMotorPowers(leftMotorPower, rightMotorPower)
+                }
+            )
+        }
 
         private fun movementDistancePID(
             setPoint: Double,
@@ -343,7 +372,7 @@ abstract class AbstractAutoPipeline(
         ) = driveBasePID(
             controller = buildPIDControllerDistance(setPoint = setPoint),
             currentPositionBlock = {
-                frontDistanceSensor.getDistance(DistanceUnit.CM)
+                frontDistanceSensor?.getDistance(DistanceUnit.CM) ?: 0.0
             },
             setMotorPowers = { _, positionOutput ->
                 setMotorPowers(positionOutput)
@@ -381,7 +410,7 @@ abstract class AbstractAutoPipeline(
                     .coerceIn(0.0, 1.0)
 
                 val pid = controller.calculate(realCurrentPosition, imuHeading)
-                val finalPower = pid.coerceIn(-1.0..1.0)
+                val finalPower = pid.coerceIn(-0.7..0.7)
                 setMotorPowers(controller, rampUp * finalPower)
 
                 multipleTelemetry.update()

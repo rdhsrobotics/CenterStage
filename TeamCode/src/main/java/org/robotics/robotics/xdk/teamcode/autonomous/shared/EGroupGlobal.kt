@@ -31,9 +31,16 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
         single("move forward") {
             pipe.move(-GlobalConstants.MoveForwardToSpikeMark +
                 // if it's left or right, move a little bit LESS
-                if (relativeBackboardDirectionAtRobotStart.oppositeOf().matches(gameObjectTapeSide)) 100 else 0)
+                if (relativeBackboardDirectionAtRobotStart.oppositeOf().matches(gameObjectTapeSide)) 100 else 0, 0.0)
         }
     }
+
+    val thing = GlobalConstants.TurnToSpikeMark *
+            when (gameObjectTapeSide) {
+                TapeSide.Right -> -1.0
+                TapeSide.Left -> 1.3
+                else -> 0.0
+            }
 
     single("turn towards tape if required") {
         if (gameObjectTapeSide == TapeSide.Middle)
@@ -41,10 +48,12 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
             return@single
         }
 
-        pipe.turn(
-            GlobalConstants.TurnToSpikeMark *
-                if (gameObjectTapeSide == TapeSide.Right) 1.0 else -1.0
-        )
+        pipe.turn(thing)
+
+        if (gameObjectTapeSide == TapeSide.Left)
+        {
+            pipe.move(-75.0, thing)
+        }
     }
 
     single("deposit pixel") {
@@ -53,6 +62,11 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
             ExtendableClaw.ClawState.Open,
             force = true
         )
+
+        if (gameObjectTapeSide == TapeSide.Left)
+        {
+            pipe.move(75.0, thing)
+        }
     }
 
     simultaneous("move back from spike mark and retract") {
@@ -73,18 +87,20 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
         }
 
         single("move back from spike mark") {
-            pipe.move(-GlobalConstants.MoveBackFromSpikeMark)
+            pipe.turn(0.0)
+            pipe.move(-GlobalConstants.MoveBackFromSpikeMark, 0.0)
         }
     }
 
-    single("turn towards backboard") {
+    /*single("turn towards backboard") {
         pipe.turn(relativeBackboardDirectionAtRobotStart.heading)
-    }
+    }*/
 }
 
 fun ExecutionGroup.moveTowardsBackboard(
     pipe: AbstractAutoPipeline,
-    startPosition: StartPosition
+    startPosition: StartPosition,
+    direction: Direction
 )
 {
     single("move towards backboard") {
@@ -92,7 +108,8 @@ fun ExecutionGroup.moveTowardsBackboard(
         pipe.move(
             -(if (startPosition == StartPosition.Far)
                 GlobalConstants.FarMoveTowardsBackboard else
-                    GlobalConstants.CloseMoveTowardsBackboard)
+                    GlobalConstants.CloseMoveTowardsBackboard),
+            direction.heading
         )
     }
 }
@@ -133,7 +150,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     }
 
     single("move slightly into backboard") {
-        pipe.move(-GlobalConstants.ScalarMoveSlightlyIntoBackboard)
+        pipe.move(-GlobalConstants.ScalarMoveSlightlyIntoBackboard, maintainDirection.heading)
     }
 
     single("deposit yellow pixel") {
@@ -146,7 +163,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     }
 
     single("move back from into backboard") {
-        pipe.move(GlobalConstants.ScalarMoveSlightlyIntoBackboard)
+        pipe.move(GlobalConstants.ScalarMoveSlightlyIntoBackboard, maintainDirection.heading)
     }
 
     simultaneous("retract claw/elevator and strafe into parking zone") {
@@ -184,6 +201,6 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
 
     single("park into position") {
         // move into parking zone
-        pipe.move(-GlobalConstants.ScalarMoveIntoParkingZone)
+        pipe.move(-GlobalConstants.ScalarMoveIntoParkingZone, maintainDirection.heading)
     }
 }

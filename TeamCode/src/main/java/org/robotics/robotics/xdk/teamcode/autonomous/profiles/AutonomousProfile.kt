@@ -26,7 +26,8 @@ sealed class AutonomousProfile(
 
             moveTowardsBackboard(
                 pipe = opMode,
-                startPosition = startPosition
+                startPosition = startPosition,
+                direction = relativeBackboardDirectionAtRobotStart
             )
 
             strafeIntoBackboardPositionThenDepositYellowPixelAndPark(

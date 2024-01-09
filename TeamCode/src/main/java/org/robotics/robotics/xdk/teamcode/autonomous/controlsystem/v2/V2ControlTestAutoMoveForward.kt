@@ -10,7 +10,7 @@ class V2ControlTestAutoMoveForward : AbstractAutoPipeline(
     AutonomousProfile.RedPlayer1TwoPlusZero,
     blockExecutionGroup = { opMode, _ ->
         single("move forward") {
-            opMode.move(-500.0)
+            opMode.move(-1500.0, 0.0)
         }
     }
 )

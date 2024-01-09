@@ -5,13 +5,18 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.IMU
+import com.qualcomm.robotcore.hardware.ImuOrientationOnRobot
 import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
+import kotlin.concurrent.thread
 
 class Drivebase(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
+    lateinit var motors: List<DcMotor>
     private val imu by lazy { opMode.hardware<IMU>("imu") }
 
     private val backingDriveBase by lazy {
@@ -53,15 +58,10 @@ class Drivebase(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     override fun doInitialize()
     {
-        imu.initialize(
-            IMU.Parameters(
-                RevHubOrientationOnRobot(
-                    RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
-                    RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
-                )
-            )
+        motors = listOf(
+            opMode.hardware("frontLeft"), opMode.hardware("frontRight"),
+            opMode.hardware("backLeft"), opMode.hardware("backRight")
         )
-        imu.resetYaw()
 
         backingDriveBase
     }

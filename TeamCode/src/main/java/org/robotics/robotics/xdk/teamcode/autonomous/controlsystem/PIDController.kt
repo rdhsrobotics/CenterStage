@@ -56,6 +56,7 @@ class PIDController(
         telemetry.addData("Output", output)
         telemetry.addData("Input", currentValue)
         telemetry.addData("Velocity", velocity)
+        telemetry.addData("IMU", heading)
         telemetry.update()
 
         previousError = error

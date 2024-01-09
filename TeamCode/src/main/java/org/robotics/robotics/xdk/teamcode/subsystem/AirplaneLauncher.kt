@@ -9,9 +9,7 @@ import org.robotics.robotics.xdk.teamcode.subsystem.claw.ClawExpansionConstants
 
 class AirplaneLauncher(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
-    private val backingServo by lazy {
-        opMode.hardware<Servo>("launcher")
-    }
+    private lateinit var backingServo: Servo
 
     override fun composeStageContext() = object : StageContext
     {
@@ -35,7 +33,11 @@ class AirplaneLauncher(private val opMode: LinearOpMode) : AbstractSubsystem()
         backingServo.position = ClawExpansionConstants.DEFAULT_PLANE_POSITION
     }
 
-    override fun doInitialize() = reset()
+    override fun doInitialize()
+    {
+        backingServo = opMode.hardware<Servo>("launcher")
+        reset()
+    }
     override fun dispose() = reset()
 
     // Servos don't have isBusy states

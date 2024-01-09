@@ -18,18 +18,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         var clawRangeExpansion = 0.0
     }
 
-    val backingExtender by lazy {
-        MotionProfiledServo(
-            servo = opMode.hardware<Servo>("extender"),
-            constraints = {
-                ProfileConstraints(
-                    ClawExpansionConstants.CLAW_MOTION_PROFILE_VELOCITY,
-                    ClawExpansionConstants.CLAW_MOTION_PROFILE_ACCEL,
-                    ClawExpansionConstants.CLAW_MOTION_PROFILE_DECEL
-                )
-            }
-        )
-    }
+    lateinit var backingExtender: MotionProfiledServo
 
     private val clawFingerMPConstraints = {
         ProfileConstraints(
@@ -39,19 +28,8 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         )
     }
 
-    val backingClawOpenerRight by lazy {
-        MotionProfiledServo(
-            servo = opMode.hardware<Servo>("clawRight"),
-            constraints = clawFingerMPConstraints
-        )
-    }
-
-    val backingClawOpenerLeft by lazy {
-        MotionProfiledServo(
-            servo = opMode.hardware<Servo>("clawLeft"),
-            constraints = clawFingerMPConstraints
-        )
-    }
+    lateinit var backingClawOpenerRight: MotionProfiledServo
+    lateinit var backingClawOpenerLeft: MotionProfiledServo
 
     override fun composeStageContext() = object : StageContext
     {
@@ -103,6 +81,27 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
 
     override fun doInitialize()
     {
+        backingExtender = MotionProfiledServo(
+            servo = opMode.hardware<Servo>("extender"),
+            constraints = {
+                ProfileConstraints(
+                    ClawExpansionConstants.CLAW_MOTION_PROFILE_VELOCITY,
+                    ClawExpansionConstants.CLAW_MOTION_PROFILE_ACCEL,
+                    ClawExpansionConstants.CLAW_MOTION_PROFILE_DECEL
+                )
+            }
+        )
+
+        backingClawOpenerRight = MotionProfiledServo(
+            servo = opMode.hardware<Servo>("clawRight"),
+            constraints = clawFingerMPConstraints
+        )
+
+        backingClawOpenerLeft = MotionProfiledServo(
+            servo = opMode.hardware<Servo>("clawLeft"),
+            constraints = clawFingerMPConstraints
+        )
+
         maxExtenderAddition = 0.0
         clawRangeExpansion = 0.0
 
