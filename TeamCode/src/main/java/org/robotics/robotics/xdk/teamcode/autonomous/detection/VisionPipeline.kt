@@ -21,7 +21,7 @@ class VisionPipeline(
 ) : AbstractSubsystem()
 {
     private lateinit var portal: VisionPortal
-    private lateinit var propPipeline: GameElementDetection
+    lateinit var propPipeline: GameElementDetection
 
     fun getTapeSide() = propPipeline.tapeSide
 

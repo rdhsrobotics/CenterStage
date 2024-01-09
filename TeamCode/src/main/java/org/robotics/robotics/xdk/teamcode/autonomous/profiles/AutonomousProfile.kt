@@ -32,6 +32,7 @@ sealed class AutonomousProfile(
 
             strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
                 pipe = opMode,
+                tapeSide = tapeSide,
                 relativeBackboardDirectionAtParkingZone = relativeBackboardDirectionAtRobotStart.oppositeOf()
             )
         }

@@ -114,7 +114,6 @@ fun ExecutionGroup.moveTowardsBackboard(
     }
 }
 
-
 /**
  * Completes the second portion of our 2+0 autonomous: deposit yellow pixel and park.
  */

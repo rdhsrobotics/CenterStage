@@ -31,7 +31,6 @@ class IsolatedVisionTestRed : LinearOpMode()
 
         waitForStart()
 
-        val imu = hardware<IMU>("imu")
         while (opModeIsActive())
         {
             telemetry.addLine("Running pipeline (RED):")

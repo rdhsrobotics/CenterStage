@@ -5,16 +5,30 @@ import com.qualcomm.robotcore.hardware.HardwareDevice
 import com.qualcomm.robotcore.hardware.IMU
 import io.liftgate.robotics.mono.Mono
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
+import kotlin.IllegalStateException
 
 /**
  * An extension function of [LinearOpMode] to get a [HardwareDevice] [T] from the hardware
  * map. An exception is thrown if the hardware device does not exist in the hardware map.
  */
-inline fun <reified T : HardwareDevice> LinearOpMode.hardware(id: String) = runCatching {
-    hardwareMap.get(id) as T
-}.getOrNull() ?: throw IllegalStateException("$id is null")
+inline fun <reified T : HardwareDevice> LinearOpMode.hardware(id: String) =
+    runCatching {
+        println("Attempting to load hardware device $id of type: ${T::class.simpleName}")
+
+        if (!opModeInInit() && !opModeIsActive())
+        {
+            throw IllegalStateException(
+                "Hardware device $id is trying to initialize prematurely."
+            )
+        }
+
+        hardwareMap.get(id) as T
+    }.getOrElse { cause ->
+        throw IllegalStateException(
+            "Failed to get hardware device from our hardware map: $id", cause
+        )
+    }
 
 /**
  * Normalize the robot heading given from the [IMU] from
@@ -40,7 +54,7 @@ fun IMU.normalizedYaw(): Double
 fun scheduleAsyncExecution(inMillis: Long, block: () -> Unit) = Mono.EXECUTION.schedule(block, inMillis, TimeUnit.MILLISECONDS)
 
 /**
- * Runs a repeating task asynchrounuosly on the Mono executor pool.
+ * Runs a repeating task asynchronously on the Mono executor pool.
  */
 fun runRepeating(everyMillis: Long, block: () -> Unit) =
     Mono.EXECUTION.scheduleAtFixedRate(block, 0L, everyMillis, TimeUnit.MILLISECONDS)
