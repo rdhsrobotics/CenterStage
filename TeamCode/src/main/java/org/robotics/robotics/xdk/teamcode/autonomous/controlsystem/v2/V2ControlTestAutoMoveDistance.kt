@@ -10,7 +10,7 @@ class V2ControlTestAutoMoveDistance : AbstractAutoPipeline(
     AutonomousProfile.RedPlayer1TwoPlusZero,
     blockExecutionGroup = { opMode, _ ->
         single("move distance") {
-            opMode.V2().moveUntilDistanceReached(-500.0)
+            opMode.movementHandler.moveUntilDistanceReached(-500.0)
         }
     }
 )

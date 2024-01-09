@@ -46,7 +46,7 @@ abstract class AbstractAutoPipeline(
     private lateinit var backRight: DcMotor
     private lateinit var backLeft: DcMotor
 
-    private lateinit var movementHandler: MovementHandler
+    lateinit var movementHandler: MovementHandler
 
     var frontDistanceSensor: DistanceSensor? = null
     val drivebase by lazy { Drivebase(this) }
