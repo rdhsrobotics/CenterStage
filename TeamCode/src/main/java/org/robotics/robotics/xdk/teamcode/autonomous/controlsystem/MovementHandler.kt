@@ -192,7 +192,6 @@ class MovementHandler(private val opMode: AbstractAutoPipeline)
         val startTime = System.currentTimeMillis()
         while (!opMode.isStopRequested)
         {
-            // clear cached motor positions
             val realCurrentPosition = currentPositionBlock()
             val imuHeading = opMode.drivebase.getIMUYawPitchRollAngles().getYaw(AngleUnit.DEGREES)
 

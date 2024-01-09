@@ -54,16 +54,8 @@ abstract class AbstractTeleOp : LinearOpMode(), System
         buildCommands()
 
         telemetry.addLine("Configured all subsystems. Waiting for start...")
-
-        if (
-            gamepad1.type != Gamepad.Type.SONY_PS4 &&
-            gamepad1.type != Gamepad.Type.SONY_PS4_SUPPORTED_BY_KERNEL
-        )
-        {
-            telemetry.addLine("WARNING! We require a Sony PS4 controller to be used as GAMEPAD 1. Please fix this to ensure everything works as intended!")
-        }
-
         telemetry.update()
+
         gp1Commands.doButtonUpdatesManually()
         gp2Commands.doButtonUpdatesManually()
 

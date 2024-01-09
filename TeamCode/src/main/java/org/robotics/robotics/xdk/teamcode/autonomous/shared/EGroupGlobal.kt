@@ -35,7 +35,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
         }
     }
 
-    val thing = GlobalConstants.TurnToSpikeMark *
+    val headingFixedTowardsSpikeMark = GlobalConstants.TurnToSpikeMark *
             when (gameObjectTapeSide) {
                 TapeSide.Right -> -1.0
                 TapeSide.Left -> 1.3
@@ -48,11 +48,11 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
             return@single
         }
 
-        pipe.turn(thing)
+        pipe.turn(headingFixedTowardsSpikeMark)
 
         if (gameObjectTapeSide == TapeSide.Left)
         {
-            pipe.move(-75.0, thing)
+            pipe.move(-75.0, headingFixedTowardsSpikeMark)
         }
     }
 
@@ -65,7 +65,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
 
         if (gameObjectTapeSide == TapeSide.Left)
         {
-            pipe.move(75.0, thing)
+            pipe.move(75.0, headingFixedTowardsSpikeMark)
         }
     }
 
@@ -92,9 +92,9 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
         }
     }
 
-    /*single("turn towards backboard") {
+    single("turn towards backboard") {
         pipe.turn(relativeBackboardDirectionAtRobotStart.heading)
-    }*/
+    }
 }
 
 fun ExecutionGroup.moveTowardsBackboard(
@@ -120,37 +120,45 @@ fun ExecutionGroup.moveTowardsBackboard(
  */
 fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     pipe: AbstractAutoPipeline,
+    tapeSide: TapeSide,
     relativeBackboardDirectionAtParkingZone: Direction
 )
 {
     // opposite of where the backboard is relative to the backboard
     // is the direction the robot should be facing
     val maintainDirection = relativeBackboardDirectionAtParkingZone.oppositeOf()
-    simultaneous("strafe into drop position") {
-        consecutive("strafe") {
-            single("strafe into position") {
-                // strafe either left or right based on where the backboard is relative to the robot
-                pipe.strafe(
-                    GlobalConstants.ScalarStrafeIntoPosition *
-                        if (relativeBackboardDirectionAtParkingZone == Direction.Left) -1 else 1
-                )
-            }
+    val strafePositionIncrement = when (tapeSide)
+    {
+        TapeSide.Left -> 100
+        TapeSide.Middle -> 0
+        TapeSide.Right -> -100
+    }
 
-            single("sync into heading") {
-                // again, align robot with the direction it's supposed to be in to compensate for strafe issues
-                pipe.turn(maintainDirection.heading)
-            }
-        }
+    single("strafe into position") {
+        // strafe either left or right based on where the backboard is relative to the robot
+        val strafeDirectionFactor = if (relativeBackboardDirectionAtParkingZone == Direction.Left) -1 else 1
 
+        pipe.strafe(
+            GlobalConstants.ScalarStrafeIntoPosition * strafeDirectionFactor +
+                strafePositionIncrement * strafeDirectionFactor
+        )
+    }
+
+    single("sync into heading") {
+        // again, align robot with the direction it's supposed to be in to compensate for strafe issues
+        pipe.turn(maintainDirection.heading)
+    }
+
+    simultaneous("move slightly into backboard and raise elevator") {
         single("raise elevator") {
             pipe.elevatorSubsystem.configureElevatorManually(
                 GlobalConstants.ScalarExpectedElevatorDropHeight
             )
         }
-    }
 
-    single("move slightly into backboard") {
-        pipe.move(-GlobalConstants.ScalarMoveSlightlyIntoBackboard, maintainDirection.heading)
+        single("move slightly into backboard") {
+            pipe.move(-GlobalConstants.ScalarMoveSlightlyIntoBackboard, maintainDirection.heading)
+        }
     }
 
     single("deposit yellow pixel") {

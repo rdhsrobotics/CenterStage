@@ -164,7 +164,6 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         if (force)
         {
             backingExtender.setTarget(extenderState.targetPosition())
-            println(extenderState.targetPosition())
             return
         }
 
@@ -214,8 +213,6 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
                 position - clawRangeExpansion
         }
 
-        println("Value of force: $force")
-
         if (force)
         {
             servo.setTarget(targetPosition)
@@ -223,7 +220,6 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         }
 
         servo.setMotionProfileTarget(targetPosition)
-        println("Set motion profile target of servo")
     }
 
     override fun isCompleted() = true
