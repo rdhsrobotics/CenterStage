@@ -5,7 +5,7 @@ import com.acmerobotics.dashboard.config.Config
 @Config
 object GlobalConstants
 {
-    @JvmField var MoveForwardToSpikeMark = 925.0
+    @JvmField var MoveForwardToSpikeMark = 975.0
     @JvmField var MoveBackFromSpikeMark = -725.0
 
     @JvmField var FarMoveTowardsBackboard = 3 * 1025.0
@@ -13,9 +13,9 @@ object GlobalConstants
     @JvmField var TurnToSpikeMark = 55.0
 
     // Scalars
-    @JvmField var ScalarMoveSlightlyIntoBackboard = 100.0
-    @JvmField var ScalarStrafeIntoPosition = 1000.0
+    @JvmField var ScalarMoveSlightlyIntoBackboard = 600.0
+    @JvmField var ScalarStrafeIntoPosition = 1070.0
     @JvmField var ScalarStrafeIntoParkingPosition = 1125.0
     @JvmField var ScalarMoveIntoParkingZone = 250.0
-    @JvmField var ScalarExpectedElevatorDropHeight = 0.56
+    @JvmField var ScalarExpectedElevatorDropHeight = 0.32
 }

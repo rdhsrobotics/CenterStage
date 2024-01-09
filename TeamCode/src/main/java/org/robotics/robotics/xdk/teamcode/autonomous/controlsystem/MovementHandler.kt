@@ -150,6 +150,7 @@ class MovementHandler(private val opMode: AbstractAutoPipeline)
                     .average()
             },
             setMotorPowers = { controller, positionOutput ->
+                setMotorPowers(positionOutput, positionOutput)
                 if (!controller.maintainHeading)
                 {
                     setMotorPowers(positionOutput, positionOutput)
@@ -157,6 +158,12 @@ class MovementHandler(private val opMode: AbstractAutoPipeline)
                 }
 
                 val yaw = opMode.drivebase.getIMUYawPitchRollAngles().getYaw(AngleUnit.DEGREES)
+                if (rotationPid.atSetPoint(yaw))
+                {
+                    setMotorPowers(positionOutput, positionOutput)
+                    return@driveBasePID
+                }
+
                 val turnCorrectionFactor = rotationPid.calculate(yaw, yaw)
 
                 val leftMotorPower = positionOutput + turnCorrectionFactor

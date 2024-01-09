@@ -48,7 +48,7 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
     public static double Y_OFFSET_TOP = 0.2;
     public static double Y_OFFSET_BOTTOM = 0.6;
 
-    public static double PERCENTAGE_REQUIRED_RED = 0.4;
+    public static double PERCENTAGE_REQUIRED_RED = 0.6;
     public static double PERCENTAGE_REQUIRED_BLUE = 0.50;
 
     public static int CAM_VIEW = 0;

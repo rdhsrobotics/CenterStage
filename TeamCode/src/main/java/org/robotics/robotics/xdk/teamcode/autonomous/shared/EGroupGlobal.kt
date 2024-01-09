@@ -49,11 +49,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
         }
 
         pipe.turn(headingFixedTowardsSpikeMark)
-
-        if (gameObjectTapeSide == TapeSide.Left)
-        {
-            pipe.move(-75.0, headingFixedTowardsSpikeMark)
-        }
+        pipe.move(-75.0, headingFixedTowardsSpikeMark)
     }
 
     single("deposit pixel") {
@@ -63,10 +59,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
             force = true
         )
 
-        if (gameObjectTapeSide == TapeSide.Left)
-        {
-            pipe.move(75.0, headingFixedTowardsSpikeMark)
-        }
+        pipe.move(75.0, headingFixedTowardsSpikeMark)
     }
 
     simultaneous("move back from spike mark and retract") {
@@ -128,9 +121,9 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     val maintainDirection = relativeBackboardDirectionAtParkingZone.oppositeOf()
     val strafePositionIncrement = when (tapeSide)
     {
-        TapeSide.Left -> 100
+        TapeSide.Left -> 400
         TapeSide.Middle -> 0
-        TapeSide.Right -> -100
+        TapeSide.Right -> -400
     }
 
     single("strafe into position") {
@@ -138,7 +131,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
         val strafeDirectionFactor = if (relativeBackboardDirectionAtParkingZone == Direction.Left) -1 else 1
 
         pipe.strafe(
-            GlobalConstants.ScalarStrafeIntoPosition * strafeDirectionFactor +
+            -GlobalConstants.ScalarStrafeIntoPosition * strafeDirectionFactor +
                 strafePositionIncrement * strafeDirectionFactor
         )
     }
@@ -194,7 +187,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
                 // strafe into the parking zone with the direction based on where the backboard
                 // was relative to the robot when it was previously in parking
                 pipe.strafe(
-                    -GlobalConstants.ScalarStrafeIntoParkingPosition *
+                    GlobalConstants.ScalarStrafeIntoParkingPosition *
                         if (relativeBackboardDirectionAtParkingZone == Direction.Left) -1 else 1
                 )
             }

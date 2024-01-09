@@ -104,12 +104,11 @@ abstract class AbstractAutoPipeline(
 
         movementHandler = MovementHandler(this)
 
-        stopAndResetMotors()
-
         multipleTelemetry.addLine("Waiting for start. Started detection...")
         multipleTelemetry.update()
 
         initializeAll()
+        stopAndResetMotors()
 
         while (opModeInInit())
         {
