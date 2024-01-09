@@ -49,7 +49,7 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
         backingMotor.stopAndResetEncoder()
         backingMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
 
-        backingMotor = opMode.hardware<DcMotorEx>("hang")
+        backingHangMotor = opMode.hardware<DcMotorEx>("hang")
         backingHangMotor.direction = DcMotorSimple.Direction.REVERSE
         backingHangMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
