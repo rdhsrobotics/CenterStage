@@ -11,7 +11,7 @@ import org.robotics.robotics.xdk.teamcode.subsystem.Drivebase
  *
  * @author Subham
  */
-@Disabled
+//@Disabled
 @TeleOp(name = "Prod | Field Centric")
 class FieldCentricTeleOp : AbstractTeleOp()
 {

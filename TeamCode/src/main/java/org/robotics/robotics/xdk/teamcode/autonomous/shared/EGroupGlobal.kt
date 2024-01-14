@@ -9,6 +9,7 @@ import org.robotics.robotics.xdk.teamcode.autonomous.detection.Direction
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.StartPosition
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TapeSide
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
+import kotlin.math.absoluteValue
 
 /**
  * Shared execution group stages to move forward towards the spike mark
@@ -121,9 +122,9 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     val maintainDirection = relativeBackboardDirectionAtParkingZone.oppositeOf()
     val strafePositionIncrement = when (tapeSide)
     {
-        TapeSide.Left -> 400
+        TapeSide.Left -> 500
         TapeSide.Middle -> 0
-        TapeSide.Right -> -400
+        TapeSide.Right -> -550
     }
 
     single("strafe into position") {
@@ -187,8 +188,8 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
                 // strafe into the parking zone with the direction based on where the backboard
                 // was relative to the robot when it was previously in parking
                 pipe.strafe(
-                    GlobalConstants.ScalarStrafeIntoParkingPosition *
-                        if (relativeBackboardDirectionAtParkingZone == Direction.Left) -1 else 1
+                    GlobalConstants.ScalarStrafeIntoParkingPosition - strafePositionIncrement.absoluteValue *
+                        if (relativeBackboardDirectionAtParkingZone == Direction.Left) 1 else -1
                 )
             }
 
