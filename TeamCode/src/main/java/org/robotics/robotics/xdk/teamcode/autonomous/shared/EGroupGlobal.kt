@@ -124,17 +124,15 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     {
         TapeSide.Left -> 500
         TapeSide.Middle -> 0
-        TapeSide.Right -> -550
+        TapeSide.Right -> 550
     }
 
     single("strafe into position") {
         // strafe either left or right based on where the backboard is relative to the robot
         val strafeDirectionFactor = if (relativeBackboardDirectionAtParkingZone == Direction.Left) -1 else 1
+        val requiredStrafe = GlobalConstants.ScalarStrafeIntoPosition + strafePositionIncrement
 
-        pipe.strafe(
-            -GlobalConstants.ScalarStrafeIntoPosition * strafeDirectionFactor +
-                strafePositionIncrement * strafeDirectionFactor
-        )
+        pipe.strafe(-requiredStrafe * strafeDirectionFactor)
     }
 
     single("sync into heading") {
@@ -187,10 +185,10 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
             single("strafe back to parking zone") {
                 // strafe into the parking zone with the direction based on where the backboard
                 // was relative to the robot when it was previously in parking
-                pipe.strafe(
-                    GlobalConstants.ScalarStrafeIntoParkingPosition - strafePositionIncrement.absoluteValue *
-                        if (relativeBackboardDirectionAtParkingZone == Direction.Left) 1 else -1
-                )
+                val strafeDirectionFactor = if (relativeBackboardDirectionAtParkingZone == Direction.Left) 1 else -1
+                val requiredStrafe = GlobalConstants.ScalarStrafeIntoParkingPosition + strafePositionIncrement
+
+                pipe.strafe(-requiredStrafe * strafeDirectionFactor)
             }
 
             single("realign with heading") {
