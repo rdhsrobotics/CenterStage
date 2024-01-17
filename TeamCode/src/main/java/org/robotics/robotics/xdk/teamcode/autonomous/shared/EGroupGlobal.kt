@@ -9,7 +9,6 @@ import org.robotics.robotics.xdk.teamcode.autonomous.detection.Direction
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.StartPosition
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TapeSide
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
-import kotlin.math.absoluteValue
 
 /**
  * Shared execution group stages to move forward towards the spike mark
@@ -120,19 +119,19 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     // opposite of where the backboard is relative to the backboard
     // is the direction the robot should be facing
     val maintainDirection = relativeBackboardDirectionAtParkingZone.oppositeOf()
-    val strafePositionIncrement = when (tapeSide)
+    val strafePosition = when (tapeSide)
     {
-        TapeSide.Left -> -450
-        TapeSide.Middle -> 0
-        TapeSide.Right -> 550
+        TapeSide.Left -> if (relativeBackboardDirectionAtParkingZone == Direction.Right)
+            GlobalConstants.ScalarStrafeIntoPositionClose else GlobalConstants.ScalarStrafeIntoPositionFar
+        TapeSide.Middle -> GlobalConstants.ScalarStrafeIntoPositionMiddle
+        TapeSide.Right -> if (relativeBackboardDirectionAtParkingZone == Direction.Right)
+            GlobalConstants.ScalarStrafeIntoPositionFar else GlobalConstants.ScalarStrafeIntoPositionClose
     }
 
     single("strafe into position") {
         // strafe either left or right based on where the backboard is relative to the robot
         val strafeDirectionFactor = if (relativeBackboardDirectionAtParkingZone == Direction.Left) -1 else 1
-        val requiredStrafe = GlobalConstants.ScalarStrafeIntoPosition + strafePositionIncrement
-
-        pipe.strafe(-requiredStrafe * strafeDirectionFactor)
+        pipe.strafe(-strafePosition * strafeDirectionFactor)
     }
 
     single("sync into heading") {
@@ -186,9 +185,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
                 // strafe into the parking zone with the direction based on where the backboard
                 // was relative to the robot when it was previously in parking
                 val strafeDirectionFactor = if (relativeBackboardDirectionAtParkingZone == Direction.Left) 1 else -1
-                val requiredStrafe = GlobalConstants.ScalarStrafeIntoParkingPosition + strafePositionIncrement
-
-                pipe.strafe(-requiredStrafe * strafeDirectionFactor)
+                pipe.strafe(-strafePosition * strafeDirectionFactor)
             }
 
             single("realign with heading") {
