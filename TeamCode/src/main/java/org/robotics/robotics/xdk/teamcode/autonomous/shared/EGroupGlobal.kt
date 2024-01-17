@@ -122,7 +122,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     val maintainDirection = relativeBackboardDirectionAtParkingZone.oppositeOf()
     val strafePositionIncrement = when (tapeSide)
     {
-        TapeSide.Left -> 500
+        TapeSide.Left -> -450
         TapeSide.Middle -> 0
         TapeSide.Right -> 550
     }
