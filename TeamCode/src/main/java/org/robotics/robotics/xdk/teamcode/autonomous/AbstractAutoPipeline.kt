@@ -191,7 +191,6 @@ abstract class AbstractAutoPipeline(
         thread.interrupt()
 
         stopAndResetMotors()
-        terminateAllMotors()
         disposeOfAll()
 
         Mono.logSink = { }
@@ -221,7 +220,6 @@ abstract class AbstractAutoPipeline(
         }
     }
 
-    private fun terminateAllMotors() = configureMotorsToDo(HardwareDevice::close)
     fun stopAndResetMotors() = configureMotorsToDo {
         it.power = 0.0
         it.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER

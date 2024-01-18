@@ -30,11 +30,7 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
 
     override fun dispose()
     {
-        backingMotor.stopAndResetEncoder()
-        backingMotor.close()
 
-        backingHangMotor.stopAndResetEncoder()
-        backingHangMotor.close()
     }
 
     /**
