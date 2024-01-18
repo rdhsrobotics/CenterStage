@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.config.Config
 object ClawExpansionConstants
 {
     @JvmField var PRELOAD_EXTENDER_POSITION = 1.0
-    @JvmField var MIN_EXTENDER_POSITION = 0.87
+    @JvmField var MIN_EXTENDER_POSITION = 0.86
     @JvmField var INTERMEDIATE_EXTENDER_POSITION = 0.75
     @JvmField var MAX_EXTENDER_POSITION = 0.63
 
