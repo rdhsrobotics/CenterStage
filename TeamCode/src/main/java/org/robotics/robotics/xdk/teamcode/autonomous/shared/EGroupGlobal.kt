@@ -127,7 +127,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
         TapeSide.Right -> if (relativeBackboardDirectionAtParkingZone == Direction.Right)
             GlobalConstants.ScalarStrafeIntoPositionFar else GlobalConstants.ScalarStrafeIntoPositionClose
     } + if (relativeBackboardDirectionAtParkingZone == Direction.Right)
-        60 else -20
+        70 else -20
 
     single("strafe into position") {
         // strafe either left or right based on where the backboard is relative to the robot
