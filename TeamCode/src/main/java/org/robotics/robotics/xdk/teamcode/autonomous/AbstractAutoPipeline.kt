@@ -158,20 +158,37 @@ abstract class AbstractAutoPipeline(
             }
         }
 
-        executionGroup.apply {
-            blockExecutionGroup(
-                this@AbstractAutoPipeline, tapeSide
-            )
-        }
-
-        thread(isDaemon = true) {
+        thread {
             while (!isStopRequested)
             {
                 clawSubsystem.periodic()
             }
         }
 
-        executionGroup.executeBlocking()
+        val thread = thread {
+            runCatching {
+                executionGroup.apply {
+                    blockExecutionGroup(
+                        this@AbstractAutoPipeline, tapeSide
+                    )
+                }
+
+                if (!isStopRequested)
+                {
+                    executionGroup.executeBlocking()
+                }
+            }.onFailure {
+                println("Exception thrown inside execution group")
+                it.printStackTrace()
+            }
+        }
+
+        while (!isStopRequested)
+        {
+            Thread.sleep(50L)
+        }
+
+        thread.interrupt()
 
         stopAndResetMotors()
         terminateAllMotors()
