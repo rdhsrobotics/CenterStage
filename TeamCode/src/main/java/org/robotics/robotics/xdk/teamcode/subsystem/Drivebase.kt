@@ -96,6 +96,6 @@ class Drivebase(private val opMode: LinearOpMode) : AbstractSubsystem()
     override fun isCompleted() = true
     override fun dispose()
     {
-        backingDriveBase.stop()
+
     }
 }

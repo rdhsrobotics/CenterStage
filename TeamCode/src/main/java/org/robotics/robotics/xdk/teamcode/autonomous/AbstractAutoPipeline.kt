@@ -178,6 +178,12 @@ abstract class AbstractAutoPipeline(
                     executionGroup.executeBlocking()
                 }
             }.onFailure {
+                if (it is InterruptedException)
+                {
+                    Mono.logSink("Stopped execution group!")
+                    return@thread
+                }
+
                 println("Exception thrown inside execution group")
                 it.printStackTrace()
             }
@@ -189,8 +195,6 @@ abstract class AbstractAutoPipeline(
         }
 
         thread.interrupt()
-
-        stopAndResetMotors()
         disposeOfAll()
 
         Mono.logSink = { }
@@ -211,7 +215,7 @@ abstract class AbstractAutoPipeline(
                 backRight.isBusy)
         )
         {
-            if (!opModeIsActive())
+            if (isStopRequested)
             {
                 return
             }
