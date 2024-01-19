@@ -4,6 +4,7 @@ import io.liftgate.robotics.mono.pipeline.ExecutionGroup
 import io.liftgate.robotics.mono.pipeline.consecutive
 import io.liftgate.robotics.mono.pipeline.simultaneous
 import io.liftgate.robotics.mono.pipeline.single
+import io.liftgate.robotics.mono.pipeline.waitMillis
 import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.Direction
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.StartPosition
@@ -17,6 +18,7 @@ import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
     pipe: AbstractAutoPipeline,
     gameObjectTapeSide: TapeSide,
+    startPosition: StartPosition,
     relativeBackboardDirectionAtRobotStart: Direction
 )
 {
@@ -81,7 +83,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
 
         single("move back from spike mark") {
             pipe.turn(0.0)
-            pipe.move(-GlobalConstants.MoveBackFromSpikeMark, 0.0)
+            pipe.move(-GlobalConstants.MoveBackFromSpikeMark + (if (gameObjectTapeSide == TapeSide.Right) 50 else 0) + (if (startPosition == StartPosition.Far) 25 else 0), 0.0)
         }
     }
 
@@ -113,12 +115,14 @@ fun ExecutionGroup.moveTowardsBackboard(
 fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     pipe: AbstractAutoPipeline,
     tapeSide: TapeSide,
+    startPosition: StartPosition,
     relativeBackboardDirectionAtParkingZone: Direction
 )
 {
     // opposite of where the backboard is relative to the backboard
     // is the direction the robot should be facing
     val maintainDirection = relativeBackboardDirectionAtParkingZone.oppositeOf()
+
     val strafePosition = when (tapeSide)
     {
         TapeSide.Left -> if (relativeBackboardDirectionAtParkingZone == Direction.Right)
@@ -126,8 +130,14 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
         TapeSide.Middle -> GlobalConstants.ScalarStrafeIntoPositionMiddle
         TapeSide.Right -> if (relativeBackboardDirectionAtParkingZone == Direction.Right)
             GlobalConstants.ScalarStrafeIntoPositionFar else GlobalConstants.ScalarStrafeIntoPositionClose
-    } + if (relativeBackboardDirectionAtParkingZone == Direction.Right)
-        70 else -20
+    } + (if (relativeBackboardDirectionAtParkingZone == Direction.Right)
+        (when (tapeSide)
+        {
+            TapeSide.Left -> 150
+            TapeSide.Middle -> 250
+            TapeSide.Right -> 300
+        }) else -20) +
+            if (startPosition == StartPosition.Far) 50 else 0
 
     single("strafe into position") {
         // strafe either left or right based on where the backboard is relative to the robot
@@ -152,6 +162,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
         }
     }
 
+    waitMillis(250L)
     single("deposit yellow pixel") {
         // open the claw and wait for the pixel to drop
         pipe.clawSubsystem.updateClawState(
@@ -161,6 +172,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
         )
     }
 
+    waitMillis(250L)
     single("move back from into backboard") {
         pipe.move(GlobalConstants.ScalarMoveSlightlyIntoBackboard, maintainDirection.heading)
     }

@@ -165,36 +165,13 @@ abstract class AbstractAutoPipeline(
             }
         }
 
-        val thread = thread {
-            runCatching {
-                executionGroup.apply {
-                    blockExecutionGroup(
-                        this@AbstractAutoPipeline, tapeSide
-                    )
-                }
-
-                if (!isStopRequested)
-                {
-                    executionGroup.executeBlocking()
-                }
-            }.onFailure {
-                if (it is InterruptedException)
-                {
-                    Mono.logSink("Stopped execution group!")
-                    return@thread
-                }
-
-                println("Exception thrown inside execution group")
-                it.printStackTrace()
-            }
+        executionGroup.apply {
+            blockExecutionGroup(
+                this@AbstractAutoPipeline, tapeSide
+            )
         }
 
-        while (!isStopRequested)
-        {
-            Thread.sleep(50L)
-        }
-
-        thread.interrupt()
+        executionGroup.executeBlocking()
         disposeOfAll()
 
         Mono.logSink = { }

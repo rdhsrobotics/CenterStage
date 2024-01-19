@@ -29,7 +29,7 @@ plugins {
 // Include common definitions from above.
 apply from: "../build.common.gradle"
 apply from: "../build.dependencies.gradle"
-//apply plugin: 'org.team11260.fast-load-plugin'
+apply plugin: 'org.team11260.fast-load-plugin'
 
 android {
     namespace = "org.firstinspires.ftc.teamcode"
@@ -46,9 +46,9 @@ repositories {
         url = 'https://maven.brott.dev/'
     }
 
-    /*maven {
+    maven {
         url = 'https://www.matthewo.tech/maven/'
-    }*/
+    }
 }
 
 dependencies {
@@ -57,7 +57,7 @@ dependencies {
 
 //    implementation "com.acmerobotics.roadrunner:ftc:0.1.9"
     implementation "com.acmerobotics.dashboard:dashboard:0.4.14"
-//    implementation 'org.team11260:fast-load:0.1.2'
+    implementation 'org.team11260:fast-load:0.1.2'
 
     implementation project(":FtcRobotController")
     annotationProcessor files("lib/OpModeAnnotationProcessor.jar")

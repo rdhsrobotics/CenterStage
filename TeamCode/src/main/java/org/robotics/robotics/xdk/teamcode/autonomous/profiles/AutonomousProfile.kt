@@ -21,6 +21,7 @@ sealed class AutonomousProfile(
             depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
                 pipe = opMode,
                 gameObjectTapeSide = tapeSide,
+                startPosition = startPosition,
                 relativeBackboardDirectionAtRobotStart = relativeBackboardDirectionAtRobotStart
             )
 
@@ -33,6 +34,7 @@ sealed class AutonomousProfile(
             strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
                 pipe = opMode,
                 tapeSide = tapeSide,
+                startPosition = startPosition,
                 relativeBackboardDirectionAtParkingZone = relativeBackboardDirectionAtRobotStart.oppositeOf()
             )
         }
