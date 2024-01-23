@@ -107,12 +107,35 @@ abstract class AbstractTeleOp : LinearOpMode(), System
     private fun buildCommands()
     {
         gp1Commands
-            .where(ButtonType.PlayStationSquare)
+            .where(ButtonType.BumperLeft)
             .triggers {
                 paperPlaneLauncher.launch()
             }
             .andIsHeldUntilReleasedWhere {
                 paperPlaneLauncher.reset()
+            }
+
+        gp2Commands
+            .where(ButtonType.DPadDown)
+            .triggers {
+                extendableClaw.toggleExtender(
+                    ExtendableClaw.ExtenderState.Intermediate
+                )
+
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawState.VeryOpen
+                )
+            }
+            .andIsHeldUntilReleasedWhere {
+                extendableClaw.toggleExtender(
+                    ExtendableClaw.ExtenderState.Deposit
+                )
+
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawState.Closed
+                )
             }
 
         gp1Commands
@@ -366,13 +389,5 @@ abstract class AbstractTeleOp : LinearOpMode(), System
         gp2Commands
             .where(ButtonType.DPadRight)
             .depositPresetReleaseOnElevatorHeight(-1130)
-
-        gp2Commands
-            .where(ButtonType.DPadDown)
-            .onlyWhen { !bundleExecutionInProgress }
-            .triggers {
-                elevator.configureElevatorManually(0.0)
-            }
-            .whenPressedOnce()
     }
 }

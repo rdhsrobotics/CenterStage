@@ -40,7 +40,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
     val headingFixedTowardsSpikeMark = GlobalConstants.TurnToSpikeMark *
             when (gameObjectTapeSide) {
                 TapeSide.Right -> -1.0
-                TapeSide.Left -> 1.3
+                TapeSide.Left -> 1.2
                 else -> 0.0
             }
 
@@ -83,7 +83,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
 
         single("move back from spike mark") {
             pipe.turn(0.0)
-            pipe.move(-GlobalConstants.MoveBackFromSpikeMark + (if (gameObjectTapeSide == TapeSide.Right) 50 else 0) + (if (startPosition == StartPosition.Far) 25 else 0), 0.0)
+            pipe.move(-GlobalConstants.MoveBackFromSpikeMark + (if (gameObjectTapeSide == TapeSide.Right) 20 else 0) + (if (gameObjectTapeSide == TapeSide.Left) 50 else 0) + (if (startPosition == StartPosition.Far) 25 else 0), 0.0)
         }
     }
 
@@ -109,7 +109,7 @@ fun ExecutionGroup.moveTowardsBackboard(
     }
 }
 
-/**
+/**s
  * Completes the second portion of our 2+0 autonomous: deposit yellow pixel and park.
  */
 fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
@@ -133,11 +133,11 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     } + (if (relativeBackboardDirectionAtParkingZone == Direction.Right)
         (when (tapeSide)
         {
-            TapeSide.Left -> 150
-            TapeSide.Middle -> 250
-            TapeSide.Right -> 300
+            TapeSide.Left -> 100
+            TapeSide.Middle -> 100
+            TapeSide.Right -> 200
         }) else -20) +
-            if (startPosition == StartPosition.Far) 50 else 0
+            if (startPosition == StartPosition.Far) 150 else 0
 
     single("strafe into position") {
         // strafe either left or right based on where the backboard is relative to the robot

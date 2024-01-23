@@ -60,12 +60,12 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
     };
 
     public static int LR_B = 0;
-    public static int LR_G = 125;
-    public static int LR_R = 150;
+    public static int LR_G = 140;
+    public static int LR_R = 100;
 
-    public static int UR_B = 200;
-    public static int UR_G = 200;
-    public static int UR_R = 240;
+    public static int UR_B = 255;
+    public static int UR_G = 250;
+    public static int UR_R = 230;
 
     private final Scalar lowerBlueBound = new Scalar(90, 100, 100);
     private final Scalar upperBlueBound = new Scalar(130, 255, 255);

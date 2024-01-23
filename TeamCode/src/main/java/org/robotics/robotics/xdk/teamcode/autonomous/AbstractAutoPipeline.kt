@@ -165,21 +165,31 @@ abstract class AbstractAutoPipeline(
             }
         }
 
-        executionGroup.apply {
-            blockExecutionGroup(
-                this@AbstractAutoPipeline, tapeSide
-            )
+        val thread = thread(start = false) {
+            executionGroup.apply {
+                blockExecutionGroup(
+                    this@AbstractAutoPipeline, tapeSide
+                )
+            }
+
+            executionGroup.executeBlocking()
         }
 
-        executionGroup.executeBlocking()
+        thread.start()
+        while (!isStopRequested)
+        {
+            Thread.sleep(50L)
+        }
+
+        thread.interrupt()
         disposeOfAll()
 
         Mono.logSink = { }
     }
 
-    fun move(ticks: Double, heading: Double) = movementHandler.move(-ticks, heading)
+    fun move(ticks: Double, heading: Double) = movementHandler.move(ticks, heading)
     fun turn(ticks: Double) = movementHandler.turn(ticks)
-    fun strafe(ticks: Double) = movementHandler.strafe(-ticks)
+    fun strafe(ticks: Double) = movementHandler.strafe(ticks)
 
     fun lockUntilMotorsFree(maximumTimeMillis: Long = 1500L)
     {

@@ -29,7 +29,7 @@ object GlobalConstants
     var ScalarStrafeIntoPositionClose = 570.0
 
     @JvmField
-    var ScalarMoveIntoParkingZone = 250.0
+    var ScalarMoveIntoParkingZone = 700.0
     @JvmField
     var ScalarExpectedElevatorDropHeight = 0.3
 }

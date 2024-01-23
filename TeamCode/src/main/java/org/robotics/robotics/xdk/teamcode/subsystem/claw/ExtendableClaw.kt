@@ -46,6 +46,11 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         val calculatePosition: (ClawType) -> Double
     )
     {
+        VeryOpen({
+            if (it == ClawType.Left)
+                ClawExpansionConstants.OPEN_LEFT_CLAW + 0.2 else
+                ClawExpansionConstants.OPEN_RIGHT_CLAW - 0.2
+        }),
         Open({
             if (it == ClawType.Left)
                 ClawExpansionConstants.OPEN_LEFT_CLAW else
