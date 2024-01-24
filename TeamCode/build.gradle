@@ -53,9 +53,8 @@ repositories {
 
 dependencies {
     implementation 'org.ftclib.ftclib:core:2.1.1'
-    implementation "io.liftgate.robotics.mono:mono:2.9-SNAPSHOT"
+    implementation "io.liftgate.robotics.mono:mono:3.0-SNAPSHOT"
 
-    // https://mvnrepository.com/artifact/com.google.common/google-collect
     implementation("com.google.guava:guava:33.0.0-android")
 
     //    implementation "com.acmerobotics.roadrunner:ftc:0.1.9"
