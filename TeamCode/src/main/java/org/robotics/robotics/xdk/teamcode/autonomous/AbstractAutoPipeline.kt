@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor
 import com.qualcomm.robotcore.hardware.HardwareDevice
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.ExecutionGroup
+import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
@@ -102,8 +103,6 @@ abstract class AbstractAutoPipeline(
         backRight.direction = DcMotorSimple.Direction.FORWARD
         backRight.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
-        movementHandler = MovementHandler(this)
-
         multipleTelemetry.addLine("Waiting for start. Started detection...")
         multipleTelemetry.update()
 
@@ -139,6 +138,12 @@ abstract class AbstractAutoPipeline(
 
         waitForStart()
 
+        // protect against premature stops before we even start the execution group
+        if (isStopRequested)
+        {
+            return
+        }
+
         val tapeSide = visionPipeline.getTapeSide()
         val executionGroup = Mono.buildExecutionGroup {
             providesContext { _ ->
@@ -165,23 +170,18 @@ abstract class AbstractAutoPipeline(
             }
         }
 
-        val thread = thread(start = false) {
-            executionGroup.apply {
-                blockExecutionGroup(
-                    this@AbstractAutoPipeline, tapeSide
-                )
-            }
-
-            executionGroup.executeBlocking()
+        executionGroup.apply {
+            blockExecutionGroup(
+                this@AbstractAutoPipeline, tapeSide
+            )
         }
 
-        thread.start()
-        while (!isStopRequested)
-        {
-            Thread.sleep(50L)
-        }
+        movementHandler = MovementHandler(
+            opMode = this,
+            executionGroup = executionGroup
+        )
 
-        thread.interrupt()
+        executionGroup.executeBlocking()
         disposeOfAll()
 
         Mono.logSink = { }

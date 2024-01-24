@@ -1,5 +1,6 @@
 package org.robotics.robotics.xdk.teamcode.autonomous.controlsystem
 
+import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline
@@ -8,7 +9,7 @@ import org.robotics.robotics.xdk.teamcode.autonomous.utilities.AutoPipelineUtili
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
-class MovementHandler(private val opMode: AbstractAutoPipeline)
+class MovementHandler(private val opMode: AbstractAutoPipeline, private val executionGroup: RootExecutionGroup)
 {
     /**
      * Creates a PID controller with the given constants for basic movement.
@@ -197,8 +198,14 @@ class MovementHandler(private val opMode: AbstractAutoPipeline)
         opMode.runMotors()
 
         val startTime = System.currentTimeMillis()
-        while (!opMode.isStopRequested)
+        while (true)
         {
+            if (opMode.isStopRequested)
+            {
+                executionGroup.terminateMidExecution()
+                return
+            }
+
             val realCurrentPosition = currentPositionBlock()
             val imuHeading = opMode.drivebase.getIMUYawPitchRollAngles().getYaw(AngleUnit.DEGREES)
 
