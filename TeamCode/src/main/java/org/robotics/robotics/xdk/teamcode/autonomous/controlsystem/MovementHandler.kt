@@ -198,13 +198,14 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
         opMode.stopAndResetMotors()
         opMode.runMotors()
 
+        val startTime = System.currentTimeMillis()
+        var hasResultedInCanContinue = false
+
         val evictingSample = EvictingSample(
             size = 10,
             requiredSampleTime = 500L
         )
 
-        val startTime = System.currentTimeMillis()
-        var hasResultedInCanContinue = false
         while (true)
         {
             if (opMode.isStopRequested)
