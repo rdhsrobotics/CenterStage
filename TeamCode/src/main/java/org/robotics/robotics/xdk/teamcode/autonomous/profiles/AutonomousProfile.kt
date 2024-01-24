@@ -13,17 +13,24 @@ import org.robotics.robotics.xdk.teamcode.autonomous.shared.strafeIntoBackboardP
 sealed class AutonomousProfile(
     val teamColor: TeamColor,
     val relativeBackboardDirectionAtRobotStart: Direction,
-    val startPosition: StartPosition
+    val startPosition: StartPosition,
+    val isSpikeMarkOnly: Boolean = false
 )
 {
     open fun buildExecutionGroup(): ExecutionGroup.(AbstractAutoPipeline, TapeSide) -> Unit =
-        { opMode, tapeSide ->
+        context@{ opMode, tapeSide ->
             depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
                 pipe = opMode,
                 gameObjectTapeSide = tapeSide,
                 startPosition = startPosition,
-                relativeBackboardDirectionAtRobotStart = relativeBackboardDirectionAtRobotStart
+                relativeBackboardDirectionAtRobotStart = relativeBackboardDirectionAtRobotStart,
+                isSpikeMarkOnly = isSpikeMarkOnly
             )
+
+            if (isSpikeMarkOnly)
+            {
+                return@context
+            }
 
             moveTowardsBackboard(
                 pipe = opMode,
@@ -61,5 +68,34 @@ sealed class AutonomousProfile(
         teamColor = TeamColor.Blue,
         relativeBackboardDirectionAtRobotStart = Direction.Left,
         startPosition = StartPosition.Far
+    )
+
+    // Spike mark autos
+    data object RedPlayer1SpikeMarkOnly : AutonomousProfile(
+        teamColor = TeamColor.Red,
+        relativeBackboardDirectionAtRobotStart = Direction.Right,
+        startPosition = StartPosition.Close,
+        isSpikeMarkOnly = true
+    )
+
+    data object RedPlayer2SpikeMarkOnly : AutonomousProfile(
+        teamColor = TeamColor.Red,
+        relativeBackboardDirectionAtRobotStart = Direction.Right,
+        startPosition = StartPosition.Far,
+        isSpikeMarkOnly = true
+    )
+
+    data object BluePlayer1SpikeMarkOnly : AutonomousProfile(
+        teamColor = TeamColor.Blue,
+        relativeBackboardDirectionAtRobotStart = Direction.Left,
+        startPosition = StartPosition.Close,
+        isSpikeMarkOnly = true
+    )
+
+    data object BluePlayer2SpikeMarkOnly : AutonomousProfile(
+        teamColor = TeamColor.Blue,
+        relativeBackboardDirectionAtRobotStart = Direction.Left,
+        startPosition = StartPosition.Far,
+        isSpikeMarkOnly = true
     )
 }

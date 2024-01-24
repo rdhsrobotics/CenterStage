@@ -19,7 +19,8 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
     pipe: AbstractAutoPipeline,
     gameObjectTapeSide: TapeSide,
     startPosition: StartPosition,
-    relativeBackboardDirectionAtRobotStart: Direction
+    relativeBackboardDirectionAtRobotStart: Direction,
+    isSpikeMarkOnly: Boolean
 )
 {
     simultaneous("move forward and intake") {
@@ -83,8 +84,19 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
 
         single("move back from spike mark") {
             pipe.turn(0.0)
+
+            if (isSpikeMarkOnly)
+            {
+                return@single
+            }
+
             pipe.move(-GlobalConstants.MoveBackFromSpikeMark + (if (gameObjectTapeSide == TapeSide.Right) 20 else 0) + (if (gameObjectTapeSide == TapeSide.Left) 50 else 0) + (if (startPosition == StartPosition.Far) 25 else 0), 0.0)
         }
+    }
+
+    if (isSpikeMarkOnly)
+    {
+        return
     }
 
     single("turn towards backboard") {
