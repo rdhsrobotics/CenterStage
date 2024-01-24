@@ -4,6 +4,7 @@ import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline
+import org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.safety.EvictingSample
 import org.robotics.robotics.xdk.teamcode.autonomous.normalizedYaw
 import org.robotics.robotics.xdk.teamcode.autonomous.utilities.AutoPipelineUtilities
 import kotlin.math.absoluteValue
@@ -197,7 +198,13 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
         opMode.stopAndResetMotors()
         opMode.runMotors()
 
+        val evictingSample = EvictingSample(
+            size = 10,
+            requiredSampleTime = 500L
+        )
+
         val startTime = System.currentTimeMillis()
+        var hasResultedInCanContinue = false
         while (true)
         {
             if (opMode.isStopRequested)
@@ -208,6 +215,24 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
 
             val realCurrentPosition = currentPositionBlock()
             val imuHeading = opMode.drivebase.getIMUYawPitchRollAngles().getYaw(AngleUnit.DEGREES)
+
+            if (!hasResultedInCanContinue)
+            {
+                evictingSample.submit(imuHeading)
+                when (evictingSample.analyze())
+                {
+                    EvictingSample.AnalyzeResult.RequiresExit ->
+                    {
+                        executionGroup.terminateMidExecution()
+                        return
+                    }
+                    EvictingSample.AnalyzeResult.CanContinue ->
+                    {
+                        hasResultedInCanContinue = true
+                    }
+                    EvictingSample.AnalyzeResult.NotNeeded -> { }
+                }
+            }
 
             if (controller.atSetPoint(realCurrentPosition))
             {
