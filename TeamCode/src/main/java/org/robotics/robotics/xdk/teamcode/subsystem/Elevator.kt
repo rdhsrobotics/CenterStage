@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
+import org.robotics.robotics.xdk.teamcode.subsystem.claw.ClawExpansionConstants
 import kotlin.math.max
 import kotlin.math.min
 
@@ -25,6 +26,7 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
         override fun isCompleted() = !backingMotor.isBusy
     }
 
+    fun getCurrentLiftElevatorPosition() = backingHangMotor.currentPosition
     fun getCurrentElevatorPosition() = backingMotor.currentPosition
     fun getTargetElevatorPosition() = backingMotor.targetPosition
 
@@ -50,7 +52,7 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
         backingHangMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
         backingHangMotor.stopAndResetEncoder()
-        backingHangMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        backingHangMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }
 
     private var elevatorUpdateLock = Any()
@@ -58,10 +60,33 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
     /**
      * Runs the hang motor at a given power without the encoder.
      */
-    fun toggleHangLift(power: Double)
+    fun toggleHangLift(position: Double)
     {
-        backingHangMotor.power = power
-        backingHangMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        backingHangMotor.power = 1.0
+        backingHangMotor.targetPosition = (position * ClawExpansionConstants.MAX_LIFT_ENCODER).toInt()
+        backingHangMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
+    }
+
+    fun resetHang()
+    {
+        backingHangMotor.power = 0.0
+    }
+
+
+    /**
+     * Increments the target position for the claw elevator
+     * based on a given joystick value.
+     */
+    fun configureLiftElevator(stick: Double) = synchronized(elevatorUpdateLock)
+    {
+        val target = min(
+            max((backingHangMotor.currentPosition + stick * 175).toInt(), ClawExpansionConstants.MAX_LIFT_ENCODER),
+            0
+        )
+
+        backingHangMotor.power = stick
+        backingHangMotor.targetPosition = target
+        backingHangMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
 
     /**

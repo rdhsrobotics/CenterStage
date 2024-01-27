@@ -236,21 +236,33 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             .where(ButtonType.PlayStationShare)
             .onlyWhen { gamepad1.left_bumper }
             .triggers {
-                elevator.toggleHangLift(-1.0)
+                elevator.toggleHangLift(0.7)
             }
-            .andIsHeldUntilReleasedWhere {
-                elevator.toggleHangLift(0.0)
-            }
+            .whenPressedOnce()
 
         gp1Commands
             .where(ButtonType.PlayStationOptions)
             .onlyWhen { gamepad1.left_bumper }
             .triggers {
-                elevator.toggleHangLift(1.0)
-            }
-            .andIsHeldUntilReleasedWhere {
                 elevator.toggleHangLift(0.0)
             }
+            .whenPressedOnce()
+
+        // lift motor toggles
+        gp1Commands
+            .where(ButtonType.PlayStationLogo)
+            .triggers {
+                elevator.resetHang()
+            }
+            .whenPressedOnce()
+
+        gp1Commands
+            .where(ButtonType.PlayStationOptions)
+            .onlyWhen { gamepad1.left_bumper }
+            .triggers {
+                elevator.toggleHangLift(0.0)
+            }
+            .whenPressedOnce()
 
         // elevator preset (low backboard)
         gp2Commands
