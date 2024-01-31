@@ -23,5 +23,7 @@ object AutoPipelineUtilities
     @JvmField var PID_ROTATION_TOLERANCE = 2
     @JvmField var PID_ROTATION_MIN_VELOCITY = 25.0
 
-    @JvmField var RAMP_UP_SPEED = 1000.0
+    @JvmField var MOTION_PROFILE_ACCEL = 500.0
+    @JvmField var MOTION_PROFILE_DECEL = 500.0
+    @JvmField var MOTION_PROFILE_VELOCITY = 1000.0
 }

@@ -1,17 +1,34 @@
 package org.robotics.robotics.xdk.teamcode.autonomous.controlsystem
 
+import com.arcrobotics.ftclib.hardware.motors.MotorEx
+import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.util.ElapsedTime
 import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline
+import org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.odomotry.Pose
 import org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.safety.EvictingSample
+import org.robotics.robotics.xdk.teamcode.autonomous.hardware
 import org.robotics.robotics.xdk.teamcode.autonomous.normalizedYaw
 import org.robotics.robotics.xdk.teamcode.autonomous.utilities.AutoPipelineUtilities
+import org.robotics.robotics.xdk.teamcode.subsystem.motionprofile.AsymmetricMotionProfile
+import org.robotics.robotics.xdk.teamcode.subsystem.motionprofile.ProfileConstraints
 import kotlin.math.absoluteValue
 import kotlin.math.sign
 
 class MovementHandler(private val opMode: AbstractAutoPipeline, private val executionGroup: RootExecutionGroup)
 {
+    private val pose = Pose()
+
+    private val lateralPod = runCatching {
+        MotorEx(opMode.hardwareMap, "lateralPod").encoder
+    }.getOrNull()
+
+    private val horizontalPod = runCatching {
+        MotorEx(opMode.hardwareMap, "horizontalPod").encoder
+    }.getOrNull()
+
     /**
      * Creates a PID controller with the given constants for basic movement.
      */
@@ -206,6 +223,17 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
             requiredSampleTime = 500L
         )
 
+        val motionProfile = AsymmetricMotionProfile(
+            0.0,
+            controller.setPoint,
+            ProfileConstraints(
+                AutoPipelineUtilities.MOTION_PROFILE_VELOCITY,
+                AutoPipelineUtilities.MOTION_PROFILE_ACCEL,
+                AutoPipelineUtilities.MOTION_PROFILE_DECEL
+            )
+        )
+
+        val elapsedTime = ElapsedTime()
         while (true)
         {
             if (opMode.isStopRequested)
@@ -245,13 +273,15 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
                 break
             }
 
-            val millisDiff = System.currentTimeMillis() - startTime
-            val rampUp = (millisDiff / AutoPipelineUtilities.RAMP_UP_SPEED)
-                .coerceIn(0.0, 1.0)
-
+            val motionProfileValue = motionProfile.calculate(elapsedTime.time())
             val pid = controller.calculate(realCurrentPosition, imuHeading)
             val finalPower = pid.coerceIn(-1.0..1.0)
-            setMotorPowers(controller, rampUp * finalPower)
+
+            setMotorPowers(
+                controller,
+                (finalPower * motionProfileValue.v)
+                    .coerceIn(-1.0..1.0)
+            )
 
             opMode.multipleTelemetry.update()
         }
