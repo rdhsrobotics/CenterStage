@@ -7,28 +7,28 @@ import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
 
 @Autonomous(
     name = "🔴 | Far | 2+0F",
-    group = "RedFast",
+    group = "Red",
     preselectTeleOp = Global.RobotCentricTeleOpName
 )
 class AutoPipelineRedPlayer2 : AbstractAutoPipeline(AutonomousProfile.RedPlayer2TwoPlusZero)
 
 @Autonomous(
     name = "🔴 | Close | 2+0F",
-    group = "RedFast",
+    group = "Red",
     preselectTeleOp = Global.RobotCentricTeleOpName
 )
 class AutoPipelineRedPlayer1 : AbstractAutoPipeline(AutonomousProfile.RedPlayer1TwoPlusZero)
 
 @Autonomous(
     name = "🔵 | Far | 2+0F",
-    group = "BlueFast",
+    group = "Blue",
     preselectTeleOp = Global.RobotCentricTeleOpName
 )
 class AutoPipelineBluePlayer2 : AbstractAutoPipeline(AutonomousProfile.BluePlayer2TwoPlusZero)
 
 @Autonomous(
     name = "🔵 | Close | 2+0F",
-    group = "BlueFast",
+    group = "Blue",
     preselectTeleOp = Global.RobotCentricTeleOpName
 )
 class AutoPipelineBluePlayer1 : AbstractAutoPipeline(AutonomousProfile.BluePlayer1TwoPlusZero)
@@ -36,7 +36,7 @@ class AutoPipelineBluePlayer1 : AbstractAutoPipeline(AutonomousProfile.BluePlaye
 // Slow autos
 @Autonomous(
     name = "🔵 | Far | 2+0S",
-    group = "BlueSlow",
+    group = "Blue",
     preselectTeleOp = Global.RobotCentricTeleOpName
 )
 class AutoPipelineBluePlayer2SlowMode : AbstractAutoPipeline(
@@ -50,7 +50,7 @@ class AutoPipelineBluePlayer2SlowMode : AbstractAutoPipeline(
 
 @Autonomous(
     name = "🔴 | Far | 2+0S",
-    group = "RedSlow",
+    group = "Red",
     preselectTeleOp = Global.RobotCentricTeleOpName
 )
 class AutoPipelineRedPlayer2SlowMode : AbstractAutoPipeline(
@@ -65,28 +65,28 @@ class AutoPipelineRedPlayer2SlowMode : AbstractAutoPipeline(
 // Spike mark only autos
 @Autonomous(
     name = "🔴 | Far | SPM",
-    group = "SpikeMarkOnly",
+    group = "Red",
     preselectTeleOp = Global.RobotCentricTeleOpName
 )
 class AutoPipelineRedPlayer2SpikeMarkOnly : AbstractAutoPipeline(AutonomousProfile.RedPlayer2SpikeMarkOnly)
 
 @Autonomous(
     name = "🔴 | Close | SPM",
-    group = "SpikeMarkOnly",
+    group = "Red",
     preselectTeleOp = Global.RobotCentricTeleOpName
 )
 class AutoPipelineRedPlayer1SpikeMarkOnly : AbstractAutoPipeline(AutonomousProfile.RedPlayer1SpikeMarkOnly)
 
 @Autonomous(
     name = "🔵 | Far | SPM",
-    group = "SpikeMarkOnly",
+    group = "Blue",
     preselectTeleOp = Global.RobotCentricTeleOpName
 )
 class AutoPipelineBluePlayer2SpikeMarkOnly : AbstractAutoPipeline(AutonomousProfile.BluePlayer2SpikeMarkOnly)
 
 @Autonomous(
     name = "🔵 | Close | SPM",
-    group = "SpikeMarkOnly",
+    group = "Blue",
     preselectTeleOp = Global.RobotCentricTeleOpName
 )
 class AutoPipelineBluePlayer1SpikeMarkOnly : AbstractAutoPipeline(AutonomousProfile.BluePlayer1SpikeMarkOnly)
