@@ -10,6 +10,9 @@ import io.liftgate.robotics.mono.gamepad.ButtonType
 import io.liftgate.robotics.mono.gamepad.GamepadCommands
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import io.liftgate.robotics.mono.subsystem.System
+import org.firstinspires.ftc.vision.VisionPortal
+import org.robotics.robotics.xdk.teamcode.autonomous.detection.TeamColor
+import org.robotics.robotics.xdk.teamcode.autonomous.detection.VisionPipeline
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
 import org.robotics.robotics.xdk.teamcode.autonomous.scheduleAsyncExecution
 import org.robotics.robotics.xdk.teamcode.subsystem.AirplaneLauncher

@@ -250,7 +250,7 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
                 .coerceIn(0.0, 1.0)
 
             val pid = controller.calculate(realCurrentPosition, imuHeading)
-            val finalPower = pid.coerceIn(-0.7..0.7)
+            val finalPower = pid.coerceIn(-1.0..1.0)
             setMotorPowers(controller, rampUp * finalPower)
 
             opMode.multipleTelemetry.update()
