@@ -74,7 +74,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
 
         while (opModeIsActive())
         {
-            val multiplier = 0.6 + gamepad1.right_trigger * 0.4
+            val multiplier = 0.5 + gamepad1.right_trigger * 0.5
             driveRobot(drivebase, driverOp, multiplier)
 
             gp1Commands.run()
@@ -95,7 +95,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                     continue
                 }
 
-                gamepad1.rumble(250)
+                gamepad1.rumble(50)
             }
         }
 
