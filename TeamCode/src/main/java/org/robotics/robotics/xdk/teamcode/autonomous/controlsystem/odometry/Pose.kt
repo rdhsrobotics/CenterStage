@@ -1,4 +1,4 @@
-package org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.odomotry
+package org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.odometry
 
 data class Pose(
     var x: Double = 0.0,

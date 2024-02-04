@@ -7,7 +7,7 @@ import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline
-import org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.odomotry.Pose
+import org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.odometry.Pose
 import org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.safety.EvictingSample
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
 import org.robotics.robotics.xdk.teamcode.autonomous.normalizedYaw
