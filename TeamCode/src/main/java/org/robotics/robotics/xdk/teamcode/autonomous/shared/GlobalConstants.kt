@@ -7,8 +7,6 @@ object GlobalConstants
 {
     @JvmField
     var MoveForwardToSpikeMark = 975.0
-    @JvmField
-    var MoveBackFromSpikeMark = -725.0
 
     @JvmField
     var FarMoveTowardsBackboard = 3 * 1025.0
@@ -20,13 +18,6 @@ object GlobalConstants
     // Scalars
     @JvmField
     var ScalarMoveSlightlyIntoBackboard = 600.0
-
-    @JvmField
-    var ScalarStrafeIntoPositionFar = 1360.0
-    @JvmField
-    var ScalarStrafeIntoPositionMiddle = 950.0
-    @JvmField
-    var ScalarStrafeIntoPositionClose = 570.0
 
     @JvmField
     var ScalarMoveIntoParkingZone = 700.0
