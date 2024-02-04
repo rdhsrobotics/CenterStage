@@ -10,13 +10,13 @@ import org.robotics.robotics.xdk.teamcode.subsystem.motionprofile.ProfileConstra
 
 class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
-    companion object
+    /*companion object
     {
         @JvmStatic
         var maxExtenderAddition = 0.0
         @JvmStatic
         var clawRangeExpansion = 0.0
-    }
+    }*/
 
     lateinit var backingExtender: MotionProfiledServo
 
@@ -66,16 +66,16 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
     enum class ExtenderState(val targetPosition: () -> Double)
     {
         PreLoad({
-            ClawExpansionConstants.PRELOAD_EXTENDER_POSITION
+            ExtenderConstants.PRELOAD_EXTENDER_POSITION
         }),
         Intake({
-            ClawExpansionConstants.MAX_EXTENDER_POSITION + maxExtenderAddition
+            ExtenderConstants.MAX_EXTENDER_POSITION
         }),
         Intermediate({
-            ClawExpansionConstants.INTERMEDIATE_EXTENDER_POSITION
+            ExtenderConstants.INTERMEDIATE_EXTENDER_POSITION
         }),
         Deposit({
-            ClawExpansionConstants.MIN_EXTENDER_POSITION
+            ExtenderConstants.MIN_EXTENDER_POSITION
         })
     }
 
@@ -107,9 +107,6 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
             constraints = clawFingerMPConstraints
         )
 
-        maxExtenderAddition = 0.0
-        clawRangeExpansion = 0.0
-
         toggleExtender(
             ExtenderState.PreLoad,
             force = true
@@ -129,19 +126,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         backingClawOpenerLeft.runPeriodic()
     }
 
-    fun incrementClawAddition()
-    {
-        clawRangeExpansion = (clawRangeExpansion + 0.025)
-            .coerceIn(0.0, 0.2)
-    }
-
-    fun decrementClawAddition()
-    {
-        clawRangeExpansion = (clawRangeExpansion - 0.025)
-            .coerceIn(0.0, 0.2)
-    }
-
-    fun incrementAddition()
+    /*fun incrementAddition()
     {
         maxExtenderAddition = (maxExtenderAddition - 0.01)
             .coerceIn(-0.1, 0.1)
@@ -153,7 +138,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         maxExtenderAddition = (maxExtenderAddition + 0.01)
             .coerceIn(-0.1, 0.1)
         toggleExtender(extenderState)
-    }
+    }*/
 
     fun toggleExtender(state: ExtenderState? = null, force: Boolean = false)
     {
@@ -208,14 +193,16 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
 
         val targetPosition = if (effectiveOn == ClawStateUpdate.Left)
         {
-            if (state == ClawState.Closed)
+            /*if (state == ClawState.Closed)
                 position - clawRangeExpansion else
-                position + clawRangeExpansion
+                position + clawRangeExpansion*/
+            position
         } else
         {
-            if (state == ClawState.Closed)
+            /*if (state == ClawState.Closed)
                 position + clawRangeExpansion else
-                position - clawRangeExpansion
+                position - clawRangeExpansion*/
+            position
         }
 
         if (force)
