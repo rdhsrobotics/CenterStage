@@ -115,6 +115,7 @@ abstract class AbstractAutoPipeline(
             multipleTelemetry.addData("Input", 0.0)
             multipleTelemetry.addData("Output", 0.0)
             multipleTelemetry.addData("Velocity", 0.0)
+            multipleTelemetry.addData("Prev. Loop Time", 0)
 
             runCatching {
                 multipleTelemetry.addData(

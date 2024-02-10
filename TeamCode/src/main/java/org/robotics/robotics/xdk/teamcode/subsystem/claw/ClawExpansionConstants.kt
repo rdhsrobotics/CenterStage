@@ -14,8 +14,8 @@ object ClawExpansionConstants
     @JvmField var CLAW_FINGER_PROFILE_DECEL = 50.0
 
     @JvmField var CLOSED_LEFT_CLAW = 0.5
-    @JvmField var OPEN_LEFT_CLAW = 0.7
+    @JvmField var OPEN_LEFT_CLAW = 0.65
 
     @JvmField var CLOSED_RIGHT_CLAW = 0.9
-    @JvmField var OPEN_RIGHT_CLAW = 0.7
+    @JvmField var OPEN_RIGHT_CLAW = 0.76
 }

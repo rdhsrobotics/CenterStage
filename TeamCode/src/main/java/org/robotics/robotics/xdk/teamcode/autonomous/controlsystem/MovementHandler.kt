@@ -1,5 +1,6 @@
 package org.robotics.robotics.xdk.teamcode.autonomous.controlsystem
 
+import com.qualcomm.hardware.lynx.LynxModule
 import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
@@ -119,10 +120,10 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
             .customErrorCalculator {
                 shortestAngleDistance(setPoint, it)
             }
-            .customVelocityCalculator {
+            /*.customVelocityCalculator {
                 opMode.drivebase.backingImu().getRobotAngularVelocity(AngleUnit.DEGREES)
                     .zRotationRate.toDouble()
-            },
+            }*/,
         currentPositionBlock = opMode.drivebase.backingImu()::normalizedYaw,
         setMotorPowers = { _, power ->
             setMotorPowers(power)
@@ -189,6 +190,7 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
         }
     )
 
+    private val modules by lazy { opMode.hardwareMap.getAll(LynxModule::class.java) }
     private fun driveBasePID(
         controller: PIDController,
         currentPositionBlock: () -> Double,
@@ -206,6 +208,12 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
             requiredSampleTime = 500L
         )
 
+        modules.forEach {
+            it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
+        }
+
+        var previousLoopTime = 0L
+
         while (true)
         {
             if (opMode.isStopRequested)
@@ -214,10 +222,16 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
                 return
             }
 
+            modules.forEach {
+                it.clearBulkCache()
+            }
+
+            val thing = System.currentTimeMillis()
+
             val realCurrentPosition = currentPositionBlock()
             val imuHeading = opMode.drivebase.getIMUYawPitchRollAngles().getYaw(AngleUnit.DEGREES)
 
-            if (!hasResultedInCanContinue)
+            /*if (!hasResultedInCanContinue)
             {
                 evictingSample.submit(imuHeading)
                 when (evictingSample.analyze())
@@ -233,7 +247,7 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
                     }
                     EvictingSample.AnalyzeResult.NotNeeded -> { }
                 }
-            }
+            }*/
 
             if (controller.atSetPoint(realCurrentPosition))
             {
@@ -249,11 +263,18 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
             val rampUp = (millisDiff / AutoPipelineUtilities.RAMP_UP_SPEED)
                 .coerceIn(0.0, 1.0)
 
-            val pid = controller.calculate(realCurrentPosition, imuHeading)
+            val pid = controller.calculate(realCurrentPosition, imuHeading, previousLoopTime)
             val finalPower = pid.coerceIn(-1.0..1.0)
             setMotorPowers(controller, rampUp * finalPower)
 
+            previousLoopTime = System.currentTimeMillis() - thing
+
+            opMode.multipleTelemetry.addData("Prev. Loop Time", previousLoopTime)
             opMode.multipleTelemetry.update()
+        }
+
+        modules.forEach {
+            it.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
         }
 
         opMode.stopAndResetMotors()

@@ -43,7 +43,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
     val headingFixedTowardsSpikeMark = GlobalConstants.TurnToSpikeMark *
             when (gameObjectTapeSide) {
                 TapeSide.Right -> -1.0
-                TapeSide.Left -> 1.2
+                TapeSide.Left -> 1.0
                 else -> 0.0
             }
 
@@ -54,7 +54,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
         }
 
         pipe.turn(headingFixedTowardsSpikeMark)
-        pipe.move(-75.0, headingFixedTowardsSpikeMark)
+        pipe.move(-20.0, headingFixedTowardsSpikeMark)
     }
 
     single("deposit pixel") {
@@ -69,7 +69,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
             return@single
         }
 
-        pipe.move(75.0, headingFixedTowardsSpikeMark)
+        pipe.move(20.0, headingFixedTowardsSpikeMark)
     }
 
     simultaneous("move back from spike mark and retract") {
