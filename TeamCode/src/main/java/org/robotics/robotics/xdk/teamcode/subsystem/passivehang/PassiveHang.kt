@@ -8,8 +8,7 @@ import org.robotics.robotics.xdk.teamcode.autonomous.hardware
 
 class PassiveHang(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
-    private lateinit var leftBackingServo: Servo
-    private lateinit var rightBackingServo: Servo
+    private lateinit var servo: Servo
 
     override fun composeStageContext() = object : StageContext
     {
@@ -31,8 +30,7 @@ class PassiveHang(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun deploy()
     {
-        leftBackingServo.position = PassiveHangConstants.LEFT_RETRACTOR_DEPLOYED
-        rightBackingServo.position = PassiveHangConstants.RIGHT_RETRACTOR_DEPLOYED
+        servo.position = PassiveHangConstants.RETRACTOR_DEPLOYED
         hangState = PassiveHangState.Deployed
     }
 
@@ -41,15 +39,13 @@ class PassiveHang(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun arm()
     {
-        leftBackingServo.position = PassiveHangConstants.LEFT_RETRACTOR_ARMED
-        rightBackingServo.position = PassiveHangConstants.RIGHT_RETRACTOR_ARMED
+        servo.position = PassiveHangConstants.RETRACTOR_ARMED
         hangState = PassiveHangState.Armed
     }
 
     override fun doInitialize()
     {
-        leftBackingServo = opMode.hardware<Servo>("leftHangRetractor")
-        rightBackingServo = opMode.hardware<Servo>("rightHangRetractor")
+        servo = opMode.hardware<Servo>("hang")
         arm()
     }
 
