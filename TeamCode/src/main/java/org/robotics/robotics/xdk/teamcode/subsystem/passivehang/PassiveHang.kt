@@ -1,14 +1,18 @@
 package org.robotics.robotics.xdk.teamcode.subsystem.passivehang
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.Servo
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
+import org.robotics.robotics.xdk.teamcode.subsystem.stopAndResetEncoder
 
 class PassiveHang(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
-    private lateinit var servo: Servo
+    private lateinit var actuator: DcMotorEx
 
     override fun composeStageContext() = object : StageContext
     {
@@ -30,7 +34,10 @@ class PassiveHang(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun deploy()
     {
-        servo.position = PassiveHangConstants.RETRACTOR_DEPLOYED
+        actuator.power = 1.0
+        actuator.targetPosition = PassiveHangConstants.RETRACTOR_DEPLOYED
+        actuator.mode = DcMotor.RunMode.RUN_TO_POSITION
+
         hangState = PassiveHangState.Deployed
     }
 
@@ -39,19 +46,26 @@ class PassiveHang(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun arm()
     {
-        servo.position = PassiveHangConstants.RETRACTOR_ARMED
+        actuator.power = 1.0
+        actuator.targetPosition = 0
+        actuator.mode = DcMotor.RunMode.RUN_TO_POSITION
+
         hangState = PassiveHangState.Armed
     }
 
     override fun doInitialize()
     {
-        servo = opMode.hardware<Servo>("hang")
-        arm()
+        actuator = opMode.hardware<DcMotorEx>("hang")
+        actuator.direction = DcMotorSimple.Direction.FORWARD
+
+        actuator.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        actuator.stopAndResetEncoder()
+        actuator.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }
 
     override fun dispose()
     {
-        arm()
+
     }
 
     // Servos don't have isBusy states
