@@ -1,16 +1,15 @@
-package org.robotics.robotics.xdk.teamcode.subsystem.passivehang
+package org.robotics.robotics.xdk.teamcode.subsystem.hang
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import com.qualcomm.robotcore.hardware.Servo
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
 import org.robotics.robotics.xdk.teamcode.subsystem.stopAndResetEncoder
 
-class PassiveHang(private val opMode: LinearOpMode) : AbstractSubsystem()
+class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
     private lateinit var actuator: DcMotorEx
 
@@ -35,7 +34,7 @@ class PassiveHang(private val opMode: LinearOpMode) : AbstractSubsystem()
     fun deploy()
     {
         actuator.power = 1.0
-        actuator.targetPosition = PassiveHangConstants.RETRACTOR_DEPLOYED
+        actuator.targetPosition = HangConstants.RETRACTED_ENCODER_TICKS
         actuator.mode = DcMotor.RunMode.RUN_TO_POSITION
 
         hangState = PassiveHangState.Deployed

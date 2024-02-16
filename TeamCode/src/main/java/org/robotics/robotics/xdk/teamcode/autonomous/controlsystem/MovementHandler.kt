@@ -208,9 +208,6 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
             requiredSampleTime = 500L
         )
 
-        modules.forEach {
-            it.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
-        }
 
         var previousLoopTime = 0L
 
@@ -222,9 +219,6 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
                 return
             }
 
-            modules.forEach {
-                it.clearBulkCache()
-            }
 
             val thing = System.currentTimeMillis()
 
@@ -271,10 +265,6 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
 
             opMode.multipleTelemetry.addData("Prev. Loop Time", previousLoopTime)
             opMode.multipleTelemetry.update()
-        }
-
-        modules.forEach {
-            it.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
         }
 
         opMode.stopAndResetMotors()

@@ -12,7 +12,7 @@ import org.robotics.robotics.xdk.teamcode.subsystem.drone.DroneLauncher
 import org.robotics.robotics.xdk.teamcode.subsystem.Drivebase
 import org.robotics.robotics.xdk.teamcode.subsystem.Elevator
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
-import org.robotics.robotics.xdk.teamcode.subsystem.passivehang.PassiveHang
+import org.robotics.robotics.xdk.teamcode.subsystem.hang.Hang
 import kotlin.math.abs
 
 /**
@@ -33,7 +33,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
     private val paperPlaneLauncher by lazy { DroneLauncher(this) }
     private val elevator by lazy { Elevator(this) }
     private val extendableClaw by lazy { ExtendableClaw(this) }
-    private val passiveHang by lazy { PassiveHang(this) }
+    private val hang by lazy { Hang(this) }
 
     abstract fun driveRobot(
         drivebase: Drivebase,
@@ -45,7 +45,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
     {
         register(
             drivebase, paperPlaneLauncher, elevator,
-            extendableClaw, passiveHang,
+            extendableClaw, hang,
 
             gp1Commands, gp2Commands
         )
@@ -219,11 +219,11 @@ gp1Commands
         gp1Commands
             .where(ButtonType.PlayStationLogo)
             .triggers {
-                if (passiveHang.hangState == PassiveHang.PassiveHangState.Deployed)
+                if (hang.hangState == Hang.PassiveHangState.Deployed)
                 {
                     bundleExecutionInProgress = false
 
-                    passiveHang.arm()
+                    hang.arm()
                     extendableClaw.toggleExtender(
                         ExtendableClaw.ExtenderState.Deposit
                     )
@@ -232,7 +232,7 @@ gp1Commands
 
                 bundleExecutionInProgress = true
 
-                passiveHang.deploy()
+                hang.deploy()
                 extendableClaw.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Both,
                     ExtendableClaw.ClawState.Closed

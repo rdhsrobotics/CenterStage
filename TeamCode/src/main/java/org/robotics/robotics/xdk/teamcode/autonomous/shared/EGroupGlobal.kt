@@ -54,7 +54,6 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
         }
 
         pipe.turn(headingFixedTowardsSpikeMark)
-        pipe.move(-20.0, headingFixedTowardsSpikeMark)
     }
 
     single("deposit pixel") {
@@ -68,8 +67,6 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
         {
             return@single
         }
-
-        pipe.move(20.0, headingFixedTowardsSpikeMark)
     }
 
     simultaneous("move back from spike mark and retract") {
@@ -144,15 +141,15 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     val strafePositions = mapOf(
         // Red values
         Direction.Left to mapOf(
-            TapeSide.Left to 1000,
-            TapeSide.Middle to 950,
-            TapeSide.Right to 800
+            TapeSide.Left to 600,
+            TapeSide.Middle to 570,
+            TapeSide.Right to 480
         ),
         // Blue values
         Direction.Right to mapOf(
-            TapeSide.Left to 800,
-            TapeSide.Middle to 950,
-            TapeSide.Right to 100
+            TapeSide.Left to 480,
+            TapeSide.Middle to 570,
+            TapeSide.Right to 600
         )
     )
 
