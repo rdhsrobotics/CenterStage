@@ -1,24 +1,18 @@
 package org.robotics.robotics.xdk.teamcode
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.hardware.Gamepad
-import com.qualcomm.robotcore.hardware.IMU
 import io.liftgate.robotics.mono.Mono.commands
 import io.liftgate.robotics.mono.gamepad.ButtonType
 import io.liftgate.robotics.mono.gamepad.GamepadCommands
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import io.liftgate.robotics.mono.subsystem.System
-import org.firstinspires.ftc.vision.VisionPortal
-import org.robotics.robotics.xdk.teamcode.autonomous.detection.TeamColor
-import org.robotics.robotics.xdk.teamcode.autonomous.detection.VisionPipeline
-import org.robotics.robotics.xdk.teamcode.autonomous.hardware
 import org.robotics.robotics.xdk.teamcode.autonomous.scheduleAsyncExecution
-import org.robotics.robotics.xdk.teamcode.subsystem.AirplaneLauncher
+import org.robotics.robotics.xdk.teamcode.subsystem.drone.DroneLauncher
 import org.robotics.robotics.xdk.teamcode.subsystem.Drivebase
 import org.robotics.robotics.xdk.teamcode.subsystem.Elevator
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
+import org.robotics.robotics.xdk.teamcode.subsystem.hang.Hang
 import kotlin.math.abs
 
 /**
@@ -36,9 +30,10 @@ abstract class AbstractTeleOp : LinearOpMode(), System
     private val gp2Commands by lazy { commands(gamepad2) }
 
     private val drivebase by lazy { Drivebase(this) }
-    private val paperPlaneLauncher by lazy { AirplaneLauncher(this) }
+    private val paperPlaneLauncher by lazy { DroneLauncher(this) }
     private val elevator by lazy { Elevator(this) }
     private val extendableClaw by lazy { ExtendableClaw(this) }
+    private val hang by lazy { Hang(this) }
 
     abstract fun driveRobot(
         drivebase: Drivebase,
@@ -50,7 +45,9 @@ abstract class AbstractTeleOp : LinearOpMode(), System
     {
         register(
             drivebase, paperPlaneLauncher, elevator,
-            extendableClaw, gp1Commands, gp2Commands
+            extendableClaw, hang,
+
+            gp1Commands, gp2Commands
         )
 
         val driverOp = GamepadEx(gamepad1)
@@ -141,7 +138,8 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 )
             }
 
-        gp1Commands
+        /* // extender expansion ranges
+gp1Commands
             .where(ButtonType.PlayStationTouchpad)
             .onlyWhen { gamepad1.touchpad_finger_1_y <= 0.0 }
             .triggers {
@@ -156,9 +154,6 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                 extendableClaw.incrementAddition()
             }
             .whenPressedOnce()
-
-        /* // extender expansion ranges
-
 
          // claw expansion ranges
          gp1Commands
@@ -186,20 +181,6 @@ abstract class AbstractTeleOp : LinearOpMode(), System
                  )
              }
              .whenPressedOnce()*/
-
-        // going underneath stage door. drive should be able to take over:
-        gp1Commands
-            .where(ButtonType.BumperRight)
-            .triggers {
-                extendableClaw.toggleExtender(
-                    ExtendableClaw.ExtenderState.Intermediate
-                )
-            }
-            .andIsHeldUntilReleasedWhere {
-                extendableClaw.toggleExtender(
-                    ExtendableClaw.ExtenderState.Deposit
-                )
-            }
 
         // bumper commands for opening closing claw fingers individually
         gp2Commands
@@ -236,34 +217,29 @@ abstract class AbstractTeleOp : LinearOpMode(), System
 
         // lift motor toggles
         gp1Commands
-            .where(ButtonType.PlayStationShare)
-            .onlyWhen { gamepad1.left_bumper }
-            .triggers {
-                elevator.toggleHangLift(0.7)
-            }
-            .whenPressedOnce()
-
-        gp1Commands
-            .where(ButtonType.PlayStationOptions)
-            .onlyWhen { gamepad1.left_bumper }
-            .triggers {
-                elevator.toggleHangLift(0.0)
-            }
-            .whenPressedOnce()
-
-        // lift motor toggles
-        gp1Commands
             .where(ButtonType.PlayStationLogo)
             .triggers {
-                elevator.resetHang()
-            }
-            .whenPressedOnce()
+                if (hang.hangState == Hang.PassiveHangState.Deployed)
+                {
+                    bundleExecutionInProgress = false
 
-        gp1Commands
-            .where(ButtonType.PlayStationOptions)
-            .onlyWhen { gamepad1.left_bumper }
-            .triggers {
-                elevator.toggleHangLift(0.0)
+                    hang.arm()
+                    extendableClaw.toggleExtender(
+                        ExtendableClaw.ExtenderState.Deposit
+                    )
+                    return@triggers
+                }
+
+                bundleExecutionInProgress = true
+
+                hang.deploy()
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawState.Closed
+                )
+                extendableClaw.toggleExtender(
+                    ExtendableClaw.ExtenderState.PreLoad
+                )
             }
             .whenPressedOnce()
 

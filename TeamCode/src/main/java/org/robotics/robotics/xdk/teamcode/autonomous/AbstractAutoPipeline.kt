@@ -6,13 +6,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.DistanceSensor
-import com.qualcomm.robotcore.hardware.HardwareDevice
 import io.liftgate.robotics.mono.Mono
 import io.liftgate.robotics.mono.pipeline.ExecutionGroup
-import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.robotics.robotics.xdk.teamcode.autonomous.contexts.BothClawFinger
 import org.robotics.robotics.xdk.teamcode.autonomous.contexts.ExtenderContext
 import org.robotics.robotics.xdk.teamcode.autonomous.contexts.LeftClawFinger
@@ -20,17 +17,13 @@ import org.robotics.robotics.xdk.teamcode.autonomous.contexts.RightClawFinger
 import org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.MovementHandler
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TapeSide
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TeamColor
-import org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.PIDController
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.VisionPipeline
 import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
-import org.robotics.robotics.xdk.teamcode.autonomous.utilities.AutoPipelineUtilities
-import org.robotics.robotics.xdk.teamcode.subsystem.AirplaneLauncher
+import org.robotics.robotics.xdk.teamcode.subsystem.drone.DroneLauncher
 import org.robotics.robotics.xdk.teamcode.subsystem.Drivebase
 import org.robotics.robotics.xdk.teamcode.subsystem.Elevator
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 import kotlin.concurrent.thread
-import kotlin.math.absoluteValue
-import kotlin.math.sign
 
 abstract class AbstractAutoPipeline(
     private val autonomousProfile: AutonomousProfile,
@@ -55,7 +48,7 @@ abstract class AbstractAutoPipeline(
     internal val elevatorSubsystem by lazy { Elevator(this) }
     internal val clawSubsystem by lazy { ExtendableClaw(this) }
 
-    private val airplaneSubsystem by lazy { AirplaneLauncher(this) }
+    private val airplaneSubsystem by lazy { DroneLauncher(this) }
     private val visionPipeline by lazy { VisionPipeline(teamColor, this) }
 
     val multipleTelemetry by lazy {
@@ -122,6 +115,7 @@ abstract class AbstractAutoPipeline(
             multipleTelemetry.addData("Input", 0.0)
             multipleTelemetry.addData("Output", 0.0)
             multipleTelemetry.addData("Velocity", 0.0)
+            multipleTelemetry.addData("Prev. Loop Time", 0)
 
             runCatching {
                 multipleTelemetry.addData(
