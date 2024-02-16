@@ -71,13 +71,13 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
 
     simultaneous("move back from spike mark and retract") {
         single("retract extender and close claw") {
-            // wait for the robot to start moving
-            Thread.sleep(250L)
-
             pipe.clawSubsystem.toggleExtender(
                 ExtendableClaw.ExtenderState.Deposit,
                 force = true
             )
+
+            // wait for the robot to start moving
+            Thread.sleep(150L)
 
             pipe.clawSubsystem.updateClawState(
                 ExtendableClaw.ClawStateUpdate.Right,
@@ -87,6 +87,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
         }
 
         single("move back from spike mark") {
+            Thread.sleep(300L)
             pipe.turn(0.0)
 
             if (isSpikeMarkOnly)
