@@ -53,19 +53,19 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
 
     public static int CAM_VIEW = 0;
 
-    public static final TapeSide FALLBACK_DETECTION = TapeSide.Right;
+    public static final TapeSide FALLBACK_DETECTION = TapeSide.Left;
     public static final TapeSide[] DETECTION_ZONES = new TapeSide[]{
-            TapeSide.Left,
+            TapeSide.Right,
             TapeSide.Middle
     };
 
     public static int LR_B = 0;
-    public static int LR_G = 140;
+    public static int LR_G = 20;
     public static int LR_R = 100;
 
-    public static int UR_B = 255;
+    public static int UR_B = 4;
     public static int UR_G = 250;
-    public static int UR_R = 230;
+    public static int UR_R = 255;
 
     private final Scalar lowerBlueBound = new Scalar(90, 100, 100);
     private final Scalar upperBlueBound = new Scalar(130, 255, 255);
@@ -140,17 +140,17 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
                 new Rect(
                         1,
                         topOffset,
-                        (int) ((.75 * mask.cols()) - 1),
+                        (int) ((.65 * mask.cols()) - 1),
                         bottomOffset
                 )
         );
 
         detectionRegions.put(
-                TapeSide.Left,
+                TapeSide.Right,
                 new Rect(
-                        (int) ((.75 * mask.cols())),
+                        (int) ((.65 * mask.cols())),
                         topOffset,
-                        (int) ((0.25 * mask.cols()) - 1),
+                        (int) ((0.35 * mask.cols()) - 1),
                         bottomOffset
                 )
         );

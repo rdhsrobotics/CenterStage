@@ -65,7 +65,7 @@ class Drivebase(private val opMode: LinearOpMode) : AbstractSubsystem()
         imu.initialize(
             IMU.Parameters(
                 RevHubOrientationOnRobot(
-                    RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD,
+                    RevHubOrientationOnRobot.LogoFacingDirection.UP,
                     RevHubOrientationOnRobot.UsbFacingDirection.RIGHT
                 )
             )

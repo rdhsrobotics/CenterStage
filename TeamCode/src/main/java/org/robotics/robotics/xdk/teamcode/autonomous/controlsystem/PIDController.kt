@@ -11,7 +11,7 @@ class PIDController(
     private val kI: Double,
     private val kD: Double,
     val setPoint: Double,
-    private val setPointTolerance: Int,
+    private val setPointTolerance: Double,
     private val minimumVelocity: Double,
     private val telemetry: Telemetry,
     val maintainHeading: Boolean = false,

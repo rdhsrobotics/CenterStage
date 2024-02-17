@@ -9,7 +9,7 @@ object GlobalConstants
     var MoveForwardToSpikeMark = 650.0
 
     @JvmField
-    var FarMoveTowardsBackboard = 3 * 615.0
+    var FarMoveTowardsBackboard = (3 * 615.0) - 20.0
     @JvmField
     var CloseMoveTowardsBackboard = 615.0
     @JvmField

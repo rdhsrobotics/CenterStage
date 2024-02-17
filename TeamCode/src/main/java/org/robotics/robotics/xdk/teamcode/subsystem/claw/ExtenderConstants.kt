@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.config.Config
 object ExtenderConstants
 {
     @JvmField var PRELOAD_EXTENDER_POSITION = 1.0
-    @JvmField var MIN_EXTENDER_POSITION = 0.72
-    @JvmField var INTERMEDIATE_EXTENDER_POSITION = 0.6
-    @JvmField var MAX_EXTENDER_POSITION = 0.5
+    @JvmField var MIN_EXTENDER_POSITION = 0.85
+    @JvmField var INTERMEDIATE_EXTENDER_POSITION = 0.7
+    @JvmField var MAX_EXTENDER_POSITION = 0.63
 }

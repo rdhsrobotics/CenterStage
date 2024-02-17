@@ -25,7 +25,9 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
 {
     val amountToMoveToSpikeMark = -GlobalConstants.MoveForwardToSpikeMark +
             // if it's left or right, move a little bit LESS
-            if (relativeBackboardDirectionAtRobotStart.oppositeOf().matches(gameObjectTapeSide)) 100 else 0
+            if (relativeBackboardDirectionAtRobotStart.oppositeOf()
+                    .matches(gameObjectTapeSide)
+            ) 100 else 0
 
     simultaneous("move forward and intake") {
         single("intake") {
@@ -41,7 +43,8 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
     }
 
     val headingFixedTowardsSpikeMark = GlobalConstants.TurnToSpikeMark *
-            when (gameObjectTapeSide) {
+            when (gameObjectTapeSide)
+            {
                 TapeSide.Right -> -1.0
                 TapeSide.Left -> 1.0
                 else -> 0.0
@@ -105,7 +108,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
     }
 
     single("turn towards backboard") {
-        pipe.turn(relativeBackboardDirectionAtRobotStart.heading)
+        pipe.turn(relativeBackboardDirectionAtRobotStart.heading + (if (relativeBackboardDirectionAtRobotStart == Direction.Left) -3.0 else 3.0))
     }
 }
 
@@ -120,7 +123,7 @@ fun ExecutionGroup.moveTowardsBackboard(
         pipe.move(
             -(if (startPosition == StartPosition.Far)
                 GlobalConstants.FarMoveTowardsBackboard else
-                    GlobalConstants.CloseMoveTowardsBackboard),
+                GlobalConstants.CloseMoveTowardsBackboard),
             direction.heading
         )
     }
@@ -142,22 +145,24 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     val strafePositions = mapOf(
         // Red values
         Direction.Left to mapOf(
-            TapeSide.Left to 600,
+            TapeSide.Left to 720,
             TapeSide.Middle to 570,
-            TapeSide.Right to 480
+            TapeSide.Right to 380
         ),
         // Blue values
         Direction.Right to mapOf(
-            TapeSide.Left to 480,
-            TapeSide.Middle to 570,
-            TapeSide.Right to 600
+            TapeSide.Left to 600,
+            TapeSide.Middle to 790,
+            TapeSide.Right to 990
         )
     )
 
-    val strafeFromParkingToBackboard = strafePositions[relativeBackboardDirectionAtParkingZone]!![tapeSide]!!
+    val strafeFromParkingToBackboard =
+        strafePositions[relativeBackboardDirectionAtParkingZone]!![tapeSide]!!
     single("strafe into position") {
         // strafe either left or right based on where the backboard is relative to the robot
-        val strafeDirectionFactor = if (relativeBackboardDirectionAtParkingZone == Direction.Left) -1.0 else 1.0
+        val strafeDirectionFactor =
+            if (relativeBackboardDirectionAtParkingZone == Direction.Left) -1.0 else 1.0
         pipe.strafe(-strafeFromParkingToBackboard * strafeDirectionFactor)
     }
 
@@ -213,7 +218,8 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
             single("strafe back to parking zone") {
                 // strafe into the parking zone with the direction based on where the backboard
                 // was relative to the robot when it was previously in parking
-                val strafeDirectionFactor = if (relativeBackboardDirectionAtParkingZone == Direction.Left) 1.0 else -1.0
+                val strafeDirectionFactor =
+                    if (relativeBackboardDirectionAtParkingZone == Direction.Left) 1.0 else -1.0
                 pipe.strafe(-strafeFromParkingToBackboard * strafeDirectionFactor)
             }
 

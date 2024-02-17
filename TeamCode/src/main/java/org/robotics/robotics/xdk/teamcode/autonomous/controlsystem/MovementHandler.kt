@@ -263,8 +263,8 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
 
             previousLoopTime = System.currentTimeMillis() - thing
 
-            opMode.multipleTelemetry.addData("Prev. Loop Time", previousLoopTime)
-            opMode.multipleTelemetry.update()
+//            opMode.multipleTelemetry.addData("Prev. Loop Time", previousLoopTime)
+//            opMode.multipleTelemetry.update()
         }
 
         opMode.stopAndResetMotors()

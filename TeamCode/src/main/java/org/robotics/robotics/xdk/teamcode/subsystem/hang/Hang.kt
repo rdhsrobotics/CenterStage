@@ -12,6 +12,7 @@ import org.robotics.robotics.xdk.teamcode.subsystem.stopAndResetEncoder
 class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
     private lateinit var actuator: DcMotorEx
+    private lateinit var actuatorTwo: DcMotorEx
 
     override fun composeStageContext() = object : StageContext
     {
@@ -22,10 +23,18 @@ class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
         }
     }
 
-    var hangState = PassiveHangState.Armed
+    var hangState = PassiveHangState.Braking
     enum class PassiveHangState
     {
-        Armed, Deployed
+        Armed, Deployed, Braking
+    }
+
+    fun brake()
+    {
+        actuator.power = 0.0
+        actuatorTwo.power = 0.0
+
+        hangState = PassiveHangState.Braking
     }
 
     /**
@@ -33,9 +42,16 @@ class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun deploy()
     {
-        actuator.power = 1.0
-        actuator.targetPosition = HangConstants.RETRACTED_ENCODER_TICKS
-        actuator.mode = DcMotor.RunMode.RUN_TO_POSITION
+        if (hangState != PassiveHangState.Braking)
+        {
+            return
+        }
+
+        listOf(actuator, actuatorTwo).forEach {
+            it.power = 1.0
+            it.targetPosition = HangConstants.RETRACTED_ENCODER_TICKS
+            it.mode = DcMotor.RunMode.RUN_TO_POSITION
+        }
 
         hangState = PassiveHangState.Deployed
     }
@@ -45,9 +61,16 @@ class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun arm()
     {
-        actuator.power = 1.0
-        actuator.targetPosition = 0
-        actuator.mode = DcMotor.RunMode.RUN_TO_POSITION
+        if (hangState != PassiveHangState.Braking)
+        {
+            return
+        }
+
+        listOf(actuator, actuatorTwo).forEach {
+            it.power = 1.0
+            it.targetPosition = 0
+            it.mode = DcMotor.RunMode.RUN_TO_POSITION
+        }
 
         hangState = PassiveHangState.Armed
     }
@@ -60,6 +83,13 @@ class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
         actuator.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         actuator.stopAndResetEncoder()
         actuator.mode = DcMotor.RunMode.RUN_USING_ENCODER
+
+        actuatorTwo = opMode.hardware<DcMotorEx>("hangTwo")
+        actuatorTwo.direction = DcMotorSimple.Direction.FORWARD
+
+        actuatorTwo.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        actuatorTwo.stopAndResetEncoder()
+        actuatorTwo.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }
 
     override fun dispose()

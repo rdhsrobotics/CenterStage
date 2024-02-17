@@ -124,7 +124,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
 
                 extendableClaw.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Both,
-                    ExtendableClaw.ClawState.VeryOpen
+                    ExtendableClaw.ClawState.MosaicFix
                 )
             }
             .andIsHeldUntilReleasedWhere {
@@ -217,29 +217,28 @@ gp1Commands
 
         // lift motor toggles
         gp1Commands
-            .where(ButtonType.PlayStationLogo)
+            .where(ButtonType.PlayStationTriangle)
             .triggers {
                 if (hang.hangState == Hang.PassiveHangState.Deployed)
                 {
-                    bundleExecutionInProgress = false
-
-                    hang.arm()
-                    extendableClaw.toggleExtender(
-                        ExtendableClaw.ExtenderState.Deposit
-                    )
+                    hang.brake()
                     return@triggers
                 }
 
-                bundleExecutionInProgress = true
-
                 hang.deploy()
-                extendableClaw.updateClawState(
-                    ExtendableClaw.ClawStateUpdate.Both,
-                    ExtendableClaw.ClawState.Closed
-                )
-                extendableClaw.toggleExtender(
-                    ExtendableClaw.ExtenderState.PreLoad
-                )
+            }
+            .whenPressedOnce()
+
+        gp1Commands
+            .where(ButtonType.PlayStationCross)
+            .triggers {
+                if (hang.hangState == Hang.PassiveHangState.Armed)
+                {
+                    hang.brake()
+                    return@triggers
+                }
+
+                hang.arm()
             }
             .whenPressedOnce()
 
@@ -289,7 +288,7 @@ gp1Commands
 
                 extendableClaw.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Both,
-                    ExtendableClaw.ClawState.Open
+                    ExtendableClaw.ClawState.Intake
                 )
             }
             .andIsHeldUntilReleasedWhere {

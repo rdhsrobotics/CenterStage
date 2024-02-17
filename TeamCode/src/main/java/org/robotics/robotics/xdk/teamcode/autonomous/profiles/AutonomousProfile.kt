@@ -19,6 +19,7 @@ sealed class AutonomousProfile(
 {
     open fun buildExecutionGroup(): ExecutionGroup.(AbstractAutoPipeline, TapeSide) -> Unit =
         context@{ opMode, tapeSide ->
+//            val tapeSide = TapeSide.Right
             depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
                 pipe = opMode,
                 gameObjectTapeSide = tapeSide,

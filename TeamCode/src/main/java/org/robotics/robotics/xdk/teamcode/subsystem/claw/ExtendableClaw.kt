@@ -10,14 +10,6 @@ import org.robotics.robotics.xdk.teamcode.subsystem.motionprofile.ProfileConstra
 
 class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
-    /*companion object
-    {
-        @JvmStatic
-        var maxExtenderAddition = 0.0
-        @JvmStatic
-        var clawRangeExpansion = 0.0
-    }*/
-
     lateinit var backingExtender: MotionProfiledServo
 
     private val clawFingerMPConstraints = {
@@ -46,10 +38,15 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         val calculatePosition: (ClawType) -> Double
     )
     {
-        VeryOpen({
+        MosaicFix({
             if (it == ClawType.Left)
                 ClawExpansionConstants.OPEN_LEFT_CLAW + 0.2 else
                 ClawExpansionConstants.OPEN_RIGHT_CLAW - 0.2
+        }),
+        Intake({
+            if (it == ClawType.Left)
+                ClawExpansionConstants.OPEN_LEFT_CLAW_INTAKE else
+                ClawExpansionConstants.OPEN_RIGHT_CLAW_INTAKE
         }),
         Open({
             if (it == ClawType.Left)
@@ -191,27 +188,13 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
             this.leftClawState = state
         }
 
-        val targetPosition = if (effectiveOn == ClawStateUpdate.Left)
-        {
-            /*if (state == ClawState.Closed)
-                position - clawRangeExpansion else
-                position + clawRangeExpansion*/
-            position
-        } else
-        {
-            /*if (state == ClawState.Closed)
-                position + clawRangeExpansion else
-                position - clawRangeExpansion*/
-            position
-        }
-
         if (force)
         {
-            servo.setTarget(targetPosition)
+            servo.setTarget(position)
             return
         }
 
-        servo.setMotionProfileTarget(targetPosition)
+        servo.setMotionProfileTarget(position)
     }
 
     override fun isCompleted() = true
