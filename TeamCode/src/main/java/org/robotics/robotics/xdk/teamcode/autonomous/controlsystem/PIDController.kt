@@ -11,7 +11,7 @@ class PIDController(
     private val kI: Double,
     private val kD: Double,
     val setPoint: Double,
-    private val setPointTolerance: Int,
+    private val setPointTolerance: Double,
     private val minimumVelocity: Double,
     private val telemetry: Telemetry,
     val maintainHeading: Boolean = false,
@@ -39,7 +39,7 @@ class PIDController(
      * Calculates the current power based on the
      * given input and robot heading.
      */
-    fun calculate(currentValue: Double, heading: Double): Double
+    fun calculate(currentValue: Double, heading: Double, velocityMultiplier: Long = 1L): Double
     {
         val error = customErrorCalculator?.invoke(currentValue)
             ?: (setPoint - currentValue)
@@ -62,8 +62,8 @@ class PIDController(
         previousError = error
         totalError += error
 
-        velocity = customVelocityCalculator?.invoke()
-            ?: (prevValue - currentValue)
+        velocity = (customVelocityCalculator?.invoke()
+            ?: ((prevValue - currentValue) / velocityMultiplier))
         previousValue = currentValue
 
         currentRobotHeading = heading

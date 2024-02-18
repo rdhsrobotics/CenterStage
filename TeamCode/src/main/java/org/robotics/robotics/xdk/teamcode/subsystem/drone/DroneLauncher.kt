@@ -1,4 +1,4 @@
-package org.robotics.robotics.xdk.teamcode.subsystem
+package org.robotics.robotics.xdk.teamcode.subsystem.drone
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.Servo
@@ -7,7 +7,7 @@ import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ClawExpansionConstants
 
-class AirplaneLauncher(private val opMode: LinearOpMode) : AbstractSubsystem()
+class DroneLauncher(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
     private lateinit var backingServo: Servo
 
@@ -22,7 +22,7 @@ class AirplaneLauncher(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun launch()
     {
-        backingServo.position = ClawExpansionConstants.MAX_PLANE_POSITION
+        backingServo.position = DroneLauncherConstants.MAX_PLANE_POSITION
     }
 
     /**
@@ -30,7 +30,7 @@ class AirplaneLauncher(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun reset()
     {
-        backingServo.position = ClawExpansionConstants.DEFAULT_PLANE_POSITION
+        backingServo.position = DroneLauncherConstants.DEFAULT_PLANE_POSITION
     }
 
     override fun doInitialize()
