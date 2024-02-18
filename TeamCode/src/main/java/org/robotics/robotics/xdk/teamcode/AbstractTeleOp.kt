@@ -1,23 +1,17 @@
 package org.robotics.robotics.xdk.teamcode
 
 import com.arcrobotics.ftclib.gamepad.GamepadEx
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.hardware.Gamepad
-import com.qualcomm.robotcore.hardware.IMU
 import io.liftgate.robotics.mono.Mono.commands
 import io.liftgate.robotics.mono.gamepad.ButtonType
 import io.liftgate.robotics.mono.gamepad.GamepadCommands
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import io.liftgate.robotics.mono.subsystem.System
-import org.firstinspires.ftc.vision.VisionPortal
-import org.robotics.robotics.xdk.teamcode.autonomous.detection.TeamColor
-import org.robotics.robotics.xdk.teamcode.autonomous.detection.VisionPipeline
-import org.robotics.robotics.xdk.teamcode.autonomous.hardware
 import org.robotics.robotics.xdk.teamcode.autonomous.scheduleAsyncExecution
 import org.robotics.robotics.xdk.teamcode.subsystem.AirplaneLauncher
 import org.robotics.robotics.xdk.teamcode.subsystem.Drivebase
 import org.robotics.robotics.xdk.teamcode.subsystem.Elevator
+import org.robotics.robotics.xdk.teamcode.subsystem.MathUtils
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 import kotlin.math.abs
 
@@ -74,7 +68,10 @@ abstract class AbstractTeleOp : LinearOpMode(), System
 
         while (opModeIsActive())
         {
-            val multiplier = 0.5 + gamepad1.right_trigger * 0.5
+            val multiplier = MathUtils.INSTANCE.joystickScalar(
+                gamepad1.right_trigger.toDouble(), 0.01
+            )
+
             driveRobot(drivebase, driverOp, multiplier)
 
             gp1Commands.run()
