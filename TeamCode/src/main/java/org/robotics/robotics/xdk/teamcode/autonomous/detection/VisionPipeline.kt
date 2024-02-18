@@ -25,12 +25,19 @@ class VisionPipeline(
 
     fun getTapeSide() = propPipeline.tapeSide
 
+    enum class StreamDestination
+    {
+        Dashboard, DriverStation, Both, None;
+
+        fun encapsulates(destination: StreamDestination) =
+            this != None && (this == Both || this == destination)
+    }
+
     /**
      * Starts the vision portal with the option of
      * pushing the camera stream to FTCDashboard.
      */
-    @JvmOverloads
-    fun start(dashboard: Boolean = false)
+    fun start(destination: StreamDestination)
     {
         propPipeline = GameElementDetection(teamColor)
         portal = VisionPortal.Builder()
@@ -38,12 +45,12 @@ class VisionPipeline(
                 opMode.hardware<WebcamName>("webcam1")
             )
             .setCameraResolution(Size(640, 480))
-            .enableLiveView(dashboard)
+            .enableLiveView(destination.encapsulates(StreamDestination.DriverStation))
             .setAutoStopLiveView(true)
             .addProcessors(propPipeline)
             .build()
 
-        if (dashboard)
+        if (destination.encapsulates(StreamDestination.Dashboard))
         {
             FtcDashboard.getInstance().startCameraStream(propPipeline, 30.0)
         }
@@ -54,7 +61,7 @@ class VisionPipeline(
     override fun composeStageContext() = TODO()
     override fun doInitialize()
     {
-        start(dashboard = false)
+        start(StreamDestination.DriverStation)
     }
 
     override fun dispose()

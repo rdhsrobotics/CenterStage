@@ -24,7 +24,7 @@ class IsolatedVisionTestRed : LinearOpMode()
             FtcDashboard.getInstance().telemetry
         )
 
-        pipeline.start(true)
+        pipeline.start(VisionPipeline.StreamDestination.Dashboard)
 
         telemetry.addLine("Waiting for start. Started vision pipeline.")
         telemetry.update()
