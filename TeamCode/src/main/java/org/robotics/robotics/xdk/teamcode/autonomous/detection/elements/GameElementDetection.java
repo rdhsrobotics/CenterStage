@@ -51,7 +51,7 @@ public class GameElementDetection implements CameraStreamSource, VisionProcessor
     public static double PERCENTAGE_REQUIRED_RED = 0.4;
     public static double PERCENTAGE_REQUIRED_BLUE = 0.50;
 
-    public static int CAM_VIEW = 0;
+    public static int CAM_VIEW = 1;
 
     public static final TapeSide FALLBACK_DETECTION = TapeSide.Left;
     public static final TapeSide[] DETECTION_ZONES = new TapeSide[]{
