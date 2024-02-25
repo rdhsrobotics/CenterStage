@@ -289,17 +289,14 @@ gp1Commands
                 }
 
                 bundleExecutionInProgress = true
+                extendableClaw.toggleExtender(
+                    ExtendableClaw.ExtenderState.Intake
+                )
 
-                extendableClaw
-                    .toggleExtender(
-                        ExtendableClaw.ExtenderState.Intake
-                    )
-                    .thenCompose {
-                        extendableClaw.updateClawState(
-                            ExtendableClaw.ClawStateUpdate.Both,
-                            ExtendableClaw.ClawState.Intake
-                        )
-                    }
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawState.Intake
+                )
             }
             .andIsHeldUntilReleasedWhere {
                 if (!bundleExecutionInProgress)
@@ -307,22 +304,17 @@ gp1Commands
                     return@andIsHeldUntilReleasedWhere
                 }
 
-                extendableClaw
-                    .updateClawState(
-                        ExtendableClaw.ClawStateUpdate.Both,
-                        ExtendableClaw.ClawState.Closed
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Both,
+                    ExtendableClaw.ClawState.Closed
+                )
+
+                scheduleAsyncExecution(250L) {
+                    extendableClaw.toggleExtender(
+                        ExtendableClaw.ExtenderState.Deposit
                     )
-                    .thenRun {
-                        gamepad1.rumble(250)
-                    }
-                    .thenCompose {
-                        extendableClaw.toggleExtender(
-                            ExtendableClaw.ExtenderState.Deposit
-                        )
-                    }
-                    .whenComplete { _, _ ->
-                        bundleExecutionInProgress = false
-                    }
+                    bundleExecutionInProgress = false
+                }
             }
 
         fun GamepadCommands.ButtonMappingBuilder.depositPresetReleaseOnElevatorHeight(position: Int)

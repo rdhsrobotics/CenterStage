@@ -7,7 +7,6 @@ import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
 import org.robotics.robotics.xdk.teamcode.subsystem.motionprofile.wrappers.MotionProfiledServo
 import org.robotics.robotics.xdk.teamcode.subsystem.motionprofile.ProfileConstraints
-import java.util.concurrent.CompletableFuture
 
 class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
@@ -138,7 +137,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         toggleExtender(extenderState)
     }*/
 
-    fun toggleExtender(state: ExtenderState? = null, force: Boolean = false): CompletableFuture<Void>
+    fun toggleExtender(state: ExtenderState? = null, force: Boolean = false)
     {
         val previousState = extenderState
         extenderState = state
@@ -152,10 +151,10 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         if (force)
         {
             backingExtender.setTarget(extenderState.targetPosition())
-            return CompletableFuture.completedFuture(null)
+            return
         }
 
-        return backingExtender.setMotionProfileTarget(extenderState.targetPosition())
+        backingExtender.setMotionProfileTarget(extenderState.targetPosition())
     }
 
     enum class ClawStateUpdate(
@@ -169,20 +168,13 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         })
     }
 
-    fun updateClawState(
-        effectiveOn: ClawStateUpdate,
-        state: ClawState,
-        force: Boolean = false
-    ): CompletableFuture<Void>
+    fun updateClawState(effectiveOn: ClawStateUpdate, state: ClawState, force: Boolean = false)
     {
         if (effectiveOn == ClawStateUpdate.Both)
         {
-            return CompletableFuture.allOf(
-                *arrayOf(
-                    updateClawState(ClawStateUpdate.Right, state, force),
-                    updateClawState(ClawStateUpdate.Left, state, force)
-                )
-            )
+            updateClawState(ClawStateUpdate.Right, state, force)
+            updateClawState(ClawStateUpdate.Left, state, force)
+            return
         }
 
         val servo = effectiveOn.clawType().servo(this)
@@ -199,10 +191,10 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         if (force)
         {
             servo.setTarget(position)
-            return CompletableFuture.completedFuture(null)
+            return
         }
 
-        return servo.setMotionProfileTarget(position)
+        servo.setMotionProfileTarget(position)
     }
 
     override fun isCompleted() = true
