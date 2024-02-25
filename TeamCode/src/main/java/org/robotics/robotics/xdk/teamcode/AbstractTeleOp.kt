@@ -73,11 +73,11 @@ abstract class AbstractTeleOp : LinearOpMode(), System
         while (opModeIsActive())
         {
             /*
-            val multiplier = 0.5 + gamepad1.right_trigger * 0.5
-             */
             val multiplier = MathUtils.INSTANCE.joystickScalar(
                 gamepad1.right_trigger.toDouble(), 0.01
             )
+             */
+            val multiplier = 0.5 + gamepad1.right_trigger * 0.5
 
             driveRobot(drivebase, driverOp, multiplier)
 
