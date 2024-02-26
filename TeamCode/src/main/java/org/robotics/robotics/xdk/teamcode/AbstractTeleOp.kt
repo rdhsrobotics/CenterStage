@@ -249,6 +249,13 @@ gp1Commands
             }
             .whenPressedOnce()
 
+        gp1Commands
+            .where(ButtonType.PlayStationLogo)
+            .triggers {
+                hang.brake()
+            }
+            .whenPressedOnce()
+
         // elevator preset (low backboard)
         gp2Commands
             .where(ButtonType.ButtonB)

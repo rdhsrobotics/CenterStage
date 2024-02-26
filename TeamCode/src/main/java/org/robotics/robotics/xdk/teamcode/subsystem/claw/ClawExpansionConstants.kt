@@ -18,6 +18,6 @@ object ClawExpansionConstants
     @JvmField var OPEN_LEFT_CLAW_INTAKE = 0.70
 
     @JvmField var CLOSED_RIGHT_CLAW = 0.9
-    @JvmField var OPEN_RIGHT_CLAW = 0.75 // 0.76 prev
+    @JvmField var OPEN_RIGHT_CLAW = 0.78 // 0.76 prev
     @JvmField var OPEN_RIGHT_CLAW_INTAKE = 0.71
 }

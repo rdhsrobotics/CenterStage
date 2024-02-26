@@ -17,10 +17,10 @@ object GlobalConstants
 
     // Scalars
     @JvmField
-    var ScalarMoveSlightlyIntoBackboard = 360.0
+    var ScalarMoveSlightlyIntoBackboard = 500.0
 
     @JvmField
     var ScalarMoveIntoParkingZone = 420.0
     @JvmField
-    var ScalarExpectedElevatorDropHeight = 0.3
+    var ScalarExpectedElevatorDropHeight = 0.5
 }

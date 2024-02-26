@@ -42,11 +42,6 @@ class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun deploy()
     {
-        if (hangState != PassiveHangState.Braking)
-        {
-            return
-        }
-
         listOf(actuator, actuatorTwo).forEach {
             it.power = 1.0
             it.targetPosition = HangConstants.RETRACTED_ENCODER_TICKS
@@ -61,11 +56,6 @@ class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun arm()
     {
-        if (hangState != PassiveHangState.Braking)
-        {
-            return
-        }
-
         listOf(actuator, actuatorTwo).forEach {
             it.power = 1.0
             it.targetPosition = 0
