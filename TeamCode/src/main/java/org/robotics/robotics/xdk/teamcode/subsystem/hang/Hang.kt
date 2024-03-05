@@ -42,11 +42,6 @@ class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun deploy()
     {
-        if (hangState != PassiveHangState.Braking)
-        {
-            return
-        }
-
         listOf(actuator, actuatorTwo).forEach {
             it.power = 1.0
             it.targetPosition = HangConstants.RETRACTED_ENCODER_TICKS
@@ -61,11 +56,6 @@ class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun arm()
     {
-        if (hangState != PassiveHangState.Braking)
-        {
-            return
-        }
-
         listOf(actuator, actuatorTwo).forEach {
             it.power = 1.0
             it.targetPosition = 0
@@ -78,14 +68,14 @@ class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
     override fun doInitialize()
     {
         actuator = opMode.hardware<DcMotorEx>("hang")
-        actuator.direction = DcMotorSimple.Direction.FORWARD
+        actuator.direction = DcMotorSimple.Direction.REVERSE
 
         actuator.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         actuator.stopAndResetEncoder()
         actuator.mode = DcMotor.RunMode.RUN_USING_ENCODER
 
         actuatorTwo = opMode.hardware<DcMotorEx>("hangTwo")
-        actuatorTwo.direction = DcMotorSimple.Direction.FORWARD
+        actuatorTwo.direction = DcMotorSimple.Direction.REVERSE
 
         actuatorTwo.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         actuatorTwo.stopAndResetEncoder()

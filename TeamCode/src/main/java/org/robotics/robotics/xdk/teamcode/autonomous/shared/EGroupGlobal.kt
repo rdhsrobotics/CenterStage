@@ -107,8 +107,12 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
         return
     }
 
+    val maintainDirection = relativeBackboardDirectionAtRobotStart.heading +
+            if (startPosition == StartPosition.Far && relativeBackboardDirectionAtRobotStart == Direction.Left)
+                -5.0 else 0.0
+
     single("turn towards backboard") {
-        pipe.turn(relativeBackboardDirectionAtRobotStart.heading + (if (relativeBackboardDirectionAtRobotStart == Direction.Left) -3.0 else 3.0))
+        pipe.turn(maintainDirection)
     }
 }
 
@@ -118,13 +122,17 @@ fun ExecutionGroup.moveTowardsBackboard(
     direction: Direction
 )
 {
+    val maintainDirection = direction.heading +
+            if (startPosition == StartPosition.Far && direction == Direction.Left)
+                -5.0 else 0.0
+
     single("move towards backboard") {
         // move to the backboard
         pipe.move(
             -(if (startPosition == StartPosition.Far)
                 GlobalConstants.FarMoveTowardsBackboard else
                 GlobalConstants.CloseMoveTowardsBackboard),
-            direction.heading
+            maintainDirection
         )
     }
 }
@@ -141,7 +149,10 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
 {
     // opposite of where the backboard is relative to the backboard
     // is the direction the robot should be facing
-    val maintainDirection = relativeBackboardDirectionAtParkingZone.oppositeOf()
+    val maintainDirection = relativeBackboardDirectionAtParkingZone.oppositeOf().heading +
+            if (startPosition == StartPosition.Far && relativeBackboardDirectionAtParkingZone.oppositeOf() == Direction.Left)
+                -5.0 else 0.0
+
     val strafePositions = mapOf(
         // Red values
         Direction.Left to mapOf(
@@ -149,7 +160,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
             TapeSide.Middle to 570,
             TapeSide.Right to 380
         ),
-        // Blue values
+        // Blue values                                                                                                                                 nbbbbbbbbbbbbbbbbbc
         Direction.Right to mapOf(
             TapeSide.Left to 600,
             TapeSide.Middle to 790,
@@ -168,7 +179,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
 
     single("sync into heading") {
         // again, align robot with the direction it's supposed to be in to compensate for strafe issues
-        pipe.turn(maintainDirection.heading)
+        pipe.turn(maintainDirection)
     }
 
     simultaneous("move slightly into backboard and raise elevator") {
@@ -179,7 +190,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
         }
 
         single("move slightly into backboard") {
-            pipe.move(-GlobalConstants.ScalarMoveSlightlyIntoBackboard, maintainDirection.heading)
+            pipe.move(-GlobalConstants.ScalarMoveSlightlyIntoBackboard, maintainDirection)
         }
     }
 
@@ -195,7 +206,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
 
     waitMillis(250L)
     single("move back from into backboard") {
-        pipe.move(GlobalConstants.ScalarMoveSlightlyIntoBackboard, maintainDirection.heading)
+        pipe.move(GlobalConstants.ScalarMoveSlightlyIntoBackboard, maintainDirection)
     }
 
     simultaneous("retract claw/elevator and strafe into parking zone") {
@@ -225,13 +236,13 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
 
             single("realign with heading") {
                 // align back into the heading we want to maintain
-                pipe.turn(maintainDirection.heading)
+                pipe.turn(maintainDirection)
             }
         }
     }
 
     single("park into position") {
         // move into parking zone
-        pipe.move(-GlobalConstants.ScalarMoveIntoParkingZone, maintainDirection.heading)
+        pipe.move(-GlobalConstants.ScalarMoveIntoParkingZone, maintainDirection)
     }
 }
