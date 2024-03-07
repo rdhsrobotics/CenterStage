@@ -11,8 +11,7 @@ import org.robotics.robotics.xdk.teamcode.subsystem.stopAndResetEncoder
 
 class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
-    private lateinit var actuator: DcMotorEx
-    private lateinit var actuatorTwo: DcMotorEx
+    lateinit var actuator: DcMotorEx
 
     override fun composeStageContext() = object : StageContext
     {
@@ -32,7 +31,7 @@ class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
     fun brake()
     {
         actuator.power = 0.0
-        actuatorTwo.power = 0.0
+//        actuatorTwo.power = 0.0
 
         hangState = PassiveHangState.Braking
     }
@@ -42,7 +41,7 @@ class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun deploy()
     {
-        listOf(actuator, actuatorTwo).forEach {
+        listOf(actuator).forEach {
             it.power = 1.0
             it.targetPosition = HangConstants.RETRACTED_ENCODER_TICKS
             it.mode = DcMotor.RunMode.RUN_TO_POSITION
@@ -56,7 +55,7 @@ class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun arm()
     {
-        listOf(actuator, actuatorTwo).forEach {
+        listOf(actuator).forEach {
             it.power = 1.0
             it.targetPosition = 0
             it.mode = DcMotor.RunMode.RUN_TO_POSITION
@@ -68,18 +67,11 @@ class Hang(private val opMode: LinearOpMode) : AbstractSubsystem()
     override fun doInitialize()
     {
         actuator = opMode.hardware<DcMotorEx>("hang")
-        actuator.direction = DcMotorSimple.Direction.REVERSE
+        actuator.direction = DcMotorSimple.Direction.FORWARD
 
         actuator.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         actuator.stopAndResetEncoder()
         actuator.mode = DcMotor.RunMode.RUN_USING_ENCODER
-
-        actuatorTwo = opMode.hardware<DcMotorEx>("hangTwo")
-        actuatorTwo.direction = DcMotorSimple.Direction.REVERSE
-
-        actuatorTwo.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        actuatorTwo.stopAndResetEncoder()
-        actuatorTwo.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }
 
     override fun dispose()

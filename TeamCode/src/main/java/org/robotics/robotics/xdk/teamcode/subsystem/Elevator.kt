@@ -58,7 +58,7 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
             0
         )
 
-        backingMotor.power = stick
+        backingMotor.power = 1.0
         backingMotor.targetPosition = target
         backingMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
     }

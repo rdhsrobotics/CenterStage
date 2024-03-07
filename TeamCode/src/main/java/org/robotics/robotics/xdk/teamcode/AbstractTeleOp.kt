@@ -199,7 +199,7 @@ gp1Commands
             .triggers {
                 extendableClaw.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Left,
-                    ExtendableClaw.ClawState.Open
+                    if (gamepad2.left_trigger > 0.5) ExtendableClaw.ClawState.Intake else ExtendableClaw.ClawState.Open
                 )
             }
             .andIsHeldUntilReleasedWhere {
@@ -215,7 +215,7 @@ gp1Commands
             .triggers {
                 extendableClaw.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Right,
-                    ExtendableClaw.ClawState.Open
+                    if (gamepad2.right_trigger > 0.5) ExtendableClaw.ClawState.Intake else ExtendableClaw.ClawState.Open
                 )
             }
             .andIsHeldUntilReleasedWhere {
