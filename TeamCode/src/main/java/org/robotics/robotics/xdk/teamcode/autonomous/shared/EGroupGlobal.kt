@@ -181,7 +181,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
         pipe.turn(maintainDirection)
     }
 
-    single("relocalize") {
+    /*single("relocalize") {
         pipe.visionPipeline.aprilTagLocalizer()
             .relocalize(
                 targetId = targetAprilTagIDs[relativeBackboardDirectionAtParkingZone]!![tapeSide]!!
@@ -189,7 +189,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
                 pipe.movementHandler.relocalize(detection.ftcPose)
             }
             .join()
-    }
+    }*/
 
     simultaneous("move slightly into backboard and raise elevator") {
         single("raise elevator") {
