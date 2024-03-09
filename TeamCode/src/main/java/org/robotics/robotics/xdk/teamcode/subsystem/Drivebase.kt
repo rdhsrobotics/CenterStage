@@ -21,7 +21,7 @@ class Drivebase(private val opMode: LinearOpMode) : AbstractSubsystem()
     private lateinit var imu: IMU
     private var imuYPR: YawPitchRollAngles? = null
 
-    private lateinit var backingDriveBase: MecanumDrive
+    lateinit var backingDriveBase: MecanumDrive
 
     override fun composeStageContext() = TODO()
 

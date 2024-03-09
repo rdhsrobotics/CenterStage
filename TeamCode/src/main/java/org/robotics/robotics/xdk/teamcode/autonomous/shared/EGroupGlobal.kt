@@ -5,10 +5,12 @@ import io.liftgate.robotics.mono.pipeline.consecutive
 import io.liftgate.robotics.mono.pipeline.simultaneous
 import io.liftgate.robotics.mono.pipeline.single
 import io.liftgate.robotics.mono.pipeline.waitMillis
+import org.firstinspires.ftc.vision.apriltag.AprilTagLibrary
 import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.Direction
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.StartPosition
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TapeSide
+import org.robotics.robotics.xdk.teamcode.autonomous.detection.targetAprilTagIDs
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 
 /**
@@ -79,9 +81,6 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
                 force = true
             )
 
-            // wait for the robot to start moving
-            Thread.sleep(150L)
-
             pipe.clawSubsystem.updateClawState(
                 ExtendableClaw.ClawStateUpdate.Right,
                 ExtendableClaw.ClawState.Closed,
@@ -137,7 +136,7 @@ fun ExecutionGroup.moveTowardsBackboard(
     }
 }
 
-/**s
+/**
  * Completes the second portion of our 2+0 autonomous: deposit yellow pixel and park.
  */
 fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
@@ -182,6 +181,16 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
         pipe.turn(maintainDirection)
     }
 
+    single("relocalize") {
+        pipe.visionPipeline.aprilTagLocalizer()
+            .relocalize(
+                targetId = targetAprilTagIDs[relativeBackboardDirectionAtParkingZone]!![tapeSide]!!
+            ) { detection ->
+                pipe.movementHandler.relocalize(detection.ftcPose)
+            }
+            .join()
+    }
+
     simultaneous("move slightly into backboard and raise elevator") {
         single("raise elevator") {
             pipe.elevatorSubsystem.configureElevatorManually(
@@ -215,9 +224,6 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
         }
 
         single("right claw reset") {
-            // wait to make sure the pixel has dropped
-            Thread.sleep(350L)
-
             pipe.clawSubsystem.updateClawState(
                 ExtendableClaw.ClawStateUpdate.Left,
                 ExtendableClaw.ClawState.Closed,
@@ -225,19 +231,12 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
             )
         }
 
-        consecutive("strafe into position and realign") {
-            single("strafe back to parking zone") {
-                // strafe into the parking zone with the direction based on where the backboard
-                // was relative to the robot when it was previously in parking
-                val strafeDirectionFactor =
-                    if (relativeBackboardDirectionAtParkingZone == Direction.Left) 1.0 else -1.0
-                pipe.strafe(-strafeFromParkingToBackboard * strafeDirectionFactor)
-            }
-
-            single("realign with heading") {
-                // align back into the heading we want to maintain
-                pipe.turn(maintainDirection)
-            }
+        single("strafe back to parking zone") {
+            // strafe into the parking zone with the direction based on where the backboard
+            // was relative to the robot when it was previously in parking
+            val strafeDirectionFactor =
+                if (relativeBackboardDirectionAtParkingZone == Direction.Left) 1.0 else -1.0
+            pipe.strafe(-strafeFromParkingToBackboard * strafeDirectionFactor)
         }
     }
 

@@ -22,6 +22,7 @@ class VisionPipeline(
 {
     private lateinit var portal: VisionPortal
     lateinit var propPipeline: GameElementDetection
+    private lateinit var aprilTagLocalizer: AprilTagLocalizer
 
     fun getTapeSide() = propPipeline.tapeSide
 
@@ -39,7 +40,9 @@ class VisionPipeline(
      */
     fun start(destination: StreamDestination)
     {
+        aprilTagLocalizer = AprilTagLocalizer(opMode)
         propPipeline = GameElementDetection(teamColor)
+
         portal = VisionPortal.Builder()
             .setCamera(
                 opMode.hardware<WebcamName>("webcam1")
@@ -48,6 +51,7 @@ class VisionPipeline(
             .enableLiveView(destination.encapsulates(StreamDestination.DriverStation))
             .setAutoStopLiveView(true)
             .addProcessors(propPipeline)
+            .addProcessors(aprilTagLocalizer.processor)
             .build()
 
         if (destination.encapsulates(StreamDestination.Dashboard))
@@ -55,6 +59,8 @@ class VisionPipeline(
             FtcDashboard.getInstance().startCameraStream(propPipeline, 30.0)
         }
     }
+
+    fun aprilTagLocalizer() = aprilTagLocalizer
 
     fun stop() = portal.close()
 

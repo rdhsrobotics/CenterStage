@@ -49,7 +49,7 @@ abstract class AbstractAutoPipeline(
     internal val clawSubsystem by lazy { ExtendableClaw(this) }
 
     private val airplaneSubsystem by lazy { DroneLauncher(this) }
-    private val visionPipeline by lazy { VisionPipeline(teamColor, this) }
+    val visionPipeline by lazy { VisionPipeline(teamColor, this) }
 
     val multipleTelemetry by lazy {
         MultipleTelemetry(

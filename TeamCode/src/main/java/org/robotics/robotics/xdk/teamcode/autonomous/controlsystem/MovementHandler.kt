@@ -1,15 +1,17 @@
 package org.robotics.robotics.xdk.teamcode.autonomous.controlsystem
 
-import com.qualcomm.hardware.lynx.LynxModule
 import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
+import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc
 import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline
-import org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.safety.EvictingSample
 import org.robotics.robotics.xdk.teamcode.autonomous.normalizedYaw
 import org.robotics.robotics.xdk.teamcode.autonomous.utilities.AutoPipelineUtilities
 import kotlin.math.absoluteValue
+import kotlin.math.atan2
+import kotlin.math.pow
 import kotlin.math.sign
+import kotlin.math.sqrt
 
 class MovementHandler(private val opMode: AbstractAutoPipeline, private val executionGroup: RootExecutionGroup)
 {
@@ -190,7 +192,6 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
         }
     )
 
-    private val modules by lazy { opMode.hardwareMap.getAll(LynxModule::class.java) }
     private fun driveBasePID(
         controller: PIDController,
         currentPositionBlock: () -> Double,
@@ -201,14 +202,6 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
         opMode.runMotors()
 
         val startTime = System.currentTimeMillis()
-        var hasResultedInCanContinue = false
-
-        val evictingSample = EvictingSample(
-            size = 10,
-            requiredSampleTime = 500L
-        )
-
-
         var previousLoopTime = 0L
 
         while (true)
@@ -269,5 +262,26 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
 
         opMode.stopAndResetMotors()
         opMode.lockUntilMotorsFree()
+    }
+
+    fun relocalize(pose: AprilTagPoseFtc): Boolean
+    {
+        // Calculate the distance to the target pose
+        val distanceToTarget = sqrt(pose.x.pow(2) + pose.y.pow(2))
+
+        if (distanceToTarget <= AutoPipelineUtilities.APRIL_TAG_LOCALIZATION_THRESHOLD) {
+            opMode.drivebase.backingDriveBase
+                .driveRobotCentric(0.0, 0.0, 0.0)
+            return true
+        }
+
+        val angleToTarget = atan2(pose.y, pose.x)
+        val turnSpeed = angleToTarget * AutoPipelineUtilities.APRIL_TAG_TURN_FACTOR
+
+        val forwardSpeed = AutoPipelineUtilities.APRIL_TAG_FORWARD_FACTOR * distanceToTarget
+        val strafeSpeed = AutoPipelineUtilities.APRIL_TAG_STRAFE_FACTOR * distanceToTarget
+
+        opMode.drivebase.backingDriveBase.driveRobotCentric(strafeSpeed, forwardSpeed, turnSpeed)
+        return false
     }
 }
