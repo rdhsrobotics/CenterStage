@@ -15,7 +15,7 @@ class V2ControlTestAutoATLocalize : AbstractAutoPipeline(
         single("relocalize") {
             opMode.visionPipeline.aprilTagLocalizer()
                 .relocalize(
-                    targetId = targetAprilTagIDs[Direction.Left]!![TapeSide.Right]!!
+                    targetId = targetAprilTagIDs[Direction.Left]!![TapeSide.Middle]!!
                 ) { detection ->
                     opMode.movementHandler.relocalize(detection.ftcPose)
                 }
