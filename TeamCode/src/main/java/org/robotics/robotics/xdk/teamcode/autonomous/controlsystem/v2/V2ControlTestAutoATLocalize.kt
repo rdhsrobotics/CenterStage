@@ -7,6 +7,7 @@ import org.robotics.robotics.xdk.teamcode.autonomous.detection.Direction
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TapeSide
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.targetAprilTagIDs
 import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
+import java.time.Duration
 
 @Autonomous(name = "Test | April Tag Localize (RedRight)", group = "Test")
 class V2ControlTestAutoATLocalize : AbstractAutoPipeline(
@@ -15,7 +16,8 @@ class V2ControlTestAutoATLocalize : AbstractAutoPipeline(
         single("relocalize") {
             val result = opMode.visionPipeline.aprilTagLocalizer()
                 .relocalize(
-                    targetId = targetAprilTagIDs[Direction.Left]!![TapeSide.Middle]!!
+                    targetId = targetAprilTagIDs[Direction.Left]!![TapeSide.Middle]!!,
+                    allocatedTime = 5L * 1000L
                 ) { detection ->
                     opMode.movementHandler.relocalize(detection.ftcPose)
                 }
