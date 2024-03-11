@@ -26,8 +26,7 @@ class AprilTagLocalizer(private val pipe: LinearOpMode)
 
             while (!pipe.isStopRequested)
             {
-                val detection = processor.detections
-                    .firstOrNull { it.id == targetId }
+                val detection = processor.detections.firstOrNull { it.id == targetId }
 
                 if (detection == null)
                 {

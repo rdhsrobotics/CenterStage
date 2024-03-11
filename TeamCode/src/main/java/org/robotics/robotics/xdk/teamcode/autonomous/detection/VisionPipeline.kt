@@ -50,13 +50,16 @@ class VisionPipeline(
             .setCameraResolution(Size(640, 480))
             .enableLiveView(destination.encapsulates(StreamDestination.DriverStation))
             .setAutoStopLiveView(true)
-            .addProcessors(propPipeline)
-            .addProcessors(aprilTagLocalizer.processor)
+            .addProcessors(propPipeline, aprilTagLocalizer.processor)
+            .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
             .build()
 
         if (destination.encapsulates(StreamDestination.Dashboard))
         {
-            FtcDashboard.getInstance().startCameraStream(propPipeline, 30.0)
+            FtcDashboard.getInstance().startCameraStream(
+                propPipeline,
+                30.0
+            )
         }
     }
 

@@ -13,13 +13,16 @@ class V2ControlTestAutoATLocalize : AbstractAutoPipeline(
     AutonomousProfile.RedPlayer1TwoPlusZero,
     blockExecutionGroup = { opMode, _ ->
         single("relocalize") {
-            opMode.visionPipeline.aprilTagLocalizer()
+            val result = opMode.visionPipeline.aprilTagLocalizer()
                 .relocalize(
                     targetId = targetAprilTagIDs[Direction.Left]!![TapeSide.Middle]!!
                 ) { detection ->
                     opMode.movementHandler.relocalize(detection.ftcPose)
                 }
                 .join()
+
+            opMode.telemetry.addLine("Localization result: $result")
+            opMode.telemetry.update()
         }
     }
 )

@@ -255,9 +255,6 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
             setMotorPowers(controller, rampUp * finalPower)
 
             previousLoopTime = System.currentTimeMillis() - thing
-
-//            opMode.multipleTelemetry.addData("Prev. Loop Time", previousLoopTime)
-//            opMode.multipleTelemetry.update()
         }
 
         opMode.stopAndResetMotors()
@@ -280,6 +277,15 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
 
         val forwardSpeed = AutoPipelineUtilities.APRIL_TAG_FORWARD_FACTOR * pose.y
         val strafeSpeed = AutoPipelineUtilities.APRIL_TAG_STRAFE_FACTOR * pose.x
+
+        opMode.telemetry.addLine("=== Relocalizing ===")
+        opMode.telemetry.addData("Forward speed", forwardSpeed)
+        opMode.telemetry.addData("Strafe speed", strafeSpeed)
+        opMode.telemetry.addData("Turn speed", turnSpeed)
+
+        opMode.telemetry.addData("Distance to Target", distanceToTarget)
+        opMode.telemetry.addData("Angle to Target", angleToTarget)
+        opMode.telemetry.update()
 
         opMode.drivebase.backingDriveBase.driveRobotCentric(strafeSpeed, forwardSpeed, turnSpeed)
         return false

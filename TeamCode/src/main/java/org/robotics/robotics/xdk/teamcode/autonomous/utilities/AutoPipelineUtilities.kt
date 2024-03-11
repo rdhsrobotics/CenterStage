@@ -29,7 +29,7 @@ object AutoPipelineUtilities
     @JvmField var APRIL_TAG_FORWARD_FACTOR = 0.5
     @JvmField var APRIL_TAG_STRAFE_FACTOR = 0.5
 
-    @JvmField var APRIL_TAG_LOCALIZATION_THRESHOLD = 1.0
+    @JvmField var APRIL_TAG_LOCALIZATION_THRESHOLD = 5.0
 
     /*@JvmField var MOTION_PROFILE_ACCEL = 500.0
     @JvmField var MOTION_PROFILE_DECEL = 500.0
