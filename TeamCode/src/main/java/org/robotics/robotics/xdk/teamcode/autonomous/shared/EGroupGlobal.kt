@@ -97,7 +97,8 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
                 return@single
             }
 
-            pipe.move(-amountToMoveToSpikeMark, 0.0)
+            // don't smash into the wall lol
+            pipe.move(-amountToMoveToSpikeMark + 50, 0.0)
         }
     }
 
@@ -106,9 +107,9 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
         return
     }
 
-    val maintainDirection = relativeBackboardDirectionAtRobotStart.heading +
+    val maintainDirection = relativeBackboardDirectionAtRobotStart.heading/* +
             if (startPosition == StartPosition.Far && relativeBackboardDirectionAtRobotStart == Direction.Left)
-                -5.0 else 0.0
+                -5.0 else 0.0*/
 
     single("turn towards backboard") {
         pipe.turn(maintainDirection)
@@ -121,9 +122,9 @@ fun ExecutionGroup.moveTowardsBackboard(
     direction: Direction
 )
 {
-    val maintainDirection = direction.heading +
+    val maintainDirection = direction.heading/* +
             if (startPosition == StartPosition.Far && direction == Direction.Left)
-                -5.0 else 0.0
+                -5.0 else 0.0*/
 
     single("move towards backboard") {
         // move to the backboard
@@ -148,9 +149,9 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
 {
     // opposite of where the backboard is relative to the backboard
     // is the direction the robot should be facing
-    val maintainDirection = relativeBackboardDirectionAtParkingZone.oppositeOf().heading +
+    val maintainDirection = relativeBackboardDirectionAtParkingZone.oppositeOf().heading/* +
             if (startPosition == StartPosition.Far && relativeBackboardDirectionAtParkingZone.oppositeOf() == Direction.Left)
-                -5.0 else 0.0
+                -5.0 else 0.0*/
 
     val strafePositions = mapOf(
         // Red values
@@ -232,6 +233,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
         }
 
         single("strafe back to parking zone") {
+            // TODO: Park Left/Right options
             // strafe into the parking zone with the direction based on where the backboard
             // was relative to the robot when it was previously in parking
             val strafeDirectionFactor =

@@ -218,24 +218,6 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
             val realCurrentPosition = currentPositionBlock()
             val imuHeading = opMode.drivebase.getIMUYawPitchRollAngles().getYaw(AngleUnit.DEGREES)
 
-            /*if (!hasResultedInCanContinue)
-            {
-                evictingSample.submit(imuHeading)
-                when (evictingSample.analyze())
-                {
-                    EvictingSample.AnalyzeResult.RequiresExit ->
-                    {
-                        executionGroup.terminateMidExecution()
-                        return
-                    }
-                    EvictingSample.AnalyzeResult.CanContinue ->
-                    {
-                        hasResultedInCanContinue = true
-                    }
-                    EvictingSample.AnalyzeResult.NotNeeded -> { }
-                }
-            }*/
-
             if (controller.atSetPoint(realCurrentPosition))
             {
                 break

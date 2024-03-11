@@ -9,7 +9,7 @@ import org.robotics.robotics.xdk.teamcode.autonomous.detection.targetAprilTagIDs
 import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
 import java.time.Duration
 
-@Autonomous(name = "Test | April Tag Localize (RedRight)", group = "Test")
+@Autonomous(name = "Test | Relocalize (RedRight) (Middle)", group = "Test")
 class V2ControlTestAutoATLocalize : AbstractAutoPipeline(
     AutonomousProfile.RedPlayer1TwoPlusZero,
     blockExecutionGroup = { opMode, _ ->
