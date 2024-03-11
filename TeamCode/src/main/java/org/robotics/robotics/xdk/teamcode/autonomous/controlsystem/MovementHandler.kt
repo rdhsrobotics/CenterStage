@@ -278,8 +278,8 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
         val angleToTarget = atan2(pose.y, pose.x)
         val turnSpeed = angleToTarget * AutoPipelineUtilities.APRIL_TAG_TURN_FACTOR
 
-        val forwardSpeed = AutoPipelineUtilities.APRIL_TAG_FORWARD_FACTOR * distanceToTarget
-        val strafeSpeed = AutoPipelineUtilities.APRIL_TAG_STRAFE_FACTOR * distanceToTarget
+        val forwardSpeed = AutoPipelineUtilities.APRIL_TAG_FORWARD_FACTOR * pose.y
+        val strafeSpeed = AutoPipelineUtilities.APRIL_TAG_STRAFE_FACTOR * pose.x
 
         opMode.drivebase.backingDriveBase.driveRobotCentric(strafeSpeed, forwardSpeed, turnSpeed)
         return false

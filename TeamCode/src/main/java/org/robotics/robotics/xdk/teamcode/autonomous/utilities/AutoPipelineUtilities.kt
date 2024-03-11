@@ -25,9 +25,9 @@ object AutoPipelineUtilities
 
     @JvmField var RAMP_UP_SPEED = 700.0
 
-    @JvmField var APRIL_TAG_TURN_FACTOR = 0.5
+    @JvmField var APRIL_TAG_TURN_FACTOR = 0.3
     @JvmField var APRIL_TAG_FORWARD_FACTOR = 0.5
-    @JvmField var APRIL_TAG_STRAFE_FACTOR = 0.0
+    @JvmField var APRIL_TAG_STRAFE_FACTOR = 0.5
 
     @JvmField var APRIL_TAG_LOCALIZATION_THRESHOLD = 1.0
 
