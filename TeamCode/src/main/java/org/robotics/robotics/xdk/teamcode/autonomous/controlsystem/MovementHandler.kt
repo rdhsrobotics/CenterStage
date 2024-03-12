@@ -144,8 +144,7 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
 
         return driveBasePID(
             controller = buildPIDControllerMovement(
-                setPoint = setPoint, maintainHeading = maintainHeading,
-                maintainHeadingValue = maintainHeadingValue
+                setPoint = setPoint, maintainHeading = maintainHeading
             ),
             currentPositionBlock = {
                 (if (requiresRelativeSign) setPoint.sign.toInt() else 1) * opMode.drivebase.allDriveBaseMotors
@@ -169,7 +168,7 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
                     return@driveBasePID
                 }
 
-                val turnCorrectionFactor = rotationPid.calculate(yaw, yaw)
+                val turnCorrectionFactor = rotationPid.calculate(yaw)
 
                 val leftMotorPower = positionOutput + turnCorrectionFactor
                 val rightMotorPower = positionOutput - turnCorrectionFactor
@@ -216,7 +215,7 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
             val thing = System.currentTimeMillis()
 
             val realCurrentPosition = currentPositionBlock()
-            val imuHeading = opMode.drivebase.getIMUYawPitchRollAngles().getYaw(AngleUnit.DEGREES)
+//            val imuHeading = opMode.drivebase.getIMUYawPitchRollAngles().getYaw(AngleUnit.DEGREES)
 
             if (controller.atSetPoint(realCurrentPosition))
             {
@@ -232,7 +231,7 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
             val rampUp = (millisDiff / AutoPipelineUtilities.RAMP_UP_SPEED)
                 .coerceIn(0.0, 1.0)
 
-            val pid = controller.calculate(realCurrentPosition, imuHeading, previousLoopTime)
+            val pid = controller.calculate(realCurrentPosition, previousLoopTime)
             val finalPower = pid.coerceIn(-1.0..1.0)
             setMotorPowers(controller, rampUp * finalPower)
 
@@ -267,9 +266,9 @@ class MovementHandler(private val opMode: AbstractAutoPipeline, private val exec
 
         opMode.telemetry.addData("Distance to Target", distanceToTarget)
         opMode.telemetry.addData("Angle to Target", angleToTarget)
-        opMode.telemetry.update()
 
-        opMode.drivebase.backingDriveBase.driveRobotCentric(strafeSpeed, forwardSpeed, turnSpeed)
+        opMode.drivebase.backingDriveBase.driveFieldCentric(0.0, forwardSpeed, 0.0, 90.0)
+        opMode.telemetry.update()
         return false
     }
 }

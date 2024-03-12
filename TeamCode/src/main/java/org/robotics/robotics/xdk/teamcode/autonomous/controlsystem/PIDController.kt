@@ -24,8 +24,6 @@ class PIDController(
     private var previousValue: Double? = null
     private var velocity = 0.0
 
-    var currentRobotHeading = 0.0
-
     private var customErrorCalculator: ((current: Double) -> Double)? = null
     private var customVelocityCalculator: (() -> Double)? = null
 
@@ -39,7 +37,7 @@ class PIDController(
      * Calculates the current power based on the
      * given input and robot heading.
      */
-    fun calculate(currentValue: Double, heading: Double, velocityMultiplier: Long = 1L): Double
+    fun calculate(currentValue: Double, velocityMultiplier: Long = 1L): Double
     {
         val error = customErrorCalculator?.invoke(currentValue)
             ?: (setPoint - currentValue)
@@ -56,7 +54,6 @@ class PIDController(
         telemetry.addData("Output", output)
         telemetry.addData("Input", currentValue)
         telemetry.addData("Velocity", velocity)
-        telemetry.addData("IMU", heading)
         telemetry.update()
 
         previousError = error
@@ -65,8 +62,6 @@ class PIDController(
         velocity = (customVelocityCalculator?.invoke()
             ?: ((prevValue - currentValue) / velocityMultiplier))
         previousValue = currentValue
-
-        currentRobotHeading = heading
 
         return output
     }

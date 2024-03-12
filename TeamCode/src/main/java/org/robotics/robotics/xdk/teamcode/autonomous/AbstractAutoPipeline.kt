@@ -34,11 +34,11 @@ abstract class AbstractAutoPipeline(
 {
     override val subsystems = mutableSetOf<Subsystem>()
 
-    private lateinit var frontRight: DcMotor
-    private lateinit var frontLeft: DcMotor
+    lateinit var frontRight: DcMotor
+    lateinit var frontLeft: DcMotor
 
-    private lateinit var backRight: DcMotor
-    private lateinit var backLeft: DcMotor
+    lateinit var backRight: DcMotor
+    lateinit var backLeft: DcMotor
 
     lateinit var movementHandler: MovementHandler
 

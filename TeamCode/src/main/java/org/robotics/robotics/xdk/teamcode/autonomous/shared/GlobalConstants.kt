@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.config.Config
 object GlobalConstants
 {
     @JvmField
-    var MoveForwardToSpikeMark = 650.0
+    var MoveForwardToSpikeMark = 620.0
 
     @JvmField
     var FarMoveTowardsBackboard = (3 * 615.0) - 20.0

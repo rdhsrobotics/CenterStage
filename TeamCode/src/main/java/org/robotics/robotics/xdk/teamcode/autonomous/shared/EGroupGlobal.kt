@@ -25,11 +25,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
     isSpikeMarkOnly: Boolean
 )
 {
-    val amountToMoveToSpikeMark = -GlobalConstants.MoveForwardToSpikeMark +
-            // if it's left or right, move a little bit LESS
-            if (relativeBackboardDirectionAtRobotStart.oppositeOf()
-                    .matches(gameObjectTapeSide)
-            ) 100 else 0
+    val amountToMoveToSpikeMark = -GlobalConstants.MoveForwardToSpikeMark
 
     simultaneous("move forward and intake") {
         single("intake") {
@@ -74,6 +70,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
         }
     }
 
+    waitMillis(250L)
     simultaneous("move back from spike mark and retract") {
         single("retract extender and close claw") {
             pipe.clawSubsystem.toggleExtender(
@@ -90,15 +87,19 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
 
         single("move back from spike mark") {
             Thread.sleep(300L)
-            pipe.turn(0.0)
 
             if (isSpikeMarkOnly)
             {
                 return@single
             }
 
+            if (gameObjectTapeSide != TapeSide.Middle)
+            {
+                pipe.turn(0.0)
+            }
+
             // don't smash into the wall lol
-            pipe.move(-amountToMoveToSpikeMark + 50, 0.0)
+            pipe.move(-amountToMoveToSpikeMark, 0.0)
         }
     }
 
@@ -156,9 +157,9 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     val strafePositions = mapOf(
         // Red values
         Direction.Left to mapOf(
-            TapeSide.Left to 720,
-            TapeSide.Middle to 570,
-            TapeSide.Right to 380
+            TapeSide.Left to 780,
+            TapeSide.Middle to 650,
+            TapeSide.Right to 390
         ),
         // Blue values                                                                                                                                 nbbbbbbbbbbbbbbbbbc
         Direction.Right to mapOf(
