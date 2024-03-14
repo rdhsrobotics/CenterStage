@@ -119,11 +119,15 @@ abstract class AbstractTeleOp : LinearOpMode(), System
         gp1Commands
             .where(ButtonType.BumperLeft)
             .triggers {
+                if (paperPlaneLauncher.state == DroneLauncher.DroneLauncherState.Launched)
+                {
+                    paperPlaneLauncher.reset()
+                    return@triggers
+                }
+
                 paperPlaneLauncher.launch()
             }
-            .andIsHeldUntilReleasedWhere {
-                paperPlaneLauncher.reset()
-            }
+            .whenPressedOnce()
 
         gp2Commands
             .where(ButtonType.DPadDown)

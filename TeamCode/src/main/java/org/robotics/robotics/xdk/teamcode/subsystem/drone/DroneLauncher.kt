@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.Servo
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
-import org.robotics.robotics.xdk.teamcode.subsystem.claw.ClawExpansionConstants
 
 class DroneLauncher(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
@@ -17,11 +16,24 @@ class DroneLauncher(private val opMode: LinearOpMode) : AbstractSubsystem()
         override fun dispose() = reset()
     }
 
+    enum class DroneLauncherState
+    {
+        Launched, Armed
+    }
+
+    var state = DroneLauncherState.Armed
+
     /**
      * Launches the airplane.
      */
     fun launch()
     {
+        if (state != DroneLauncherState.Armed)
+        {
+            return
+        }
+
+        state = DroneLauncherState.Launched
         backingServo.position = DroneLauncherConstants.MAX_PLANE_POSITION
     }
 
@@ -30,6 +42,12 @@ class DroneLauncher(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun reset()
     {
+        if (state != DroneLauncherState.Launched)
+        {
+            return
+        }
+
+        state = DroneLauncherState.Armed
         backingServo.position = DroneLauncherConstants.DEFAULT_PLANE_POSITION
     }
 
