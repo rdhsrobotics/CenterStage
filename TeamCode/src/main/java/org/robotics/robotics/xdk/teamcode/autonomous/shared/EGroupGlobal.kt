@@ -70,7 +70,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
         }
     }
 
-    waitMillis(250L)
+    waitMillis(350L)
     simultaneous("move back from spike mark and retract") {
         single("retract extender and close claw") {
             pipe.clawSubsystem.toggleExtender(
@@ -78,6 +78,8 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
                 force = true
             )
 
+
+            Thread.sleep(500L)
             pipe.clawSubsystem.updateClawState(
                 ExtendableClaw.ClawStateUpdate.Right,
                 ExtendableClaw.ClawState.Closed,
@@ -201,6 +203,7 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
         }
 
         single("move slightly into backboard") {
+            pipe.turn(maintainDirection)
             pipe.move(-GlobalConstants.ScalarMoveSlightlyIntoBackboard, maintainDirection)
         }
     }
@@ -213,9 +216,13 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
             ExtendableClaw.ClawState.Open,
             force = true
         )
+
+        pipe.elevatorSubsystem.configureElevatorManually(
+            GlobalConstants.ScalarExpectedElevatorDropHeight + 0.1
+        )
     }
 
-    waitMillis(250L)
+    waitMillis(450L)
     single("move back from into backboard") {
         pipe.move(GlobalConstants.ScalarMoveSlightlyIntoBackboard, maintainDirection)
     }
