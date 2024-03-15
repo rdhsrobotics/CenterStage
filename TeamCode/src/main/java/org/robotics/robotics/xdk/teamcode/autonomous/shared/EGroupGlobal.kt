@@ -54,7 +54,7 @@ fun ExecutionGroup.depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
             return@single
         }
 
-        pipe.turn(headingFixedTowardsSpikeMark)
+        pipe.turn(headingFixedTowardsSpikeMark + if (gameObjectTapeSide == TapeSide.Right) 5.0 else 0.0)
     }
 
     single("deposit pixel") {
@@ -159,11 +159,11 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     val strafePositions = mapOf(
         // Red values
         Direction.Left to mapOf(
-            TapeSide.Left to 780,
+            TapeSide.Left to 840,
             TapeSide.Middle to 650,
-            TapeSide.Right to 390
+            TapeSide.Right to 500
         ),
-        // Blue values                                                                                                                                 nbbbbbbbbbbbbbbbbbc
+        // Blue values
         Direction.Right to mapOf(
             TapeSide.Left to 600,
             TapeSide.Middle to 790,
@@ -195,6 +195,10 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
             .join()
     }*/
 
+    single("align") {
+        pipe.turn(maintainDirection)
+    }
+
     simultaneous("move slightly into backboard and raise elevator") {
         single("raise elevator") {
             pipe.elevatorSubsystem.configureElevatorManually(
@@ -203,7 +207,6 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
         }
 
         single("move slightly into backboard") {
-            pipe.turn(maintainDirection)
             pipe.move(-GlobalConstants.ScalarMoveSlightlyIntoBackboard, maintainDirection)
         }
     }
@@ -251,6 +254,8 @@ fun ExecutionGroup.strafeIntoBackboardPositionThenDepositYellowPixelAndPark(
     }
 
     single("park into position") {
+        pipe.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.PreLoad, force = true)
+
         // move into parking zone
         pipe.move(-GlobalConstants.ScalarMoveIntoParkingZone, maintainDirection)
     }

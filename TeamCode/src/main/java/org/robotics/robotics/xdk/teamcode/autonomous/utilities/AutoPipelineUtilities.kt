@@ -31,6 +31,8 @@ object AutoPipelineUtilities
 
     @JvmField var APRIL_TAG_LOCALIZATION_THRESHOLD = 5.0
 
+    @JvmField var TEST_TURN_DEGREES = -90.0
+
     /*@JvmField var MOTION_PROFILE_ACCEL = 500.0
     @JvmField var MOTION_PROFILE_DECEL = 500.0
     @JvmField var MOTION_PROFILE_VELOCITY = 1000.0*/

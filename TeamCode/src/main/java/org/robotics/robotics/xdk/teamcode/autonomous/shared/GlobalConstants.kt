@@ -13,14 +13,14 @@ object GlobalConstants
     @JvmField
     var CloseMoveTowardsBackboard = 615.0
     @JvmField
-    var TurnToSpikeMark = 55.0
+    var TurnToSpikeMark = 65.0
 
     // Scalars
     @JvmField
     var ScalarMoveSlightlyIntoBackboard = 500.0
 
     @JvmField
-    var ScalarMoveIntoParkingZone = 420.0
+    var ScalarMoveIntoParkingZone = 560.0
     @JvmField
-    var ScalarExpectedElevatorDropHeight = 0.30
+    var ScalarExpectedElevatorDropHeight = 0.17
 }

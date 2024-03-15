@@ -28,10 +28,6 @@ class DroneLauncher(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun launch()
     {
-        if (state != DroneLauncherState.Armed)
-        {
-            return
-        }
 
         state = DroneLauncherState.Launched
         backingServo.position = DroneLauncherConstants.MAX_PLANE_POSITION
@@ -42,11 +38,6 @@ class DroneLauncher(private val opMode: LinearOpMode) : AbstractSubsystem()
      */
     fun reset()
     {
-        if (state != DroneLauncherState.Launched)
-        {
-            return
-        }
-
         state = DroneLauncherState.Armed
         backingServo.position = DroneLauncherConstants.DEFAULT_PLANE_POSITION
     }

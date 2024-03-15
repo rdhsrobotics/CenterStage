@@ -69,7 +69,7 @@ class PIDController(
     fun atSetPoint(currentValue: Double): Boolean
     {
         return velocity.absoluteValue < minimumVelocity && (
-                (setPoint - currentValue).absoluteValue < setPointTolerance
+                (customErrorCalculator?.let { it(currentValue) } ?: (setPoint - currentValue)).absoluteValue < setPointTolerance
         )
     }
 }

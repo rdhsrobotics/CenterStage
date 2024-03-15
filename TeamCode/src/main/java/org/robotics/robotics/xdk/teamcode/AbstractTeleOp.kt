@@ -253,7 +253,7 @@ gp1Commands
                 }
 
                 hang.arm()
-                extendableClaw.toggleExtender(ExtendableClaw.ExtenderState.PreLoad)
+//                extendableClaw.toggleExtender(ExtendableClaw.ExtenderState.PreLoad)
             }
             .whenPressedOnce()
 

@@ -38,7 +38,7 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
     override fun doInitialize()
     {
         backingMotor = opMode.hardware<DcMotorEx>("elevator")
-        backingMotor.direction = DcMotorSimple.Direction.FORWARD
+        backingMotor.direction = DcMotorSimple.Direction.REVERSE
 
         backingMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         backingMotor.stopAndResetEncoder()
