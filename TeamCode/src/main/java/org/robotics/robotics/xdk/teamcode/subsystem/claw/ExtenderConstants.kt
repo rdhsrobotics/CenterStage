@@ -8,5 +8,5 @@ object ExtenderConstants
     @JvmField var PRELOAD_EXTENDER_POSITION = 1.0
     @JvmField var MIN_EXTENDER_POSITION = 0.826
     @JvmField var INTERMEDIATE_EXTENDER_POSITION = 0.7
-    @JvmField var MAX_EXTENDER_POSITION = 0.65
+    @JvmField var MAX_EXTENDER_POSITION = 0.60
 }
