@@ -17,7 +17,7 @@ class MotionProfiledServo(
 )
 {
     private var motionProfile: AsymmetricMotionProfile? = null
-    private var timer: ElapsedTime? = null
+    private var timer: ElapsedTime = ElapsedTime()
 
     fun unwrapServo() = servo
     fun setMotionProfileTarget(target: Double)
@@ -38,11 +38,11 @@ class MotionProfiledServo(
     {
         if (motionProfile == null)
         {
-            timer = null
+            timer = ElapsedTime()
             return
         }
 
-        val position = motionProfile!!.calculate(timer!!.time())
+        val position = motionProfile!!.calculate(timer.time())
         servo.position = position.x
 
         if (servo.position == motionProfile!!.finalPosition)
