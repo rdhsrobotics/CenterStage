@@ -18,6 +18,7 @@ import org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.MovementHandl
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TapeSide
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TeamColor
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.VisionPipeline
+import org.robotics.robotics.xdk.teamcode.autonomous.localizer.TwoWheelLocalizer
 import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
 import org.robotics.robotics.xdk.teamcode.subsystem.drone.DroneLauncher
 import org.robotics.robotics.xdk.teamcode.subsystem.Drivebase
@@ -58,6 +59,10 @@ abstract class AbstractAutoPipeline(
         )
     }
 
+    val localizer by lazy {
+        TwoWheelLocalizer(this@AbstractAutoPipeline)
+    }
+
     override fun runOpMode()
     {
         register(
@@ -79,6 +84,8 @@ abstract class AbstractAutoPipeline(
             multipleTelemetry.addLine("[Mono] $it")
             multipleTelemetry.update()
         }
+
+        localizer
 
         frontLeft = hardware<DcMotor>("frontLeft")
         frontLeft.direction = DcMotorSimple.Direction.REVERSE
@@ -110,14 +117,35 @@ abstract class AbstractAutoPipeline(
             multipleTelemetry.addData("Tape side", visionPipeline.getTapeSide())
 
             multipleTelemetry.addLine("=== PID Tuning Graph Outputs ===")
-            multipleTelemetry.addData("Error", 0.0)
+
+            /**
+             *             drivetrain.getMultipleTelemetry().addData("Current Pose Y", robotPose.y);
+             *             drivetrain.getMultipleTelemetry().addData("Current Pose X", robotPose.x);
+             *             drivetrain.getMultipleTelemetry().addData("Current Pose Heading", robotPose.heading);
+             *
+             *             drivetrain.getMultipleTelemetry().addData("Power for Y", powers.y);
+             *             drivetrain.getMultipleTelemetry().addData("Power for X", powers.y);
+             *             drivetrain.getMultipleTelemetry().addData("Power for Turn", powers.heading);
+             */
+            /*multipleTelemetry.addData("Error", 0.0)
             multipleTelemetry.addData("Target", 0.0)
             multipleTelemetry.addData("Input", 0.0)
             multipleTelemetry.addData("Output", 0.0)
-            multipleTelemetry.addData("Velocity", 0.0)
+            multipleTelemetry.addData("Velocity", 0.0)*/
+
+            multipleTelemetry.addData("Target Pose Y", 0.0)
+            multipleTelemetry.addData("Target Pose X", 0.0)
+            multipleTelemetry.addData("Target Pose Heading", 0.0)
+
+            multipleTelemetry.addData("Current Pose Y", 0.0)
+            multipleTelemetry.addData("Current Pose X", 0.0)
+            multipleTelemetry.addData("Current Pose Heading", 0.0)
+            multipleTelemetry.addData("Power for Y", 0.0)
+            multipleTelemetry.addData("Power for X", 0.0)
+            multipleTelemetry.addData("Power for Turn", 0.0)
 //            multipleTelemetry.addData("Prev. Loop Time", 0)
 
-            runCatching {
+            /*runCatching {
                 multipleTelemetry.addData(
                     "IMU",
                     drivebase.getIMUYawPitchRollAngles()
@@ -125,7 +153,7 @@ abstract class AbstractAutoPipeline(
                 )
             }.onFailure {
                 multipleTelemetry.addData("IMU", 0.0)
-            }
+            }*/
 
             multipleTelemetry.update()
         }
@@ -161,6 +189,7 @@ abstract class AbstractAutoPipeline(
             while (!isStopRequested)
             {
                 clawSubsystem.periodic()
+                localizer.update()
             }
         }
 
@@ -208,6 +237,10 @@ abstract class AbstractAutoPipeline(
     fun stopAndResetMotors() = configureMotorsToDo {
         it.power = 0.0
         it.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+    }
+
+    fun runWithoutEncoders() = configureMotorsToDo {
+        it.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     }
 
     fun runMotors() = configureMotorsToDo {
