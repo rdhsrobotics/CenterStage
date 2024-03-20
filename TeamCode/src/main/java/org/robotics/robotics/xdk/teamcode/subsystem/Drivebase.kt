@@ -16,7 +16,6 @@ import kotlin.concurrent.thread
 class Drivebase(private val opMode: LinearOpMode) : AbstractSubsystem()
 {
     lateinit var allDriveBaseMotors: List<DcMotor>
-    private val mutex = Any()
 
     private lateinit var imu: IMU
     private var imuYPR: YawPitchRollAngles? = null
@@ -72,13 +71,6 @@ class Drivebase(private val opMode: LinearOpMode) : AbstractSubsystem()
         )
 
         imu.resetYaw()
-
-        /*thread(isDaemon = true) {
-            while (!opMode.isStopRequested)
-            {
-                synchronized(mutex) { imuYPR = imu.robotYawPitchRollAngles }
-            }
-        }*/
 
         val backLeft = Motor(opMode.hardwareMap, "backLeft")
         val backRight = Motor(opMode.hardwareMap, "backRight")
