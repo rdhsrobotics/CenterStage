@@ -6,20 +6,15 @@ import io.liftgate.robotics.mono.pipeline.simultaneous
 import io.liftgate.robotics.mono.pipeline.single
 import io.liftgate.robotics.mono.pipeline.waitMillis
 import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline
-import org.robotics.robotics.xdk.teamcode.autonomous.geometry.Point
 import org.robotics.robotics.xdk.teamcode.autonomous.geometry.Pose
 import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
-import org.robotics.robotics.xdk.teamcode.autonomous.position.PositionCommand
 import org.robotics.robotics.xdk.teamcode.autonomous.position.degrees
 import org.robotics.robotics.xdk.teamcode.autonomous.position.navigateTo
-import org.robotics.robotics.xdk.teamcode.autonomous.position.purePursuitNavigateTo
-import org.robotics.robotics.xdk.teamcode.autonomous.purepursuit.Waypoint
 import org.robotics.robotics.xdk.teamcode.autonomous.shared.GlobalConstants
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
-import kotlin.math.PI
 
 @Autonomous(name = "Test | 2+0 V2", group = "Test")
-class V2ControlTestAutoPositionCommand : AbstractAutoPipeline(
+class V3TwoPlusZeroTest : AbstractAutoPipeline(
     AutonomousProfile.RedPlayer1TwoPlusZero,
     blockExecutionGroup = { opMode, _ ->
         simultaneous("pixel drop") {

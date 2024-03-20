@@ -1,5 +1,7 @@
 package org.robotics.robotics.xdk.teamcode.autonomous.geometry;
 
+import com.arcrobotics.ftclib.geometry.Vector2d;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 
@@ -18,8 +20,8 @@ public class Pose extends Point {
         this(p.x, p.y, heading);
     }
 
-    public Pose(Vector2D vec, double heading) {
-        this(vec.x, vec.y, heading);
+    public Pose(Vector2d vec, double heading) {
+        this(vec.getX(), vec.getY(), heading);
     }
 
     public Pose() {
@@ -56,8 +58,8 @@ public class Pose extends Point {
         return new Pose(x - other.x, y - other.y, heading - other.heading);
     }
 
-    public Vector2D toVec2D() {
-        return new Vector2D(x, y);
+    public Vector2d toVec2D() {
+        return new Vector2d(x, y);
     }
 
     @Override

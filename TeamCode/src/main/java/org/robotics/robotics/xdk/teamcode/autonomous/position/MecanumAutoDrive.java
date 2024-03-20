@@ -1,11 +1,11 @@
 package org.robotics.robotics.xdk.teamcode.autonomous.position;
 
 import com.arcrobotics.ftclib.drivebase.RobotDrive;
+import com.arcrobotics.ftclib.geometry.Vector2d;
 import com.qualcomm.robotcore.util.Range;
 
 import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline;
 import org.robotics.robotics.xdk.teamcode.autonomous.geometry.Pose;
-import org.robotics.robotics.xdk.teamcode.autonomous.geometry.Vector2D;
 
 public class MecanumAutoDrive {
 
@@ -15,10 +15,10 @@ public class MecanumAutoDrive {
 
     public double[] getPowers(double strafeSpeed, double forwardSpeed,
                               double turnSpeed, double gyroAngle) {
-        Vector2D input = new Vector2D(strafeSpeed, forwardSpeed).rotate(-gyroAngle);
+        Vector2d input = new Vector2d(strafeSpeed, forwardSpeed).rotateBy(-gyroAngle);
 
-        strafeSpeed = Range.clip(input.x, -1, 1);
-        forwardSpeed = Range.clip(input.y, -1, 1);
+        strafeSpeed = Range.clip(input.getX(), -1, 1);
+        forwardSpeed = Range.clip(input.getY(), -1, 1);
         turnSpeed = Range.clip(turnSpeed, -1, 1);
 
         double[] wheelSpeeds = new double[4];

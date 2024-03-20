@@ -12,7 +12,6 @@ import org.robotics.robotics.xdk.teamcode.autonomous.geometry.Pose;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.DoubleSupplier;
 
 /*
  * Sample tracking wheel localizer implementation assuming the standard configuration:
@@ -44,31 +43,30 @@ public class TwoWheelLocalizer extends TwoTrackingWheelLocalizer {
     private final AbstractAutoPipeline pipeline;
 
     private final Motor.Encoder lateral;
-    private final Motor.Encoder horizontal;
+    private final Motor.Encoder perpendicular;
 
     public TwoWheelLocalizer(AbstractAutoPipeline pipeline) {
         super(Arrays.asList(
                 new Pose2d(0, 0, 0), // left + right
                 new Pose2d(0, 0, Math.toRadians(90)) // front
         ));
+
         this.pipeline = pipeline;
-        lateral = new Motor(pipeline.hardwareMap, "backRight").encoder;
-        horizontal = new Motor(pipeline.hardwareMap, "frontLeft").encoder;
-        setPose(new Pose());
+
+        this.lateral = new Motor(pipeline.hardwareMap, "backRight").encoder;
+        this.perpendicular = new Motor(pipeline.hardwareMap, "frontLeft").encoder;
     }
 
     public static double encoderTicksToInches(double ticks) {
         return WHEEL_RADIUS * 2 * Math.PI * GEAR_RATIO * ticks / TICKS_PER_REV;
     }
 
-
-
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
         return Arrays.asList(
                 encoderTicksToInches(lateral.getPosition()),
-                encoderTicksToInches(horizontal.getPosition())
+                encoderTicksToInches(perpendicular.getPosition())
         );
     }
 
@@ -95,6 +93,4 @@ public class TwoWheelLocalizer extends TwoTrackingWheelLocalizer {
     public void setPose(Pose pose) {
         super.setPoseEstimate(new Pose2d(pose.y, -pose.x, pose.heading));
     }
-
-
 }
