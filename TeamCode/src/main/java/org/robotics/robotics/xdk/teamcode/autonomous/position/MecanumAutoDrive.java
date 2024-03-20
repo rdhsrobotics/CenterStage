@@ -1,25 +1,20 @@
-package org.robotics.robotics.xdk.teamcode.subsystem.drivebasee;
+package org.robotics.robotics.xdk.teamcode.autonomous.position;
 
 import com.arcrobotics.ftclib.drivebase.RobotDrive;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.Range;
 
-
+import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline;
 import org.robotics.robotics.xdk.teamcode.autonomous.geometry.Pose;
 import org.robotics.robotics.xdk.teamcode.autonomous.geometry.Vector2D;
 
-import java.util.Arrays;
+public class MecanumAutoDrive {
 
-public class MecanumDrivetrain implements Drivetrain {
-
-    @Override
-    public double[] set(Pose pose) {
-        return set(pose, 0);
+    public double[] getPowers(Pose pose) {
+        return getPowers(pose, 0);
     }
 
-    public  double[] set(double strafeSpeed, double forwardSpeed,
-                    double turnSpeed, double gyroAngle) {
-
+    public double[] getPowers(double strafeSpeed, double forwardSpeed,
+                              double turnSpeed, double gyroAngle) {
         Vector2D input = new Vector2D(strafeSpeed, forwardSpeed).rotate(-gyroAngle);
 
         strafeSpeed = Range.clip(input.x, -1, 1);
@@ -35,16 +30,15 @@ public class MecanumDrivetrain implements Drivetrain {
         // 1.06, 1.04
 
         // feedforward & voltage comp
-        /*double correction = 12 / robot.getVoltage();
+        double correction = 12 / AbstractAutoPipeline.getInstance().getVoltage();
         for (int i = 0; i < wheelSpeeds.length; i++) {
             wheelSpeeds[i] = Math.abs(wheelSpeeds[i]) < 0.01 ?
                     wheelSpeeds[i] * correction :
                     (wheelSpeeds[i] + Math.signum(wheelSpeeds[i]) * 0.085) * correction;
-        }*/
+        }
 
         double max = 1;
         for (double wheelSpeed : wheelSpeeds) max = Math.max(max, Math.abs(wheelSpeed));
-
 
         if (max > 1) {
             wheelSpeeds[RobotDrive.MotorType.kFrontLeft.value] /= max;
@@ -61,8 +55,7 @@ public class MecanumDrivetrain implements Drivetrain {
         return ws;
     }
 
-    public double[] set(Pose pose, double angle) {
-        return set(pose.x, pose.y, pose.heading, angle);
+    public double[] getPowers(Pose pose, double angle) {
+        return getPowers(pose.x, pose.y, pose.heading, angle);
     }
-
 }

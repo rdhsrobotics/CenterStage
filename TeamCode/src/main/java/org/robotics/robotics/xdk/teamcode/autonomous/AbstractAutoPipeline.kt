@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.DistanceSensor
 import io.liftgate.robotics.mono.Mono
-import io.liftgate.robotics.mono.pipeline.ExecutionGroup
+import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.robotics.robotics.xdk.teamcode.autonomous.contexts.BothClawFinger
@@ -29,10 +29,16 @@ import kotlin.concurrent.thread
 abstract class AbstractAutoPipeline(
     private val autonomousProfile: AutonomousProfile,
     private val teamColor: TeamColor = autonomousProfile.teamColor,
-    internal val blockExecutionGroup: ExecutionGroup.(AbstractAutoPipeline, TapeSide) -> Unit =
+    internal val blockExecutionGroup: RootExecutionGroup.(AbstractAutoPipeline, TapeSide) -> Unit =
         autonomousProfile.buildExecutionGroup()
 ) : LinearOpMode(), io.liftgate.robotics.mono.subsystem.System
 {
+    companion object
+    {
+        @JvmStatic
+        lateinit var instance: AbstractAutoPipeline
+    }
+
     override val subsystems = mutableSetOf<Subsystem>()
 
     lateinit var frontRight: DcMotor
@@ -52,6 +58,9 @@ abstract class AbstractAutoPipeline(
     private val airplaneSubsystem by lazy { DroneLauncher(this) }
     val visionPipeline by lazy { VisionPipeline(teamColor, this) }
 
+    var voltage: Double = 0.0
+        private set
+
     val multipleTelemetry by lazy {
         MultipleTelemetry(
             this.telemetry,
@@ -65,6 +74,8 @@ abstract class AbstractAutoPipeline(
 
     override fun runOpMode()
     {
+        instance = this
+
         register(
             clawSubsystem,
             elevatorSubsystem,
@@ -145,7 +156,7 @@ abstract class AbstractAutoPipeline(
             multipleTelemetry.addData("Power for Turn", 0.0)
 //            multipleTelemetry.addData("Prev. Loop Time", 0)
 
-            /*runCatching {
+            runCatching {
                 multipleTelemetry.addData(
                     "IMU",
                     drivebase.getIMUYawPitchRollAngles()
@@ -153,7 +164,7 @@ abstract class AbstractAutoPipeline(
                 )
             }.onFailure {
                 multipleTelemetry.addData("IMU", 0.0)
-            }*/
+            }
 
             multipleTelemetry.update()
         }
@@ -189,7 +200,21 @@ abstract class AbstractAutoPipeline(
             while (!isStopRequested)
             {
                 clawSubsystem.periodic()
+            }
+        }
+
+        thread {
+            while (!isStopRequested)
+            {
                 localizer.update()
+            }
+        }
+
+        thread {
+            while (!isStopRequested)
+            {
+                voltage = hardwareMap.voltageSensor.first().voltage
+                Thread.sleep(50L)
             }
         }
 
