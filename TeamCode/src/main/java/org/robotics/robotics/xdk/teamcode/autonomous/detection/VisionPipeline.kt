@@ -8,6 +8,10 @@ import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import io.liftgate.robotics.mono.subsystem.Subsystem
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.vision.VisionPortal
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection
+import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase
+import org.firstinspires.ftc.vision.apriltag.AprilTagLibrary
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.elements.GameElementDetection
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
 
@@ -22,7 +26,7 @@ class VisionPipeline(
 {
     private lateinit var portal: VisionPortal
     lateinit var propPipeline: GameElementDetection
-//    private lateinit var aprilTagLocalizer: AprilTagLocalizer
+    lateinit var aprilTag: AprilTagProcessor
 
     fun getTapeSide() = propPipeline.tapeSide
 
@@ -50,7 +54,11 @@ class VisionPipeline(
             .setCameraResolution(Size(640, 480))
             .enableLiveView(destination.encapsulates(StreamDestination.DriverStation))
             .setAutoStopLiveView(true)
-            .addProcessors(propPipeline, /*aprilTagLocalizer.processor*/)
+            .addProcessors(propPipeline, AprilTagProcessor.Builder().setTagLibrary(
+                AprilTagGameDatabase.getCenterStageTagLibrary()
+            ).build().apply {
+                aprilTag = this
+            })
             .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
             .build()
 
