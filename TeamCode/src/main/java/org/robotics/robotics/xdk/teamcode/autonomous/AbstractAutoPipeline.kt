@@ -238,7 +238,7 @@ abstract class AbstractAutoPipeline(
         Mono.logSink = { }
     }
 
-    fun avg(vararg poses: Pose): Pose
+    fun avg(vararg poses: Pose): Pose?
     {
         var pose = Pose()
         var i = 0
@@ -253,7 +253,7 @@ abstract class AbstractAutoPipeline(
         return if (i > 0) pose.divide(Pose(i.toDouble(), i.toDouble(), i.toDouble())) else null
     }
 
-    fun getAprilTagPosition(): Pose
+    fun getAprilTagPosition(): Pose?
     {
         return run {
             val currentDetections: List<AprilTagDetection> = visionPipeline.aprilTag.detections
