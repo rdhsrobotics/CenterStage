@@ -10,6 +10,8 @@ import org.robotics.robotics.xdk.teamcode.autonomous.geometry.Pose
 import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
 import org.robotics.robotics.xdk.teamcode.autonomous.position.degrees
 import org.robotics.robotics.xdk.teamcode.autonomous.position.navigateTo
+import org.robotics.robotics.xdk.teamcode.autonomous.position.purePursuitNavigateTo
+import org.robotics.robotics.xdk.teamcode.autonomous.purepursuit.Waypoint
 import org.robotics.robotics.xdk.teamcode.autonomous.shared.GlobalConstants
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 
@@ -17,27 +19,24 @@ import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 class V3TwoPlusZeroTest : AbstractAutoPipeline(
     AutonomousProfile.RedPlayer1TwoPlusZero,
     blockExecutionGroup = { opMode, _ ->
-        simultaneous("pixel drop") {
-            consecutive("pos then deposit") {
-                single("Pixel Deposit") {
-                    navigateTo(
-                        Pose(0.0, 30.0, 0.degrees)
-                    )
-                }
+        single("Pixel Deposit") {
+            navigateTo(
+                Pose(0.0, -27.0, 0.degrees)
+            )
+        }
 
-                single("deposit") {
-                    opMode.clawSubsystem.updateClawState(
-                        ExtendableClaw.ClawStateUpdate.Right,
-                        ExtendableClaw.ClawState.Open
-                    )
-                }
-            }
+        single("extender down") {
+            opMode.clawSubsystem.toggleExtender(
+                ExtendableClaw.ExtenderState.Intake,
+                force = true
+            )
 
-            single("extender down") {
-                opMode.clawSubsystem.toggleExtender(
-                    ExtendableClaw.ExtenderState.Intake
-                )
-            }
+            Thread.sleep(250L)
+
+            opMode.clawSubsystem.updateClawState(
+                ExtendableClaw.ClawStateUpdate.Right,
+                ExtendableClaw.ClawState.Open,
+            )
         }
 
         simultaneous("extender back") {
@@ -50,7 +49,11 @@ class V3TwoPlusZeroTest : AbstractAutoPipeline(
         simultaneous("move into deposit yellow pixel") {
             single("Backboard deposit") {
                 navigateTo(
-                    Pose(-40.0, -35.0, (-90).degrees)
+                    Pose(0.0, -23.0, 0.degrees)
+                )
+
+                navigateTo(
+                    Pose(-42.0, -35.0, (-90).degrees)
                 )
             }
 
@@ -83,7 +86,7 @@ class V3TwoPlusZeroTest : AbstractAutoPipeline(
                 single("retract") {
                     // open the claw and wait for the pixel to drop
                     opMode.clawSubsystem.toggleExtender(
-                        ExtendableClaw.ExtenderState.PreLoad,
+                        ExtendableClaw.ExtenderState.Intermediate,
                         force = true
                     )
                     opMode.clawSubsystem.updateClawState(
@@ -97,9 +100,28 @@ class V3TwoPlusZeroTest : AbstractAutoPipeline(
             }
 
             single("bla bla bla") {
-                navigateTo(
+                fun doTHing()
+                {
+                    purePursuitNavigateTo(
+                        Waypoint(Pose(0.0, -55.0, 90.degrees), 20.0),
+                        Waypoint(Pose(50.0, -55.0, 90.degrees), 20.0),
+                        Waypoint(Pose(60.0, -45.0, 90.degrees), 20.0)
+                    )
+
+                    purePursuitNavigateTo(
+                        Waypoint(Pose(50.0, -55.0, (90.0).degrees), 20.0),
+                        Waypoint(Pose(0.0, -55.0, (90.0).degrees), 20.0),
+                        Waypoint(Pose(-42.0, -35.0, (-90).degrees), 20.0)
+                    )
+                }
+
+                doTHing()
+                doTHing()
+                doTHing()
+
+                /*navigateTo(
                     Pose(-37.0, -50.0, (-90).degrees)
-                )
+                )*/
             }
         }
     }

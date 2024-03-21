@@ -46,7 +46,7 @@ abstract class AbstractAutoPipeline(
     lateinit var backRight: DcMotor
     lateinit var backLeft: DcMotor
 
-    lateinit var movementHandler: MovementHandler
+//    lateinit var movementHandler: MovementHandler
 
     var frontDistanceSensor: DistanceSensor? = null
     val drivebase by lazy { Drivebase(this) }
@@ -216,28 +216,28 @@ abstract class AbstractAutoPipeline(
                 Thread.sleep(50L)
             }
         }
-
         executionGroup.apply {
             blockExecutionGroup(
                 this@AbstractAutoPipeline, tapeSide
             )
         }
 
-        movementHandler = MovementHandler(
+        /*movementHandler = MovementHandler(
             opMode = this,
             executionGroup = executionGroup
-        )
+        )*/
 
+        runWithoutEncoders()
         executionGroup.executeBlocking()
         disposeOfAll()
 
         Mono.logSink = { }
     }
 
-    fun move(ticks: Double, heading: Double) = movementHandler.move(ticks, heading)
+  /*  fun move(ticks: Double, heading: Double) = movementHandler.move(ticks, heading)
     fun turn(ticks: Double) = movementHandler.turn(ticks)
     fun strafe(ticks: Double) = movementHandler.strafe(ticks)
-
+*/
     fun lockUntilMotorsFree(maximumTimeMillis: Long = 1500L)
     {
         val start = System.currentTimeMillis()

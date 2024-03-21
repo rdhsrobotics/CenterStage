@@ -15,4 +15,4 @@ fun RootExecutionGroup.navigateTo(pose: Pose) =
     PositionCommand(pose, this).execute()
 
 fun RootExecutionGroup.purePursuitNavigateTo(vararg waypoints: Waypoint) =
-    PurePursuitCommand(this, PurePursuitPath(*waypoints))
+    PurePursuitCommand(this, PurePursuitPath(*waypoints)).execute()
