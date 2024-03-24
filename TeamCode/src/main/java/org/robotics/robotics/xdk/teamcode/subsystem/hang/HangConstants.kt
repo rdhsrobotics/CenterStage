@@ -5,5 +5,5 @@ import com.acmerobotics.dashboard.config.Config
 @Config
 object HangConstants
 {
-    @JvmField var RETRACTED_ENCODER_TICKS = 9150
+    @JvmField var RETRACTED_ENCODER_TICKS = 4070
 }

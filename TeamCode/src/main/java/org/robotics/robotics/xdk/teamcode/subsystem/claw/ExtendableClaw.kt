@@ -188,13 +188,15 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
             this.leftClawState = state
         }
 
-        if (force)
+        servo.setTarget(position)
+
+        /*if (force)
         {
             servo.setTarget(position)
             return
         }
 
-        servo.setMotionProfileTarget(position)
+        servo.setMotionProfileTarget(position)*/
     }
 
     override fun isCompleted() = true

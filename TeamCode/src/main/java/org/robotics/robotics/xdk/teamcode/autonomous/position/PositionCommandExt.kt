@@ -14,5 +14,5 @@ val Int.degrees: Double
 fun RootExecutionGroup.navigateTo(pose: Pose) =
     PositionCommand(pose, this).execute()
 
-fun RootExecutionGroup.purePursuitNavigateTo(vararg waypoints: Waypoint) =
-    PurePursuitCommand(this, PurePursuitPath(*waypoints)).execute()
+fun RootExecutionGroup.purePursuitNavigateTo(vararg waypoints: Waypoint, optBlock: PurePursuitCommand.() -> Unit = {}) =
+    PurePursuitCommand(this, PurePursuitPath(*waypoints)).apply(optBlock).execute()

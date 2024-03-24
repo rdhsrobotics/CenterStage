@@ -53,7 +53,7 @@ class V3TwoPlusZeroTest : AbstractAutoPipeline(
                 )
 
                 navigateTo(
-                    Pose(-42.0, -35.0, (-90).degrees)
+                    Pose(-40.0, -33.0, (-90).degrees)
                 )
             }
 
@@ -75,7 +75,7 @@ class V3TwoPlusZeroTest : AbstractAutoPipeline(
                 )
 
                 opMode.elevatorSubsystem.configureElevatorManually(
-                    GlobalConstants.ScalarExpectedElevatorDropHeight + 0.1
+                    GlobalConstants.ScalarExpectedElevatorDropHeight + 0.2
                 )
             }
         }
@@ -85,10 +85,6 @@ class V3TwoPlusZeroTest : AbstractAutoPipeline(
                 waitMillis(750L)
                 single("retract") {
                     // open the claw and wait for the pixel to drop
-                    opMode.clawSubsystem.toggleExtender(
-                        ExtendableClaw.ExtenderState.Intermediate,
-                        force = true
-                    )
                     opMode.clawSubsystem.updateClawState(
                         ExtendableClaw.ClawStateUpdate.Left,
                         ExtendableClaw.ClawState.Closed,
@@ -100,24 +96,56 @@ class V3TwoPlusZeroTest : AbstractAutoPipeline(
             }
 
             single("bla bla bla") {
-                fun doTHing()
-                {
-                    purePursuitNavigateTo(
-                        Waypoint(Pose(0.0, -55.0, 90.degrees), 20.0),
-                        Waypoint(Pose(50.0, -55.0, 90.degrees), 20.0),
-                        Waypoint(Pose(60.0, -45.0, 90.degrees), 20.0)
-                    )
+                opMode.clawSubsystem.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Right,
+                    ExtendableClaw.ClawState.MosaicFix
+                )
 
-                    purePursuitNavigateTo(
-                        Waypoint(Pose(50.0, -55.0, (90.0).degrees), 20.0),
-                        Waypoint(Pose(0.0, -55.0, (90.0).degrees), 20.0),
-                        Waypoint(Pose(-42.0, -35.0, (-90).degrees), 20.0)
-                    )
+                purePursuitNavigateTo(
+                    Waypoint(Pose(0.0, -55.0, 90.degrees), 20.0),
+                    Waypoint(Pose(20.0, -58.0, 90.degrees), 20.0),
+                    Waypoint(Pose(62.0, -50.0, 90.degrees), 20.0)
+                ) {
+                    setDeathMillis(5000.0)
                 }
 
-                doTHing()
-                doTHing()
-                doTHing()
+                opMode.clawSubsystem.toggleExtender(
+                    ExtendableClaw.ExtenderState.Intake
+                )
+
+
+                Thread.sleep(350L)
+                opMode.elevatorSubsystem.configureElevatorManually(0.17)
+                Thread.sleep(350L)
+
+                opMode.clawSubsystem.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Right,
+                    ExtendableClaw.ClawState.Closed
+                )
+
+                Thread.sleep(300L)
+                opMode.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit)
+                opMode.elevatorSubsystem.configureElevatorManually(0.0)
+
+                purePursuitNavigateTo(
+                    Waypoint(Pose(50.0, -55.0, (90.0).degrees), 20.0),
+                    Waypoint(Pose(0.0, -55.0, (90.0).degrees), 20.0),
+                    Waypoint(Pose(-42.0, -35.0, (-90).degrees), 20.0)
+                ) {
+                    setDeathMillis(5000.0)
+                }
+
+                opMode.elevatorSubsystem.configureElevatorManually(
+                    GlobalConstants.ScalarExpectedElevatorDropHeight + 0.2
+                )
+
+                // open the claw and wait for the pixel to drop
+                opMode.clawSubsystem.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Right,
+                    ExtendableClaw.ClawState.Open
+                )
+
+                Thread.sleep(1000L)
 
                 /*navigateTo(
                     Pose(-37.0, -50.0, (-90).degrees)

@@ -13,11 +13,11 @@ object ClawExpansionConstants
     @JvmField var CLAW_FINGER_PROFILE_ACCEL = 33.0
     @JvmField var CLAW_FINGER_PROFILE_DECEL = 50.0
 
-    @JvmField var CLOSED_LEFT_CLAW = 0.5
-    @JvmField var OPEN_LEFT_CLAW = 0.66 // 0.65 prev
-    @JvmField var OPEN_LEFT_CLAW_INTAKE = 0.70
+    @JvmField var CLOSED_LEFT_CLAW = 0.08
+    @JvmField var OPEN_LEFT_CLAW = 0.16
+    @JvmField var OPEN_LEFT_CLAW_INTAKE = 0.30
 
     @JvmField var CLOSED_RIGHT_CLAW = 0.9
-    @JvmField var OPEN_RIGHT_CLAW = 0.78 // 0.76 prev
-    @JvmField var OPEN_RIGHT_CLAW_INTAKE = 0.71
+    @JvmField var OPEN_RIGHT_CLAW = 0.82
+    @JvmField var OPEN_RIGHT_CLAW_INTAKE = 0.68
 }

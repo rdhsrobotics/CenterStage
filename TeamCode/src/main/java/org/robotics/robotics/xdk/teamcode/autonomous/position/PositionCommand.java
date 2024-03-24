@@ -10,7 +10,6 @@ import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline;
 import org.robotics.robotics.xdk.teamcode.autonomous.geometry.Pose;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 import io.liftgate.robotics.mono.pipeline.RootExecutionGroup;
 
@@ -39,7 +38,11 @@ public class PositionCommand {
     private final ElapsedTime stable = new ElapsedTime();
 
     public static double STABLE_MS = 100;
-    public static double DEAD_MS = 2500;
+    private double deathMillis = 2500;
+
+    public void setDeathMillis(double deathMillis) {
+        this.deathMillis = deathMillis;
+    }
 
     private static double MAX_TRANSLATIONAL_SPEED = 1.0;
     private static double MAX_ROTATIONAL_SPEED = 1.0;
@@ -113,7 +116,7 @@ public class PositionCommand {
             stable.reset();
         }
 
-        return timer.milliseconds() > DEAD_MS || stable.milliseconds() > STABLE_MS;
+        return timer.milliseconds() > deathMillis || stable.milliseconds() > STABLE_MS;
     }
 
     public Pose getPower(Pose robotPose, Pose targetPose) {

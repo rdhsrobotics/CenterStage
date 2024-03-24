@@ -87,6 +87,9 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             gp1Commands.run()
             gp2Commands.run()
 
+            telemetry.addData("Encoder", hang.actuator.currentPosition)
+            telemetry.update()
+
             if (!bundleExecutionInProgress)
             {
                 elevator.configureElevator(gamepad2.right_stick_y.toDouble())
