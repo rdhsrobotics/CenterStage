@@ -21,15 +21,7 @@ class ClawTestOpMode : LinearOpMode(), System
         var alternate = false
         while (!isStopRequested)
         {
-            alternate = if (alternate)
-            {
-                extendableClaw.updateClawState(ExtendableClaw.ClawStateUpdate.Both, ExtendableClaw.ClawState.Intake)
-                false
-            } else
-            {
-                extendableClaw.updateClawState(ExtendableClaw.ClawStateUpdate.Both, ExtendableClaw.ClawState.Closed)
-                true
-            }
+            extendableClaw.backingExtender.unwrapServo().position = ClawExpansionConstants.Test
             Thread.sleep(500L)
         }
     }

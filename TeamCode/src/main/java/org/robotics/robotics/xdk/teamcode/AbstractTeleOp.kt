@@ -87,7 +87,7 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             gp1Commands.run()
             gp2Commands.run()
 
-            telemetry.addData("Encoder", hang.actuator.currentPosition)
+            telemetry.addData("Encoder", elevator.getCurrentElevatorPosition())
             telemetry.update()
 
             if (!bundleExecutionInProgress)
@@ -327,7 +327,7 @@ gp1Commands
                     ExtendableClaw.ClawState.Closed
                 )
 
-                scheduleAsyncExecution(250L) {
+                scheduleAsyncExecution(85L) {
                     extendableClaw.toggleExtender(
                         ExtendableClaw.ExtenderState.Deposit
                     )

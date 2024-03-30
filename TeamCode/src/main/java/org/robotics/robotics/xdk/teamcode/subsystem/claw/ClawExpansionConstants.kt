@@ -5,9 +5,11 @@ import com.acmerobotics.dashboard.config.Config
 @Config
 object ClawExpansionConstants
 {
+    @JvmField var Test = 0.9
+
     @JvmField var CLAW_MOTION_PROFILE_VELOCITY = 5.0
-    @JvmField var CLAW_MOTION_PROFILE_ACCEL = 5.0
-    @JvmField var CLAW_MOTION_PROFILE_DECEL = 2.0
+    @JvmField var CLAW_MOTION_PROFILE_ACCEL = 10.0
+    @JvmField var CLAW_MOTION_PROFILE_DECEL = 30.0
 
     @JvmField var CLAW_FINGER_PROFILE_VELOCITY = 5.0
     @JvmField var CLAW_FINGER_PROFILE_ACCEL = 33.0
