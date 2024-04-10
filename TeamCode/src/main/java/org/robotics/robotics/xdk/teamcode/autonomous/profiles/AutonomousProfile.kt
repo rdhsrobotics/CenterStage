@@ -1,7 +1,9 @@
 package org.robotics.robotics.xdk.teamcode.autonomous.profiles
 
 import io.liftgate.robotics.mono.pipeline.ExecutionGroup
+import io.liftgate.robotics.mono.pipeline.RootExecutionGroup
 import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline
+import org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.v3.spikeMark
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.StartPosition
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TapeSide
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TeamColor
@@ -14,21 +16,16 @@ sealed class AutonomousProfile(
 {
     open fun buildExecutionGroup(): ExecutionGroup.(AbstractAutoPipeline, TapeSide) -> Unit =
         context@{ opMode, tapeSide ->
-//            val tapeSide = TapeSide.Right
-           /* depositPurplePixelOnSpikeMarkAndTurnTowardsBackboard(
-                pipe = opMode,
-                gameObjectTapeSide = tapeSide,
-                startPosition = startPosition,
-                relativeBackboardDirectionAtRobotStart = relativeBackboardDirectionAtRobotStart,
-                isSpikeMarkOnly = isSpikeMarkOnly
-            )
-
-            if (isSpikeMarkOnly)
+            if (this is RootExecutionGroup)
             {
-                return@context
+                spikeMark(opMode, tapeSide)
+                if (isSpikeMarkOnly)
+                {
+                    return@context
+                }
             }
 
-            moveTowardsBackboard(
+            /*moveTowardsBackboard(
                 pipe = opMode,
                 startPosition = startPosition,
                 direction = relativeBackboardDirectionAtRobotStart

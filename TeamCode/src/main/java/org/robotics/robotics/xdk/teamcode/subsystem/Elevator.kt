@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 
@@ -46,7 +47,7 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
     }
 
     private var targetPosition = 0
-    private var increment = 5
+    private var increment = 15
     private var elevatorPosition = -730
 
     private var elevatorUpdateLock = Any()
@@ -58,7 +59,7 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
     fun configureElevator(stick: Double) = synchronized(elevatorUpdateLock)
     {
         val target = min(
-            max((targetPosition + stick * increment).toInt(), elevatorPosition),
+            max((targetPosition + abs(stick) * stick * increment).toInt(), elevatorPosition),
             0
         )
 

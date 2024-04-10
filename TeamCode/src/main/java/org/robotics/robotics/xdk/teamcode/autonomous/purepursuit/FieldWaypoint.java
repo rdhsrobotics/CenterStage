@@ -4,19 +4,21 @@ import org.robotics.robotics.xdk.teamcode.autonomous.geometry.Point;
 import org.robotics.robotics.xdk.teamcode.autonomous.geometry.Pose;
 
 import java.util.Locale;
+import java.util.UUID;
 
-public class Waypoint {
-    private final Waypoint.Type type;
+public class FieldWaypoint implements WaypointLike {
+    private final FieldWaypoint.Type type;
     private final Point point;
     private final double radius;
+    public final String id = UUID.randomUUID().toString();
 
-    public Waypoint(Point point, double radius) {
+    public FieldWaypoint(Point point, double radius) {
         this.type = point instanceof Pose ? Type.POSE : Type.POINT;
         this.point = point;
         this.radius = radius;
     }
 
-    public Waypoint.Type getType() {
+    public FieldWaypoint.Type getType() {
         return this.type;
     }
 

@@ -1,7 +1,6 @@
 package org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.v3
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import io.liftgate.robotics.mono.pipeline.simultaneous
 import io.liftgate.robotics.mono.pipeline.single
 import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TapeSide
@@ -10,64 +9,163 @@ import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
 import org.robotics.robotics.xdk.teamcode.autonomous.position.degrees
 import org.robotics.robotics.xdk.teamcode.autonomous.position.navigateTo
 import org.robotics.robotics.xdk.teamcode.autonomous.position.purePursuitNavigateTo
+import org.robotics.robotics.xdk.teamcode.autonomous.purepursuit.ActionWaypoint
 import org.robotics.robotics.xdk.teamcode.autonomous.purepursuit.FieldWaypoint
-import org.robotics.robotics.xdk.teamcode.autonomous.shared.GlobalConstants
+import org.robotics.robotics.xdk.teamcode.subsystem.Elevator
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 
-@Autonomous(name = "Test | 2+0 V2", group = "Test")
-class V3TwoPlusZeroTest : AbstractAutoPipeline(
+@Autonomous(name = "Test | 2+1 FARFARFARFAR V2", group = "Test")
+class V3TwoPlusZeroFarTest : AbstractAutoPipeline(
+
     AutonomousProfile.RedPlayer1TwoPlusZero,
-    blockExecutionGroup = { opMode, kms ->
-        single("Pixel Deposit") {
-            opMode.clawSubsystem.toggleExtender(
-                ExtendableClaw.ExtenderState.Intake,
-                force = true
+    blockExecutionGroup = { opMode, tapeSide ->
+        spikeMark(opMode, tapeSide)
+
+        single("prep for stak") {
+            opMode.clawSubsystem.updateClawState(
+                ExtendableClaw.ClawStateUpdate.Right,
+                ExtendableClaw.ClawState.Intake,
             )
 
+            opMode.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit, force = true)
+            opMode.elevatorSubsystem.configureElevatorManually(0.22)
 
-            if (kms != TapeSide.Middle)
+            Thread.sleep(500L)
+        }
+
+        single("d") {
+
+            when (tapeSide)
             {
-                if (kms == TapeSide.Left)
-                {
-                    purePursuitNavigateTo(
-                        FieldWaypoint(
-                            Pose(-15.0, -12.0, 20.degrees),
-                            10.0
-                        ),
-                        FieldWaypoint(
-                            Pose(0.0, -20.0, 45.degrees),
-                            10.0
-                        ),
+                TapeSide.Right -> purePursuitNavigateTo(
+                    FieldWaypoint(
+                        Pose(0.0, 0.0, 0.degrees),
+                        10.0
+                    ),
+                    FieldWaypoint(
+                        Pose(4.0, -23.0, (-25).degrees),
+                        10.0
+                    ),
+                    FieldWaypoint(
+                        Pose(0.0, -39.0, (0).degrees),
+                        10.0
+                    ),
+                    ActionWaypoint {
+                        opMode.clawSubsystem.toggleExtender(
+                            ExtendableClaw.ExtenderState.Intake,
+                            force = true
+                        )
+                    },
+                    FieldWaypoint(
+                        Pose(-7.0, -49.0, 90.degrees),
+                        4.0
+                    ),
+                    FieldWaypoint(
+                        farStackPickup,
+                        10.0
                     )
-                }
+                )
 
-                if (kms == TapeSide.Right)
-                {
-                    navigateTo(Pose(-12.0, -20.0, 0.degrees))
+                TapeSide.Middle -> purePursuitNavigateTo(
+                    FieldWaypoint(
+                        Pose(0.0, -25.0, 0.degrees),
+                        10.0
+                    ),
+                    FieldWaypoint(
+                        Pose(5.0, -20.0, 0.degrees),
+                        10.0
+                    ),
+                    ActionWaypoint {
+                        opMode.clawSubsystem.toggleExtender(
+                            ExtendableClaw.ExtenderState.Intake,
+                            force = true
+                        )
+                    },
+                    FieldWaypoint(
+                        farStackPickup,
+                        10.0
+                    )
+                )
+
+                TapeSide.Left -> purePursuitNavigateTo(
+                    FieldWaypoint(
+                        Pose(0.0, -20.0, 35.degrees),
+                        10.0
+                    ),
+                    FieldWaypoint(
+                        Pose(-2.0, -45.0, 0.degrees),
+                        10.0
+                    ),
+                    FieldWaypoint(
+                        Pose(-7.0, -49.0, 90.degrees),
+                        3.0
+                    ),
+                    ActionWaypoint {
+                        opMode.clawSubsystem.toggleExtender(
+                            ExtendableClaw.ExtenderState.Intake,
+                            force = true
+                        )
+                    },
+                    FieldWaypoint(
+                        farStackPickup,
+                        10.0
+                    )
+                ) {
+                    setDeathMillis(5000.0)
                 }
-                return@single
             }
 
 
-            navigateTo(Pose(0.0, -25.0, 0.degrees))
-            /*navigateTo(
-                when (kms)
-                {
-                    TapeSide.Right -> Pose(0.0, -20.0, (-15).degrees)
-                    TapeSide.Left -> Pose(0.0, -20.0, 25.degrees)
-                    TapeSide.Middle -> Pose(0.0, -26.0, 0.degrees)
-                }
-            )*/
         }
 
-        single("things") {
-            Thread.sleep(250L)
 
+        single("Intake from the stack") {
+
+
+
+            Thread.sleep(500)
             opMode.clawSubsystem.updateClawState(
                 ExtendableClaw.ClawStateUpdate.Right,
-                ExtendableClaw.ClawState.Open,
+                ExtendableClaw.ClawState.Closed
             )
+            Thread.sleep(500)
+
+            opMode.clawSubsystem.toggleExtender(
+                ExtendableClaw.ExtenderState.Intermediate,
+                force = true
+            )
+            opMode.elevatorSubsystem.configureElevatorManually(0.0)
+            Thread.sleep(500)
+
+            //navigateTo(Pose(-50.0, -50.0, (90).degrees))
+            purePursuitNavigateTo(
+                FieldWaypoint(
+                    farStackPickup,
+                    10.0
+                ),
+                FieldWaypoint(
+                    Pose(-63.0, -50.0, (90).degrees),
+                    10.0
+                ),
+                ActionWaypoint {
+                    opMode.clawSubsystem.toggleExtender(
+                        ExtendableClaw.ExtenderState.Deposit,
+                        force = true
+                    )
+
+                    opMode.elevatorSubsystem.configureElevatorManually(0.15)
+                },
+                FieldWaypoint(
+                    Pose(-87.0, -30.0, (-90.0).degrees),
+                    10.0
+                )
+            ) {
+                setDeathMillis(5000.0)
+            }
+            opMode.clawSubsystem.updateClawState(ExtendableClaw.ClawStateUpdate.Both, ExtendableClaw.ClawState.Closed)
         }
+
+        /*
 
         simultaneous("move into deposit yellow pixel") {
             single("Backboard deposit") {
@@ -101,7 +199,7 @@ class V3TwoPlusZeroTest : AbstractAutoPipeline(
 
         simultaneous("retract and paark") {
             single("bla bla bla") {
-                /*opMode.clawSubsystem.updateClawState(
+                *//*opMode.clawSubsystem.updateClawState(
                     ExtendableClaw.ClawStateUpdate.Right,
                     ExtendableClaw.ClawState.MosaicFix
                 )
@@ -150,7 +248,7 @@ class V3TwoPlusZeroTest : AbstractAutoPipeline(
                     ExtendableClaw.ClawState.Open
                 )
 
-                Thread.sleep(1000L)*/
+                Thread.sleep(1000L)*//*
 
                 // open the claw and wait for the pixel to drop
                 opMode.clawSubsystem.updateClawState(
@@ -186,6 +284,6 @@ class V3TwoPlusZeroTest : AbstractAutoPipeline(
                     Pose(-37.0, -57.0, (-90).degrees)
                 )
             }
-        }
+        }*/
     }
 )

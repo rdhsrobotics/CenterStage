@@ -3,6 +3,7 @@ package org.robotics.robotics.xdk.teamcode
 import com.arcrobotics.ftclib.gamepad.GamepadEx
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import io.liftgate.robotics.mono.Mono.commands
+import io.liftgate.robotics.mono.gamepad.ButtonDynamic
 import io.liftgate.robotics.mono.gamepad.ButtonType
 import io.liftgate.robotics.mono.gamepad.GamepadCommands
 import io.liftgate.robotics.mono.subsystem.Subsystem
@@ -201,6 +202,38 @@ gp1Commands
 
         // bumper commands for opening closing claw fingers individually
         gp2Commands
+            .whereDynamicGT(ButtonDynamic.TriggerLeft, 0.5F)
+            .onlyWhen { !bundleExecutionInProgress }
+            .triggers {
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Left,
+                    ExtendableClaw.ClawState.Intake
+                )
+            }
+            .andIsHeldUntilReleasedWhere {
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Left,
+                    ExtendableClaw.ClawState.Closed
+                )
+            }
+
+        gp2Commands
+            .whereDynamicGT(ButtonDynamic.TriggerRight, 0.5F)
+            .onlyWhen { !bundleExecutionInProgress }
+            .triggers {
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Right,
+                    ExtendableClaw.ClawState.Intake
+                )
+            }
+            .andIsHeldUntilReleasedWhere {
+                extendableClaw.updateClawState(
+                    ExtendableClaw.ClawStateUpdate.Right,
+                    ExtendableClaw.ClawState.Closed
+                )
+            }
+
+        gp2Commands
             .where(ButtonType.BumperLeft)
             .onlyWhen { !bundleExecutionInProgress }
             .triggers {
@@ -266,6 +299,19 @@ gp1Commands
                 hang.brake()
             }
             .whenPressedOnce()
+
+        gp2Commands
+            .where(ButtonType.DPadLeft)
+            .triggers {
+                extendableClaw.toggleExtender(
+                    ExtendableClaw.ExtenderState.Intermediate
+                )
+            }
+            .andIsHeldUntilReleasedWhere {
+                extendableClaw.toggleExtender(
+                    ExtendableClaw.ExtenderState.Deposit
+                )
+            }
 
         // elevator preset (low backboard)
         gp2Commands
@@ -392,10 +438,6 @@ gp1Commands
                 }
             }
         }
-
-        gp2Commands
-            .where(ButtonType.DPadLeft)
-            .depositPresetReleaseOnElevatorHeight(-630)
 
         gp2Commands
             .where(ButtonType.DPadUp)
