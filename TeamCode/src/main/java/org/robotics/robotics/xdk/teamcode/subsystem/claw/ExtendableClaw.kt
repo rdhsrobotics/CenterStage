@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.Servo
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
+import org.robotics.robotics.xdk.teamcode.autonomous.scheduleAsyncExecution
 import org.robotics.robotics.xdk.teamcode.subsystem.motionprofile.wrappers.MotionProfiledServo
 import org.robotics.robotics.xdk.teamcode.subsystem.motionprofile.ProfileConstraints
 
@@ -104,10 +105,12 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
             constraints = clawFingerMPConstraints
         )
 
-        toggleExtender(
-            ExtenderState.PreLoad,
-            force = true
-        )
+        scheduleAsyncExecution(1000L) {
+            toggleExtender(
+                ExtenderState.PreLoad,
+                force = true
+            )
+        }
 
         updateClawState(
             ClawStateUpdate.Both,
@@ -150,6 +153,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
 
         if (force)
         {
+            println("Setting extender target FORCE to ${extenderState.targetPosition()} -> ${extenderState.name}")
             backingExtender.setTarget(extenderState.targetPosition())
             return
         }

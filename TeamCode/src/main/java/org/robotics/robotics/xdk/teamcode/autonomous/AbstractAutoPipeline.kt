@@ -94,8 +94,10 @@ abstract class AbstractAutoPipeline(
 
         // keep all log entries
         Mono.logSink = {
-            multipleTelemetry.addLine("[Mono] $it")
-            multipleTelemetry.update()
+            /*multipleTelemetry.addLine("[Mono] $it")
+            multipleTelemetry.update()*/
+
+            println("[Mono] $it")
         }
 
         localizer

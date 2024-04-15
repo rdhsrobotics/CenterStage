@@ -12,8 +12,8 @@ val Double.degrees: Double
 val Int.degrees: Double
     get() = Math.toRadians(this.toDouble())
 
-fun RootExecutionGroup.navigateTo(pose: Pose) =
-    PositionCommand(pose, this).execute()
+fun RootExecutionGroup.navigateTo(pose: Pose, optBlock: PositionCommand.() -> Unit = {}) =
+    PositionCommand(pose, this).apply(optBlock).execute()
 
-fun RootExecutionGroup.purePursuitNavigateTo(vararg waypoints: WaypointLike, optBlock: PurePursuitCommand.() -> Unit = {}) =
+fun RootExecutionGroup.purePursuitNavigateTo(vararg waypoints: WaypointLike, optBlock: PositionCommand.() -> Unit = {}) =
     PurePursuitCommand(this, PurePursuitPath(*waypoints)).apply(optBlock).execute()

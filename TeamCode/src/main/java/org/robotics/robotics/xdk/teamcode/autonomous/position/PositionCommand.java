@@ -44,8 +44,8 @@ public class PositionCommand {
         this.deathMillis = deathMillis;
     }
 
-    private static double MAX_TRANSLATIONAL_SPEED = 1.0;
-    private static double MAX_ROTATIONAL_SPEED = 1.0;
+    private double MAX_TRANSLATIONAL_SPEED = 1.0;
+    private double MAX_ROTATIONAL_SPEED = 1.0;
     private static double K_STATIC = 1.85;
 
     private final MecanumAutoDrive mecanumAutoDrive;
@@ -70,6 +70,14 @@ public class PositionCommand {
         }
 
         return targetPoseSupplier.supply(robotPose);
+    }
+
+    public void setMAX_ROTATIONAL_SPEED(double MAX_ROTATIONAL_SPEED) {
+        this.MAX_ROTATIONAL_SPEED = MAX_ROTATIONAL_SPEED;
+    }
+
+    public void setMAX_TRANSLATIONAL_SPEED(double MAX_TRANSLATIONAL_SPEED) {
+        this.MAX_TRANSLATIONAL_SPEED = MAX_TRANSLATIONAL_SPEED;
     }
 
     public void supplyCustomTargetPose(Supplies<Pose, Pose> supplier) {

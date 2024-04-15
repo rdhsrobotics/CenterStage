@@ -11,7 +11,28 @@ import org.robotics.robotics.xdk.teamcode.autonomous.position.purePursuitNavigat
 import org.robotics.robotics.xdk.teamcode.autonomous.purepursuit.FieldWaypoint
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 
-val farStackPickup = Pose(12.5, -48.0, 90.degrees)
+val redStackY = -48.0
+val redBoardX = -74.25
+
+val blueStackY = -61.0
+val blueCenterY = -62.0
+val blueBoardX = 79.75
+
+val blueStackPickup = Pose(-18.75, blueStackY, -90.degrees)
+val blueParkMiddle = Pose(blueBoardX + 2, -54.0, (90).degrees)
+
+val farStackPickup = Pose(12.3, redStackY, 90.degrees)
+val parkMiddle = Pose(-85.0, -54.0, (-90).degrees)
+
+fun RootExecutionGroup.dropPixels(opMode: AbstractAutoPipeline) {
+    opMode.clawSubsystem.updateClawState(
+        ExtendableClaw.ClawStateUpdate.Both,
+        ExtendableClaw.ClawState.Open
+    )
+    opMode.elevatorSubsystem.configureElevatorManually(0.15)
+
+    Thread.sleep(750)
+}
 
 fun RootExecutionGroup.spikeMark(opMode: AbstractAutoPipeline, kms: TapeSide)
 {
@@ -27,11 +48,15 @@ fun RootExecutionGroup.spikeMark(opMode: AbstractAutoPipeline, kms: TapeSide)
             {
                 purePursuitNavigateTo(
                     FieldWaypoint(
-                        Pose(0.0, -15.0, 0.degrees),
+                        Pose(0.0, 0.0, 0.degrees),
+                        5.0
+                    ),
+                    FieldWaypoint(
+                        Pose(0.0, -25.0, 0.degrees),
                         10.0
                     ),
                     FieldWaypoint(
-                        Pose(0.0, -20.0, 35.degrees),
+                        Pose(0.0, -20.0, 38.degrees),
                         10.0
                     ),
                 )
@@ -41,11 +66,15 @@ fun RootExecutionGroup.spikeMark(opMode: AbstractAutoPipeline, kms: TapeSide)
             {
                 purePursuitNavigateTo(
                     FieldWaypoint(
-                        Pose(0.0, -18.0, 0.degrees),
+                        Pose(0.0, 0.0, 0.degrees),
+                        5.0
+                    ),
+                    FieldWaypoint(
+                        Pose(0.0, -25.0, 0.degrees),
                         10.0
                     ),
                     FieldWaypoint(
-                        Pose(0.0, -23.0, -25.degrees),
+                        Pose(1.5, -24.75, -35.degrees),
                         10.0
                     ),
                 )
@@ -58,11 +87,10 @@ fun RootExecutionGroup.spikeMark(opMode: AbstractAutoPipeline, kms: TapeSide)
     }
 
     single("purple pixel") {
-        Thread.sleep(250L)
-
         opMode.clawSubsystem.updateClawState(
             ExtendableClaw.ClawStateUpdate.Right,
             ExtendableClaw.ClawState.Open,
         )
+        Thread.sleep(250L)
     }
 }
