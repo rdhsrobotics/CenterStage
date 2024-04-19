@@ -106,7 +106,7 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         )
 
         scheduleAsyncExecution(1000L) {
-            if (opMode.opModeInInit())
+            if (!opMode.opModeInInit())
             {
                 return@scheduleAsyncExecution
             }
