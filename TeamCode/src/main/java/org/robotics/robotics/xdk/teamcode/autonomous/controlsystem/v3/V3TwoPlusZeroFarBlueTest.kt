@@ -29,14 +29,12 @@ class V3TwoPlusZeroFarBlueTest : AbstractAutoPipeline(
                 ExtendableClaw.ClawStateUpdate.Right,
                 ExtendableClaw.ClawState.MosaicFix,
             )
-            opMode.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit, force = true)
             opMode.elevatorSubsystem.configureElevatorManually(0.235)
 
             Thread.sleep(500L)
         }
 
-        single("d") {
-
+        single("move to stack") {
             when (tapeSide)
             {
                 TapeSide.Left -> {
@@ -132,8 +130,6 @@ class V3TwoPlusZeroFarBlueTest : AbstractAutoPipeline(
                         setMAX_TRANSLATIONAL_SPEED(0.4)
                     }
                 }
-
-
             }
         }
 
@@ -199,16 +195,12 @@ class V3TwoPlusZeroFarBlueTest : AbstractAutoPipeline(
             ) {
                 setDeathMillis(5000.0)
             }
+            dropPixels(opMode)
         }
 
         single("park") {
-            opMode.clawSubsystem.updateClawState(
-                ExtendableClaw.ClawStateUpdate.Both,
-                ExtendableClaw.ClawState.Open
-            )
-            opMode.elevatorSubsystem.configureElevatorManually(0.15)
 
-            Thread.sleep(750)
+            opMode.elevatorSubsystem.configureElevatorManually(0.0)
 
             purePursuitNavigateTo(
                 when (tapeSide)

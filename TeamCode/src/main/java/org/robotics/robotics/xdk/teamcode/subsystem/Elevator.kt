@@ -1,9 +1,14 @@
 package org.robotics.robotics.xdk.teamcode.subsystem
 
+import com.arcrobotics.ftclib.hardware.motors.Motor
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorControllerEx
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.DcMotorImpl
+import com.qualcomm.robotcore.hardware.DcMotorImplEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.hardware.PIDFCoefficients
 import io.liftgate.robotics.mono.pipeline.StageContext
 import io.liftgate.robotics.mono.subsystem.AbstractSubsystem
 import org.robotics.robotics.xdk.teamcode.autonomous.hardware
@@ -52,6 +57,16 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
 
     private var elevatorUpdateLock = Any()
 
+    fun setPIDFCoefficients()
+    {
+        /*backingMotor.setPIDFCoefficients(
+            DcMotor.RunMode.RUN_TO_POSITION,
+            PIDFCoefficients(
+                ElevatorConstants.P, ElevatorConstants.I, ElevatorConstants.D, ElevatorConstants.F
+            )
+        )*/
+    }
+
     /**
      * Increments the target position for the claw elevator
      * based on a given joystick value.
@@ -67,6 +82,7 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
 
         backingMotor.power = 1.0
         backingMotor.targetPosition = target
+        setPIDFCoefficients()
         backingMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
 
@@ -77,6 +93,7 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
     {
         backingMotor.power = (if (position < backingMotor.targetPosition) -1 else 1) * 0.86
         backingMotor.targetPosition = (position * elevatorPosition).toInt()
+        setPIDFCoefficients()
         backingMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
 
@@ -87,6 +104,7 @@ class Elevator(private val opMode: LinearOpMode) : AbstractSubsystem()
     {
         backingMotor.power = (if (position < backingMotor.targetPosition) -1 else 1) * 0.86
         backingMotor.targetPosition = position
+        setPIDFCoefficients()
         backingMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
 

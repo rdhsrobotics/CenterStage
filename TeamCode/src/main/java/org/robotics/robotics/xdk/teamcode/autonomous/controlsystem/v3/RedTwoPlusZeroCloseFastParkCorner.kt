@@ -1,10 +1,7 @@
 package org.robotics.robotics.xdk.teamcode.autonomous.controlsystem.v3
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import io.liftgate.robotics.mono.pipeline.ParallelExecutionGroup
-import io.liftgate.robotics.mono.pipeline.simultaneous
 import io.liftgate.robotics.mono.pipeline.single
-import io.liftgate.robotics.mono.pipeline.waitMillis
 import org.robotics.robotics.xdk.teamcode.autonomous.AbstractAutoPipeline
 import org.robotics.robotics.xdk.teamcode.autonomous.detection.TapeSide
 import org.robotics.robotics.xdk.teamcode.autonomous.geometry.Pose
@@ -12,15 +9,10 @@ import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
 import org.robotics.robotics.xdk.teamcode.autonomous.position.degrees
 import org.robotics.robotics.xdk.teamcode.autonomous.position.navigateTo
 import org.robotics.robotics.xdk.teamcode.autonomous.position.purePursuitNavigateTo
-import org.robotics.robotics.xdk.teamcode.autonomous.purepursuit.ActionWaypoint
 import org.robotics.robotics.xdk.teamcode.autonomous.purepursuit.FieldWaypoint
-import org.robotics.robotics.xdk.teamcode.subsystem.Elevator
-import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 
-val boardX = -40.0
-
-@Autonomous(name = "Red Close 2+0 Fast", group = "Test")
-class TwoPlusZeroCloseFast : AbstractAutoPipeline(
+@Autonomous(name = "Red Close 2+0 Fast Park Middle", group = "Test")
+class RedTwoPlusZeroCloseFastParkCorner : AbstractAutoPipeline(
 
 
     AutonomousProfile.RedPlayer2TwoPlusZero,
@@ -59,8 +51,7 @@ class TwoPlusZeroCloseFast : AbstractAutoPipeline(
                     TapeSide.Middle -> FieldWaypoint(Pose(boardX + 15, -40.0, -90.degrees), 10.0)
                     TapeSide.Right -> FieldWaypoint(Pose(boardX + 15, -40.0, -90.degrees), 10.0)
                 },
-                FieldWaypoint(Pose(boardX + 10, -50.0, -90.degrees), 15.0),
-                FieldWaypoint(Pose(boardX - 6, -56.5, -90.degrees), 15.0)
+                FieldWaypoint(Pose(boardX + 10, 0.0, -90.degrees), 15.0)
             )
         }
     }

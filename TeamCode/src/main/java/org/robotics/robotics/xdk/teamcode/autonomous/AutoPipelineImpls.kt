@@ -5,6 +5,7 @@ import io.liftgate.robotics.mono.pipeline.waitMillis
 import org.robotics.robotics.xdk.teamcode.Global
 import org.robotics.robotics.xdk.teamcode.autonomous.profiles.AutonomousProfile
 
+/*
 @Autonomous(
     name = "🔴 | Far | 2+0F",
     group = "Red",
@@ -90,3 +91,4 @@ class AutoPipelineBluePlayer2SpikeMarkOnly : AbstractAutoPipeline(AutonomousProf
     preselectTeleOp = Global.RobotCentricTeleOpName
 )
 class AutoPipelineBluePlayer1SpikeMarkOnly : AbstractAutoPipeline(AutonomousProfile.BluePlayer1SpikeMarkOnly)
+*/

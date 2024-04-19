@@ -17,10 +17,10 @@ import org.robotics.robotics.xdk.teamcode.autonomous.purepursuit.FieldWaypoint
 import org.robotics.robotics.xdk.teamcode.subsystem.Elevator
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 
-val boardX = -40.0
+val blueCloseBoardX = 35.0
 
-@Autonomous(name = "Red Close 2+0 Fast", group = "Test")
-class TwoPlusZeroCloseFast : AbstractAutoPipeline(
+@Autonomous(name = "Blue Close 2+0 Fast Park Middle", group = "Test")
+class BlueTwoPlusZeroCloseFast : AbstractAutoPipeline(
 
 
     AutonomousProfile.RedPlayer2TwoPlusZero,
@@ -33,15 +33,15 @@ class TwoPlusZeroCloseFast : AbstractAutoPipeline(
 
         single("go to backboad") {
             when (tapeSide) {
-                TapeSide.Left -> navigateTo(Pose(boardX, -39.0, -90.degrees))
-                TapeSide.Middle -> purePursuitNavigateTo(
-                    FieldWaypoint(Pose(-5.0, -23.0, 0.degrees), 10.0),
-                    FieldWaypoint(Pose(boardX, -33.0, -90.degrees), 10.0))
-                TapeSide.Right -> purePursuitNavigateTo(
-                    FieldWaypoint(Pose(1.5, -24.75, -35.degrees), 10.0),
-                    FieldWaypoint(Pose(0.0, -15.0, -35.degrees), 10.0),
-                    FieldWaypoint(Pose(boardX, -25.0, -90.degrees), 10.0)
+                TapeSide.Left -> purePursuitNavigateTo(
+                    FieldWaypoint(Pose(-1.5, -24.75, 35.degrees), 10.0),
+                    FieldWaypoint(Pose(0.0, -15.0, 35.degrees), 10.0),
+                    FieldWaypoint(Pose(blueCloseBoardX, -25.0, 90.degrees), 10.0)
                 )
+                TapeSide.Middle -> purePursuitNavigateTo(
+                    FieldWaypoint(Pose(5.0, -20.0, 0.degrees), 10.0),
+                    FieldWaypoint(Pose(blueCloseBoardX, -30.0, 90.degrees), 10.0))
+                TapeSide.Right -> navigateTo(Pose(blueCloseBoardX, -36.0, 90.degrees))
             }
             dropPixels(opMode)
         }
@@ -50,18 +50,19 @@ class TwoPlusZeroCloseFast : AbstractAutoPipeline(
             opMode.elevatorSubsystem.configureElevatorManually(0.0)
             purePursuitNavigateTo(
                 when (tapeSide) {
-                    TapeSide.Left -> FieldWaypoint(Pose(boardX, -39.0, -90.degrees), 15.0)
-                    TapeSide.Middle -> FieldWaypoint(Pose(boardX, -33.0, -90.degrees), 15.0)
-                    TapeSide.Right -> FieldWaypoint(Pose(boardX, -25.0, -90.degrees), 15.0)
+                    TapeSide.Left -> FieldWaypoint(Pose(blueCloseBoardX, -39.0, 90.degrees), 15.0)
+                    TapeSide.Middle -> FieldWaypoint(Pose(blueCloseBoardX, -33.0, 90.degrees), 15.0)
+                    TapeSide.Right -> FieldWaypoint(Pose(blueCloseBoardX, -25.0, 90.degrees), 15.0)
                 },
                 when (tapeSide) {
-                    TapeSide.Left -> FieldWaypoint(Pose(boardX + 15, -40.0, -90.degrees), 10.0)
-                    TapeSide.Middle -> FieldWaypoint(Pose(boardX + 15, -40.0, -90.degrees), 10.0)
-                    TapeSide.Right -> FieldWaypoint(Pose(boardX + 15, -40.0, -90.degrees), 10.0)
+                    TapeSide.Left -> FieldWaypoint(Pose(blueCloseBoardX - 15, -40.0, 90.degrees), 10.0)
+                    TapeSide.Middle -> FieldWaypoint(Pose(blueCloseBoardX - 15, -40.0, 90.degrees), 10.0)
+                    TapeSide.Right -> FieldWaypoint(Pose(blueCloseBoardX - 15, -40.0, 90.degrees), 10.0)
                 },
-                FieldWaypoint(Pose(boardX + 10, -50.0, -90.degrees), 15.0),
-                FieldWaypoint(Pose(boardX - 6, -56.5, -90.degrees), 15.0)
+                FieldWaypoint(Pose(blueCloseBoardX - 10, -50.0, 90.degrees), 15.0),
+                FieldWaypoint(Pose(blueCloseBoardX + 6, -56.5, 90.degrees), 15.0)
             )
+            Thread.sleep(1000)
         }
     }
 )

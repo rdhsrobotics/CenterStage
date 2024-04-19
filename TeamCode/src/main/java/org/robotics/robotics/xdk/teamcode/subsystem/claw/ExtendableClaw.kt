@@ -106,6 +106,11 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         )
 
         scheduleAsyncExecution(1000L) {
+            if (opMode.opModeInInit())
+            {
+                return@scheduleAsyncExecution
+            }
+
             toggleExtender(
                 ExtenderState.PreLoad,
                 force = true

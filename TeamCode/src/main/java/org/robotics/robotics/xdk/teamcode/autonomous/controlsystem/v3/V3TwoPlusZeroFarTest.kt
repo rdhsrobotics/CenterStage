@@ -17,11 +17,12 @@ import org.robotics.robotics.xdk.teamcode.autonomous.purepursuit.FieldWaypoint
 import org.robotics.robotics.xdk.teamcode.subsystem.Elevator
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 
-@Autonomous(name = "Red 2+1 Fast", group = "Test")
+@Autonomous(name = "Red 2+1 Slow", group = "Test")
 class V3TwoPlusZeroFarTest : AbstractAutoPipeline(
 
     AutonomousProfile.RedPlayer2TwoPlusZero,
     blockExecutionGroup = { opMode, tapeSide ->
+        waitMillis(7000)
         spikeMark(opMode, tapeSide)
 
         single("prep for stak") {
@@ -212,6 +213,7 @@ class V3TwoPlusZeroFarTest : AbstractAutoPipeline(
         }
 
         single("park") {
+            opMode.elevatorSubsystem.configureElevatorManually(0.0)
             purePursuitNavigateTo(
                 when (tapeSide)
                 {

@@ -12,16 +12,17 @@ import org.robotics.robotics.xdk.teamcode.autonomous.purepursuit.FieldWaypoint
 import org.robotics.robotics.xdk.teamcode.subsystem.claw.ExtendableClaw
 
 val redStackY = -48.0
-val redBoardX = -74.25
+val redBoardX = -74.75
 
 val blueStackY = -61.0
-val blueCenterY = -62.0
-val blueBoardX = 79.75
 
-val blueStackPickup = Pose(-18.75, blueStackY, -90.degrees)
+val blueCenterY = -62.0
+val blueBoardX = 80.75
+
+val blueStackPickup = Pose(-19.5, blueStackY, -90.degrees)
 val blueParkMiddle = Pose(blueBoardX + 2, -54.0, (90).degrees)
 
-val farStackPickup = Pose(12.3, redStackY, 90.degrees)
+val farStackPickup = Pose(12.8, redStackY, 90.degrees)
 val parkMiddle = Pose(-85.0, -54.0, (-90).degrees)
 
 fun RootExecutionGroup.dropPixels(opMode: AbstractAutoPipeline) {
@@ -56,7 +57,7 @@ fun RootExecutionGroup.spikeMark(opMode: AbstractAutoPipeline, kms: TapeSide)
                         10.0
                     ),
                     FieldWaypoint(
-                        Pose(0.0, -20.0, 38.degrees),
+                        Pose(0.0, -20.0, 49.degrees),
                         10.0
                     ),
                 )
@@ -74,7 +75,7 @@ fun RootExecutionGroup.spikeMark(opMode: AbstractAutoPipeline, kms: TapeSide)
                         10.0
                     ),
                     FieldWaypoint(
-                        Pose(1.5, -24.75, -35.degrees),
+                        Pose(1.5, -24.75, -38.degrees),
                         10.0
                     ),
                 )
@@ -91,6 +92,7 @@ fun RootExecutionGroup.spikeMark(opMode: AbstractAutoPipeline, kms: TapeSide)
             ExtendableClaw.ClawStateUpdate.Right,
             ExtendableClaw.ClawState.Open,
         )
-        Thread.sleep(250L)
+        Thread.sleep(500L)
+        opMode.clawSubsystem.toggleExtender(ExtendableClaw.ExtenderState.Deposit, force = true)
     }
 }

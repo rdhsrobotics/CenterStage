@@ -88,7 +88,8 @@ abstract class AbstractTeleOp : LinearOpMode(), System
             gp1Commands.run()
             gp2Commands.run()
 
-            telemetry.addData("Encoder", elevator.getCurrentElevatorPosition())
+            telemetry.addData("Current", elevator.getCurrentElevatorPosition())
+            telemetry.addData("Target", elevator.getTargetElevatorPosition())
             telemetry.update()
 
             if (!bundleExecutionInProgress)
