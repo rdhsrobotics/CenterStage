@@ -74,6 +74,9 @@ class ExtendableClaw(private val opMode: LinearOpMode) : AbstractSubsystem()
         }),
         Deposit({
             ExtenderConstants.MIN_EXTENDER_POSITION
+        }),
+        Float({
+            ExtenderConstants.FLOAT_EXTENDER_POSITION
         })
     }
 

@@ -19,7 +19,7 @@ val blueStackY = -61.0
 val blueCenterY = -62.0
 val blueBoardX = 80.75
 
-val blueStackPickup = Pose(-19.5, blueStackY, -90.degrees)
+val blueStackPickup = Pose(-20.0, blueStackY, -90.degrees)
 val blueParkMiddle = Pose(blueBoardX + 2, -54.0, (90).degrees)
 
 val farStackPickup = Pose(12.8, redStackY, 90.degrees)
@@ -39,7 +39,7 @@ fun RootExecutionGroup.spikeMark(opMode: AbstractAutoPipeline, kms: TapeSide)
 {
     single("Pixel Deposit") {
         opMode.clawSubsystem.toggleExtender(
-            ExtendableClaw.ExtenderState.Intake,
+            ExtendableClaw.ExtenderState.Float,
             force = true
         )
 
@@ -75,7 +75,7 @@ fun RootExecutionGroup.spikeMark(opMode: AbstractAutoPipeline, kms: TapeSide)
                         10.0
                     ),
                     FieldWaypoint(
-                        Pose(1.5, -24.75, -38.degrees),
+                        Pose(1.5, -24.75, -41.degrees),
                         10.0
                     ),
                 )

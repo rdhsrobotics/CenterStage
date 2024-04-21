@@ -41,7 +41,7 @@ class BlueTwoPlusZeroCloseFast : AbstractAutoPipeline(
                 TapeSide.Middle -> purePursuitNavigateTo(
                     FieldWaypoint(Pose(5.0, -20.0, 0.degrees), 10.0),
                     FieldWaypoint(Pose(blueCloseBoardX, -30.0, 90.degrees), 10.0))
-                TapeSide.Right -> navigateTo(Pose(blueCloseBoardX, -36.0, 90.degrees))
+                TapeSide.Right -> navigateTo(Pose(blueCloseBoardX, -37.5, 90.degrees))
             }
             dropPixels(opMode)
         }
@@ -50,17 +50,19 @@ class BlueTwoPlusZeroCloseFast : AbstractAutoPipeline(
             opMode.elevatorSubsystem.configureElevatorManually(0.0)
             purePursuitNavigateTo(
                 when (tapeSide) {
-                    TapeSide.Left -> FieldWaypoint(Pose(blueCloseBoardX, -39.0, 90.degrees), 15.0)
-                    TapeSide.Middle -> FieldWaypoint(Pose(blueCloseBoardX, -33.0, 90.degrees), 15.0)
-                    TapeSide.Right -> FieldWaypoint(Pose(blueCloseBoardX, -25.0, 90.degrees), 15.0)
+                    TapeSide.Left -> FieldWaypoint(Pose(blueCloseBoardX, -25.0, 90.degrees), 15.0)
+                    TapeSide.Middle -> FieldWaypoint(Pose(blueCloseBoardX, -30.0, 90.degrees), 15.0)
+                    TapeSide.Right -> FieldWaypoint(Pose(blueCloseBoardX, -37.5, 90.degrees), 15.0)
                 },
                 when (tapeSide) {
-                    TapeSide.Left -> FieldWaypoint(Pose(blueCloseBoardX - 15, -40.0, 90.degrees), 10.0)
-                    TapeSide.Middle -> FieldWaypoint(Pose(blueCloseBoardX - 15, -40.0, 90.degrees), 10.0)
-                    TapeSide.Right -> FieldWaypoint(Pose(blueCloseBoardX - 15, -40.0, 90.degrees), 10.0)
+                    TapeSide.Left -> FieldWaypoint(Pose(blueCloseBoardX - 15, -25.0, 90.degrees), 10.0)
+                    TapeSide.Middle -> FieldWaypoint(Pose(blueCloseBoardX - 15, -30.0, 90.degrees), 10.0)
+                    TapeSide.Right -> FieldWaypoint(Pose(blueCloseBoardX - 15, -37.5, 90.degrees), 10.0)
                 },
-                FieldWaypoint(Pose(blueCloseBoardX - 10, -50.0, 90.degrees), 15.0),
-                FieldWaypoint(Pose(blueCloseBoardX + 6, -56.5, 90.degrees), 15.0)
+//                FieldWaypoint(Pose(blueCloseBoardX - 10, -50.0, 90.degrees), 15.0),
+//                FieldWaypoint(Pose(blueCloseBoardX + 6, -56.5, 90.degrees), 15.0)
+                FieldWaypoint(Pose(blueCloseBoardX - 10, -20.0, 90.degrees), 15.0),
+                FieldWaypoint(Pose(blueCloseBoardX - 10, 0.0, 90.degrees), 15.0)
             )
             Thread.sleep(1000)
         }
